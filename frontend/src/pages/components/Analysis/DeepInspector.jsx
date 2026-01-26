@@ -249,7 +249,7 @@ const MetricCard = ({ label, value, unit, good, bad, reverse, desc, max, isScore
     );
 };
 
-const ContentTab = ({ text }) => (
+const ContentTab = ({ text = '' }) => (
     <div>
         <div style={{ marginBottom: '12px', fontSize: '14px', color: '#64748b' }}>
             This is the raw audible text content extracted from the page body.
@@ -283,7 +283,7 @@ const TabButton = ({ active, onClick, icon, label, count }) => (
     </button>
 );
 
-const StructureTab = ({ headings, meta }) => (
+const StructureTab = ({ headings = [], meta = {} }) => (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' }}>
         <div>
             <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px' }}>Heading Structure</h3>
@@ -334,7 +334,7 @@ const getFullUrl = (href, baseUrl) => {
     }
 };
 
-const ImagesTab = ({ images, pageUrl }) => {
+const ImagesTab = ({ images = [], pageUrl }) => {
     return (
         <div>
             <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
@@ -400,7 +400,7 @@ const ImagePreview = ({ src }) => {
     );
 };
 
-const LinksTab = ({ links, pageUrl }) => {
+const LinksTab = ({ links = [], pageUrl }) => {
     const [filter, setFilter] = useState(null);
 
     const internalCount = links.filter(l => l.is_internal).length;
