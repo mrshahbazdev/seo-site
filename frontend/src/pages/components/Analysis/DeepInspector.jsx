@@ -249,16 +249,30 @@ const MetricCard = ({ label, value, unit, good, bad, reverse, desc, max, isScore
     );
 };
 
-const ContentTab = ({ text = '' }) => (
-    <div>
-        <div style={{ marginBottom: '12px', fontSize: '14px', color: '#64748b' }}>
-            This is the raw audible text content extracted from the page body.
+const ContentTab = ({ text = '' }) => {
+    const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
+    const charCount = text.length;
+    const sentenceCount = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+    const readingTime = Math.ceil(wordCount / 200); // 200 wpm
+
+    return (
+        <div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+                <StatPill label="Words" value={wordCount} />
+                <StatPill label="Characters" value={charCount} />
+                <StatPill label="Sentences" value={sentenceCount} />
+                <StatPill label="Est. Reading Time" value={`~${readingTime} min`} />
+            </div>
+
+            <div style={{ marginBottom: '12px', fontSize: '14px', color: '#64748b' }}>
+                This is the raw audible text content extracted from the page body (Tags stripped).
+            </div>
+            <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0', maxHeight: '500px', overflowY: 'auto', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap', color: '#334155', fontFamily: 'monospace' }}>
+                {text || <i style={{ color: '#94a3b8' }}>No text content found.</i>}
+            </div>
         </div>
-        <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0', maxHeight: '500px', overflowY: 'auto', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap', color: '#334155' }}>
-            {text || <i style={{ color: '#94a3b8' }}>No text content found.</i>}
-        </div>
-    </div>
-);
+    );
+};
 
 const TabButton = ({ active, onClick, icon, label, count }) => (
     <button
