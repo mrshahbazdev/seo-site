@@ -109,9 +109,7 @@ const PerformanceTab = ({ siteId, pageId, initialData }) => {
     const [data, setData] = useState(initialData);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (!data) fetchPerformance();
-    }, []);
+
 
     const fetchPerformance = async (refresh = false) => {
         try {
