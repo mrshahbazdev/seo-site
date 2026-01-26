@@ -16,17 +16,20 @@ class SitePageAnalysisController extends Controller
     protected $seoService;
     protected $advancedAnalyzer;
     protected $pageSpeedService;
+    protected $languageToolService;
 
     public function __construct(
         ContentAnalysisService $contentAnalysisService,
         DataForSEOService $seoService,
         \App\Services\AdvancedSeoAnalyzer $advancedAnalyzer,
-        \App\Services\GooglePageSpeedService $pageSpeedService
+        \App\Services\GooglePageSpeedService $pageSpeedService,
+        \App\Services\LanguageToolService $languageToolService
     ) {
         $this->contentAnalysisService = $contentAnalysisService;
         $this->seoService = $seoService;
         $this->advancedAnalyzer = $advancedAnalyzer;
         $this->pageSpeedService = $pageSpeedService;
+        $this->languageToolService = $languageToolService;
     }
 
     /**
@@ -285,8 +288,48 @@ class SitePageAnalysisController extends Controller
     }
 
     /**
-     * Get Ranked Keywords for a specific Page
+     * Perform Grammar and Spell Check
      */
+    public function analyzeGrammar(Request $request, $siteId, $pageId)
+    {
+        try {
+            $crawledPage = SiteCrawledPage::where('site_id', $siteId)
+                ->where('id', $pageId)
+                ->firstOrFail();
+
+            // Prefer using stored text content from deep analysis, if available
+            $text = $crawledPage->content_text;
+
+            // If strict or missing, fallback to parsing 'content' html? 
+            // Better to rely on what Deep Analysis extracted.
+            if (empty($text)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No text content available. Please run Deep Analysis first.'
+                ], 400);
+            }
+
+            $language = $request->input('language', 'en-US');
+
+            $result = $this->languageToolService->check($text, $language);
+
+            if (isset($result['error'])) {
+                return response()->json(['success' => false, 'message' => $result['message']], 500);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $result
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Grammar Analysis Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error checking grammar: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     public function rankedKeywords(Request $request, $siteId, $pageId)
     {
         try {

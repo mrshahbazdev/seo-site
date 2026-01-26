@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronRight, Image as ImageIcon, Link as LinkIcon, Layout, Shield, AlertTriangle, CheckCircle, XCircle, FileText, RefreshCw, Globe, Server, Zap, Gauge } from 'lucide-react';
+import { ChevronRight, Image as ImageIcon, Link as LinkIcon, Layout, Shield, AlertTriangle, CheckCircle, XCircle, FileText, RefreshCw, Globe, Server, Zap, Gauge, SpellCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function DeepInspector({ siteId, pageId, url, onAnalysisComplete }) {
@@ -99,7 +99,7 @@ export default function DeepInspector({ siteId, pageId, url, onAnalysisComplete 
                 {activeTab === 'performance' && <PerformanceTab siteId={siteId} pageId={pageId} initialData={paidData} />}
                 {data && activeTab === 'images' && <ImagesTab images={data.images} pageUrl={url} />}
                 {data && activeTab === 'links' && <LinksTab links={data.links} pageUrl={url} />}
-                {data && activeTab === 'content' && <ContentTab text={data.content_text} />}
+                {data && activeTab === 'content' && <ContentTab text={data.content_text} siteId={siteId} pageId={pageId} />}
             </div>
         </div>
     );
@@ -228,11 +228,41 @@ const MetricCard = ({ label, value, unit, good, bad, reverse, desc, max, isScore
     );
 };
 
-const ContentTab = ({ text = '' }) => {
+const ContentTab = ({ text = '', pageId, siteId }) => {
     const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
     const charCount = text.length;
     const sentenceCount = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
     const readingTime = Math.ceil(wordCount / 200); // 200 wpm
+
+    const [grammarData, setGrammarData] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const checkGrammar = async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/grammar`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            const result = await res.json();
+            if (result.success) {
+                setGrammarData(result.data);
+                toast.success('Grammar check complete');
+            } else {
+                toast.error(result.message || "Grammar check failed");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to check grammar");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div>
@@ -241,6 +271,70 @@ const ContentTab = ({ text = '' }) => {
                 <StatPill label="Characters" value={charCount} />
                 <StatPill label="Sentences" value={sentenceCount} />
                 <StatPill label="Est. Reading Time" value={`~${readingTime} min`} />
+            </div>
+
+            <div style={{ marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: '700', margin: 0 }}>Grammar & Spelling</h3>
+                    <button
+                        onClick={checkGrammar}
+                        disabled={loading}
+                        style={{
+                            padding: '8px 16px',
+                            background: '#8b5cf6',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontWeight: '600',
+                            cursor: 'loading' ? 'not-allowed' : 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '8px',
+                            fontSize: '13px'
+                        }}
+                    >
+                        {loading ? <RefreshCw size={14} className="animate-spin" /> : <SpellCheck size={14} />}
+                        {loading ? 'Checking...' : 'Check now'}
+                    </button>
+                </div>
+
+                {grammarData && (
+                    <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden' }}>
+                        <div style={{ background: '#f8fafc', padding: '12px 16px', borderBottom: '1px solid #e2e8f0', fontSize: '13px', fontWeight: '600', color: '#64748b' }}>
+                            Found {grammarData.matches.length} issues
+                        </div>
+                        <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                            {grammarData.matches.length === 0 ? (
+                                <div style={{ padding: '24px', textAlign: 'center', color: '#166534', fontWeight: '500' }}>
+                                    <CheckCircle size={24} style={{ marginBottom: '8px' }} />
+                                    <div>No issues found! Great job.</div>
+                                </div>
+                            ) : (
+                                grammarData.matches.map((match, i) => (
+                                    <div key={i} style={{ padding: '16px', borderBottom: '1px solid #f1f5f9' }}>
+                                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                                            <AlertTriangle size={16} color="#d97706" style={{ marginTop: '2px', flexShrink: 0 }} />
+                                            <div>
+                                                <div style={{ fontSize: '14px', color: '#1e293b', fontWeight: '600', marginBottom: '4px' }}>{match.message}</div>
+                                                <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px', fontStyle: 'italic', background: '#fffbeb', padding: '8px', borderRadius: '4px' }}>
+                                                    "{match.context.text.slice(0, match.context.offset)}
+                                                    <span style={{ borderBottom: '2px solid #ef4444', fontWeight: 'bold' }}>
+                                                        {match.context.text.slice(match.context.offset, match.context.offset + match.context.length)}
+                                                    </span>
+                                                    {match.context.text.slice(match.context.offset + match.context.length)}"
+                                                </div>
+                                                {match.replacements.length > 0 && (
+                                                    <div style={{ fontSize: '13px', color: '#166534' }}>
+                                                        <span style={{ fontWeight: '600' }}>Suggestions: </span>
+                                                        {match.replacements.map(r => r.value).join(', ')}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div style={{ marginBottom: '12px', fontSize: '14px', color: '#64748b' }}>
