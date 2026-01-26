@@ -117,36 +117,40 @@ const PerformanceTab = ({ siteId, pageId, initialData }) => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/paid${refresh ? '?refresh=true' : ''}`, {
+            // Default to mobile strategy
+            const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/speed`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
-                }
+                },
+                body: JSON.stringify({ strategy: 'mobile' })
             });
             const result = await res.json();
             if (result.success) {
                 setData(result.data);
             } else {
-                // If 404/empty, handled by UI state
+                toast.error(result.message || 'Speed analysis failed');
             }
         } catch (error) {
             console.error(error);
+            toast.error('Failed to run speed test');
         } finally {
             setLoading(false);
         }
     };
 
-    if (loading && !data) return <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Running Core Web Vitals Audit...</div>;
+    if (loading && !data) return <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Running Google PageSpeed Assessment...</div>;
 
     if (!data) {
         return (
             <div style={{ textAlign: 'center', padding: '40px', background: '#f8fafc', borderRadius: '12px' }}>
                 <Zap size={48} color="#cbd5e1" style={{ marginBottom: '16px' }} />
-                <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>Performance Audit Required</h3>
+                <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>Performance Audit</h3>
                 <p style={{ color: '#64748b', marginBottom: '24px', maxWidth: '400px', margin: '0 auto 24px' }}>
-                    Run a Deep Scan to measure Core Web Vitals (LCP, CLS, TBT) and Speed Index.
-                    <br /><span style={{ fontSize: '12px', color: '#94a3b8' }}>(Costs 1 Credit)</span>
+                    Run a Google Lighthouse audit to check Core Web Vitals and Performance scores.
+                    <br /><span style={{ fontSize: '12px', color: '#166534', fontWeight: 'bold' }}>(Free)</span>
                 </p>
                 <button
                     onClick={() => fetchPerformance(true)}
@@ -162,58 +166,35 @@ const PerformanceTab = ({ siteId, pageId, initialData }) => {
                         display: 'inline-flex', alignItems: 'center', gap: '8px'
                     }}
                 >
-                    <Gauge size={18} /> Run Instant Audit
+                    <Gauge size={18} /> Run PageSpeed Test
                 </button>
             </div>
         );
     }
 
-    const { cumulative_layout_shift, largest_contentful_paint, total_blocking_time, onpage_score } = data;
-
     return (
         <div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-                <MetricCard
-                    label="OnPage Score"
-                    value={onpage_score ? Number(onpage_score).toFixed(0) : '-'}
-                    max={100}
-                    unit=""
-                    isScore
-                />
-                <MetricCard
-                    label="LCP"
-                    value={largest_contentful_paint ? (largest_contentful_paint / 1000).toFixed(2) : '-'}
-                    unit="s"
-                    good={2.5} bad={4.0} reverse
-                    desc="Largest Contentful Paint"
-                />
-                <MetricCard
-                    label="CLS"
-                    value={cumulative_layout_shift !== undefined ? Number(cumulative_layout_shift).toFixed(3) : '-'}
-                    unit=""
-                    good={0.1} bad={0.25} reverse
-                    desc="Cumulative Layout Shift"
-                />
-                <MetricCard
-                    label="TBT"
-                    value={total_blocking_time !== undefined ? Number(total_blocking_time).toFixed(0) : '-'}
-                    unit="ms"
-                    good={200} bad={600} reverse
-                    desc="Total Blocking Time"
-                />
+            {/* Scores Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px', marginBottom: '32px' }}>
+                <MetricCard label="Performance" value={data.scores.performance} max={100} unit="" isScore />
+                <MetricCard label="Accessibility" value={data.scores.accessibility} max={100} unit="" isScore />
+                <MetricCard label="Best Practices" value={data.scores.best_practices} max={100} unit="" isScore />
+                <MetricCard label="SEO" value={data.scores.seo} max={100} unit="" isScore />
             </div>
 
-            {data.page_timing && (
-                <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '12px' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '16px', color: '#334155' }}>Detailed Timing</h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
-                        {Object.entries(data.page_timing).map(([k, v]) => (
-                            <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                <span style={{ color: '#64748b', textTransform: 'capitalize' }}>{k.replace(/_/g, ' ')}</span>
-                                <span style={{ fontWeight: '600', color: '#1e293b' }}>{typeof v === 'number' ? v : '-'}</span>
-                            </div>
-                        ))}
-                    </div>
+            {/* Core Web Vitals */}
+            <h3 style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '16px', color: '#334155' }}>Core Web Vitals (Lab Data)</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+                <MetricCard label="LCP" value={parseFloat(data.metrics.lcp)} unit="s" good={2.5} bad={4.0} reverse desc="Largest Contentful Paint" />
+                <MetricCard label="CLS" value={parseFloat(data.metrics.cls)} unit="" good={0.1} bad={0.25} reverse desc="Cumulative Layout Shift" />
+                <MetricCard label="TBT" value={parseFloat(data.metrics.tbt.replace('ms', '').replace(',', ''))} unit="ms" good={200} bad={600} reverse desc="Total Blocking Time" />
+                <MetricCard label="Speed Index" value={parseFloat(data.metrics.si)} unit="s" good={3.4} bad={5.8} reverse desc="Speed Index" />
+            </div>
+
+            {/* Screenshot if available */}
+            {data.screenshot && (
+                <div style={{ marginTop: '24px', border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', maxWidth: '300px' }}>
+                    <img src={data.screenshot} alt="Page Screenshot" style={{ width: '100%', display: 'block' }} />
                 </div>
             )}
         </div>

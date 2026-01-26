@@ -60,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{siteId}/pages/{pageId}', [\App\Http\Controllers\Api\SitePageAnalysisController::class, 'show']);
         Route::post('/{siteId}/pages/{pageId}/analyze', [\App\Http\Controllers\Api\SitePageAnalysisController::class, 'analyzeContent']);
         Route::post('/{siteId}/pages/{pageId}/analyze/deep', [\App\Http\Controllers\Api\SitePageAnalysisController::class, 'analyzeDeep']);
+        Route::post('/{siteId}/pages/{pageId}/analyze/speed', [\App\Http\Controllers\Api\SitePageAnalysisController::class, 'analyzeSpeed']);
         Route::post('/{siteId}/pages/{pageId}/analyze/paid', [\App\Http\Controllers\Api\SitePageAnalysisController::class, 'analyzePaid']);
         Route::get('/{siteId}/pages/{pageId}/ranked-keywords', [\App\Http\Controllers\Api\SitePageAnalysisController::class, 'rankedKeywords']);
 

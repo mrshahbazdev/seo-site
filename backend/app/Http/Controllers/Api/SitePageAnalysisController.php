@@ -15,15 +15,18 @@ class SitePageAnalysisController extends Controller
     protected $contentAnalysisService;
     protected $seoService;
     protected $advancedAnalyzer;
+    protected $pageSpeedService;
 
     public function __construct(
         ContentAnalysisService $contentAnalysisService,
         DataForSEOService $seoService,
-        \App\Services\AdvancedSeoAnalyzer $advancedAnalyzer
+        \App\Services\AdvancedSeoAnalyzer $advancedAnalyzer,
+        \App\Services\GooglePageSpeedService $pageSpeedService
     ) {
         $this->contentAnalysisService = $contentAnalysisService;
         $this->seoService = $seoService;
         $this->advancedAnalyzer = $advancedAnalyzer;
+        $this->pageSpeedService = $pageSpeedService;
     }
 
     /**
@@ -242,6 +245,41 @@ class SitePageAnalysisController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error processing paid analysis: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Perform Google PageSpeed Analysis
+     */
+    public function analyzeSpeed(Request $request, $siteId, $pageId)
+    {
+        try {
+            $crawledPage = SiteCrawledPage::where('site_id', $siteId)
+                ->where('id', $pageId)
+                ->firstOrFail();
+
+            $strategy = $request->input('strategy', 'mobile');
+
+            // Allow force refresh, otherwise check if we have recent specific speed data
+            // For now, let's treat it as live check usually
+
+            $result = $this->pageSpeedService->analyze($crawledPage->url, $strategy);
+
+            if (isset($result['error'])) {
+                return response()->json(['success' => false, 'message' => $result['message']], 500);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $result
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('PageSpeed Controller Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error analyzing speed: ' . $e->getMessage()
             ], 500);
         }
     }
