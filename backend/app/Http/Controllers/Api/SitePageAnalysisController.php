@@ -134,18 +134,29 @@ class SitePageAnalysisController extends Controller
             }
 
             if (!$html) {
-                return response()->json(['success' => false, 'message' => 'Empty HTML content'], 400);
+                // FALLBACK: Try to use content from DB if available
+                if (!empty($crawledPage->content['plain_text'])) {
+                    // This is text, not HTML, but better than nothing for some checks?
+                    // Actually, AdvancedAnalyzer needs HTML.
+                    // If we have 'html' key in content?
+                }
+
+                return response()->json(['success' => false, 'message' => 'Empty HTML content. The page could not be fetched live.'], 400);
             }
 
             $analysis = $this->advancedAnalyzer->analyze($html, $crawledPage->url);
 
-            // Save result
-            $crawledPage->analysis_data = $analysis;
+            // SAVE RESULT - MERGE instead of overwrite
+            $existing = $crawledPage->analysis_data ?? [];
+            // Merge new deep analysis keys into existing
+            $existing = array_merge($existing, $analysis);
+
+            $crawledPage->analysis_data = $existing;
             $crawledPage->save();
 
             return response()->json([
                 'success' => true,
-                'data' => $analysis
+                'data' => $existing // Return merged data
             ]);
 
         } catch (\Exception $e) {

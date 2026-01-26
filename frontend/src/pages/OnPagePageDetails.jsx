@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, Clock, Code, FileText, Image, Layout, Server, ExternalLink, Copy, Globe, Target, RefreshCw, Search } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, Clock, Code, FileText, Layout, Server, ExternalLink, Copy, Globe, Target, RefreshCw, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ContentOptimizer from './components/Analysis/ContentOptimizer';
 import DeepInspector from './components/Analysis/DeepInspector';
