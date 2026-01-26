@@ -108,7 +108,7 @@ export default function SocialPreview({ meta, url }) {
             {/* Warning if Image Missing */}
             {!image && activeTab !== 'google' && (
                 <div style={{ marginTop: '16px', padding: '12px', background: '#fff1f2', border: '1px solid #fecaca', borderRadius: '8px', fontSize: '13px', color: '#991b1b', display: 'flex', gap: '8px' }}>
-                    <Image size={16} />
+                    <ImageIcon size={16} />
                     <span>Missing <b>og:image</b>! Your link will look broken when shared. Add an image meta tag to fix this.</span>
                 </div>
             )}
