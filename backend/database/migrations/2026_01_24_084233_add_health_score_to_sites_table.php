@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('sites', function (Blueprint $table) {
-            $table->integer('health_score')->nullable()->default(0)->after('settings');
+            $table->integer('health_score')->nullable()->default(0)->after('status');
         });
     }
 
