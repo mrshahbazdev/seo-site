@@ -21,7 +21,7 @@ export default function CompetitorsPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors`, {
+            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -48,7 +48,7 @@ export default function CompetitorsPage() {
         try {
             setAdding(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors`, {
+            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export default function CompetitorsPage() {
             const token = localStorage.getItem('token');
             toast.loading('Analyzing competitor...', { id: 'analyze' });
 
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}/analyze`, {
+            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors/${competitorId}/analyze`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -108,7 +108,7 @@ export default function CompetitorsPage() {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}`, {
+            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors/${competitorId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,

@@ -15,7 +15,7 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/onpage/pages?search=${encodeURIComponent(page.title)}&limit=10`, {
+            const res = await fetch(`https://seostory.de/api/sites/${siteId}/onpage/pages?search=${encodeURIComponent(page.title)}&limit=10`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'

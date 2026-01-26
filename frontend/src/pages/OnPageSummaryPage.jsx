@@ -22,8 +22,8 @@ export default function OnPageSummaryPage() {
 
             const token = localStorage.getItem('token');
             const url = refresh
-                ? `http://localhost:8000/api/sites/${id}/onpage/summary?refresh=true`
-                : `http://localhost:8000/api/sites/${id}/onpage/summary`;
+                ? `https://seostory.de/api/sites/${id}/onpage/summary?refresh=true`
+                : `https://seostory.de/api/sites/${id}/onpage/summary`;
 
             const res = await fetch(url, {
                 headers: {
@@ -57,7 +57,7 @@ export default function OnPageSummaryPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/onpage/crawl`, {
+            const res = await fetch(`https://seostory.de/api/sites/${id}/onpage/crawl`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

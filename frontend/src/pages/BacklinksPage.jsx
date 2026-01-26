@@ -18,8 +18,8 @@ export default function BacklinksPage() {
             const token = localStorage.getItem('token');
             // If pageId exists, check specific page. If not, check domain (site).
             let url = pageId
-                ? `http://localhost:8000/api/sites/${siteId}/pages/${pageId}/backlinks/analyze`
-                : `http://localhost:8000/api/sites/${siteId}/backlinks/analyze`;
+                ? `https://seostory.de/api/sites/${siteId}/pages/${pageId}/backlinks/analyze`
+                : `https://seostory.de/api/sites/${siteId}/backlinks/analyze`;
 
             if (refresh) {
                 url += `?refresh=true`;
@@ -54,7 +54,7 @@ export default function BacklinksPage() {
         try {
             setListLoading(true);
             const token = localStorage.getItem('token');
-            let url = `http://localhost:8000/api/sites/${siteId}/backlinks/list`;
+            let url = `https://seostory.de/api/sites/${siteId}/backlinks/list`;
 
             // Append limit if we know total backlinks, else default 100
             // const limit = backlinks?.backlinks > 1000 ? 1000 : backlinks?.backlinks || 100;

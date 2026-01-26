@@ -44,14 +44,14 @@ export default function SiteAudit() {
             const token = localStorage.getItem('token');
 
             // Fetch site details
-            const siteRes = await fetch(`http://localhost:8000/api/sites/${id}`, {
+            const siteRes = await fetch(`https://seostory.de/api/sites/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             const siteData = await siteRes.json();
             setSite(siteData.site);
 
             // Fetch audits
-            const auditsRes = await fetch(`http://localhost:8000/api/sites/${id}/audits`, {
+            const auditsRes = await fetch(`https://seostory.de/api/sites/${id}/audits`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             const auditsData = await auditsRes.json();
@@ -79,7 +79,7 @@ export default function SiteAudit() {
     const fetchIssues = async (auditId) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/audits/${auditId}/issues`, {
+            const res = await fetch(`https://seostory.de/api/audits/${auditId}/issues`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             const data = await res.json();
@@ -94,7 +94,7 @@ export default function SiteAudit() {
     const fetchPages = async (page = 1) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/pages?page=${page}`, {
+            const res = await fetch(`https://seostory.de/api/sites/${id}/pages?page=${page}`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             const data = await res.json();
@@ -116,7 +116,7 @@ export default function SiteAudit() {
         try {
             const token = localStorage.getItem('token');
             if (selectedType === 'full_crawl') {
-                const res = await fetch(`http://localhost:8000/api/sites/${id}/crawl`, {
+                const res = await fetch(`https://seostory.de/api/sites/${id}/crawl`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
                 });

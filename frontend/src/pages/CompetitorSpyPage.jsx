@@ -14,7 +14,7 @@ export default function CompetitorSpyPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/competitors-spy/analyze', {
+            const res = await fetch('https://seostory.de/api/competitors-spy/analyze', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

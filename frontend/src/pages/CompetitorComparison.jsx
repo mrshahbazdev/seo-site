@@ -17,7 +17,7 @@ export default function CompetitorComparison() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors`, {
+            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'

@@ -14,7 +14,7 @@ export default function PageContent() {
         const fetchContent = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze`, {
+                const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'

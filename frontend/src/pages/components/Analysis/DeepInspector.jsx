@@ -16,7 +16,7 @@ export default function DeepInspector({ siteId, pageId, url, onAnalysisComplete 
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/deep${refresh ? '?refresh=true' : ''}`, {
+            const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/deep${refresh ? '?refresh=true' : ''}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -117,7 +117,7 @@ const PerformanceTab = ({ siteId, pageId, initialData }) => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/paid${refresh ? '?refresh=true' : ''}`, {
+            const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/paid${refresh ? '?refresh=true' : ''}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -504,7 +504,7 @@ const CheckStatusButton = ({ url, autoCheck, baseUrl }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/tools/check-resource', {
+            const res = await fetch('https://seostory.de/api/tools/check-resource', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

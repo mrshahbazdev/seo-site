@@ -22,7 +22,7 @@ export default function ContentOptimizer({ siteId, pageId, url, savedAnalysis })
             setAnalyzing(true);
             const token = localStorage.getItem('token');
             // Correct API endpoint as defined in api.php
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/onpage/pages/${pageId}/analyze-content`, {
+            const res = await fetch(`https://seostory.de/api/sites/${siteId}/onpage/pages/${pageId}/analyze-content`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

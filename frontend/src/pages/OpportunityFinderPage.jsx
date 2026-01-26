@@ -22,7 +22,7 @@ export default function OpportunityFinderPage() {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/opportunities/analyze', {
+            const res = await fetch('https://seostory.de/api/opportunities/analyze', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

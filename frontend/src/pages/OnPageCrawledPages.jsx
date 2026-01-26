@@ -24,7 +24,7 @@ export default function OnPageCrawledPages() {
             setLoading(true);
             const token = localStorage.getItem('token');
             const filterQuery = activeFilter ? `&filter=${activeFilter}` : '';
-            const url = `http://localhost:8000/api/sites/${id}/onpage/pages?limit=${limit}&page=${currentPage}${forceRefresh ? '&refresh=true' : ''}${filterQuery}`;
+            const url = `https://seostory.de/api/sites/${id}/onpage/pages?limit=${limit}&page=${currentPage}${forceRefresh ? '&refresh=true' : ''}${filterQuery}`;
             const res = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`,

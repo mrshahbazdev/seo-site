@@ -24,7 +24,7 @@ export default function Dashboard() {
     const fetchDashboardData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8000/api/sites', {
+            const response = await fetch('https://seostory.de/api/sites', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'

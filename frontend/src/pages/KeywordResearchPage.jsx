@@ -16,7 +16,7 @@ export default function KeywordResearchPage() {
         setResults(null);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/keywords/research', {
+            const res = await fetch('https://seostory.de/api/keywords/research', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

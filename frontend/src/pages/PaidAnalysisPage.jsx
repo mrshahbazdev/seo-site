@@ -14,7 +14,7 @@ export default function PaidAnalysisPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const url = `http://localhost:8000/api/sites/${siteId}/pages/${pageId}`;
+            const url = `https://seostory.de/api/sites/${siteId}/pages/${pageId}`;
 
             const res = await fetch(url, {
                 headers: {

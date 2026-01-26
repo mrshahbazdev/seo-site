@@ -13,7 +13,7 @@ export default function SiteDetailsPage() {
         const fetchSite = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`http://localhost:8000/api/sites/${id}`, {
+                const res = await fetch(`https://seostory.de/api/sites/${id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();

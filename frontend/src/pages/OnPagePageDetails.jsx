@@ -24,7 +24,7 @@ export default function OnPagePageDetails() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/onpage/pages/${pageId}`, {
+            const res = await fetch(`https://seostory.de/api/sites/${id}/onpage/pages/${pageId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -467,7 +467,7 @@ const RankedKeywords = ({ siteId, pageId, url }) => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/ranked-keywords`, {
+            const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/ranked-keywords`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -601,7 +601,7 @@ const LinkJuice = ({ siteId, url }) => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/onpage/links?url=${encodeURIComponent(url)}`, {
+            const res = await fetch(`https://seostory.de/api/sites/${siteId}/onpage/links?url=${encodeURIComponent(url)}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'

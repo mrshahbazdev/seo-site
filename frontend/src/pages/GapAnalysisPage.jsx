@@ -31,7 +31,7 @@ export default function GapAnalysisPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/tools/gap-analysis', {
+            const res = await fetch('https://seostory.de/api/tools/gap-analysis', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

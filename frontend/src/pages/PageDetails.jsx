@@ -18,7 +18,7 @@ export default function PageDetails() {
             if (refresh) setAnalyzing(true);
 
             const token = localStorage.getItem('token');
-            const url = `http://localhost:8000/api/sites/${siteId}/pages/${pageId}${refresh ? '?refresh=true' : ''}`;
+            const url = `https://seostory.de/api/sites/${siteId}/pages/${pageId}${refresh ? '?refresh=true' : ''}`;
 
             console.log('Fetching analysis from:', url);
 
@@ -73,7 +73,7 @@ export default function PageDetails() {
         try {
             setAnalyzingPaid(true);
             const token = localStorage.getItem('token');
-            const url = `http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/paid`;
+            const url = `https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/paid`;
 
             const res = await fetch(url, {
                 method: 'POST',
