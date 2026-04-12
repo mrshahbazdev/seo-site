@@ -19,6 +19,7 @@ import OpportunityFinderPage from './pages/OpportunityFinderPage';
 import CompetitorSpyPage from './pages/CompetitorSpyPage';
 import GapAnalysisPage from './pages/GapAnalysisPage';
 import SiteDetailsPage from './pages/SiteDetailsPage';
+import SettingsPage from './pages/SettingsPage';
 import './index.css';
 
 import { Toaster } from 'react-hot-toast';
@@ -187,6 +188,14 @@ function App() {
           element={
             <PrivateRoute>
               <CompetitorSpyPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <SettingsPage />
             </PrivateRoute>
           }
         />

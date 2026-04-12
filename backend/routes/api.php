@@ -38,6 +38,17 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 
+    // Agency Branding Settings
+    Route::get('/settings', [\App\Http\Controllers\Api\SettingsController::class, 'index']);
+    Route::put('/settings', [\App\Http\Controllers\Api\SettingsController::class, 'update']);
+    Route::post('/settings/logo', [\App\Http\Controllers\Api\SettingsController::class, 'uploadLogo']);
+
+    // Google Search Console OAuth
+    Route::get('/google/auth-url', [\App\Http\Controllers\Api\GoogleAuthController::class, 'redirectUrl']);
+    Route::post('/google/callback', [\App\Http\Controllers\Api\GoogleAuthController::class, 'handleCallback']);
+    Route::delete('/google/disconnect', [\App\Http\Controllers\Api\GoogleAuthController::class, 'disconnect']);
+    Route::get('/sites/{siteId}/gsc', [\App\Http\Controllers\Api\SearchConsoleController::class, 'performance']);
+
     // Sites Management
     Route::prefix('sites')->group(function () {
         Route::get('/', [SiteController::class, 'index']);

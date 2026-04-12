@@ -22,6 +22,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'google_access_token',
+        'google_refresh_token',
+        'google_token_expiry',
+        'google_email',
     ];
 
     /**
@@ -42,8 +46,9 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'   => 'datetime',
+            'password'            => 'hashed',
+            'google_token_expiry' => 'datetime',
         ];
     }
 

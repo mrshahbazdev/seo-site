@@ -37,6 +37,9 @@ return [
 
     'google' => [
         'pagespeed_api_key' => env('GOOGLE_PAGESPEED_API_KEY'),
+        'client_id'         => env('GOOGLE_CLIENT_ID'),
+        'client_secret'     => env('GOOGLE_CLIENT_SECRET'),
+        'redirect'          => env('GOOGLE_REDIRECT_URI', 'https://seostory.de/auth/google/callback'),
     ],
 
 ];
