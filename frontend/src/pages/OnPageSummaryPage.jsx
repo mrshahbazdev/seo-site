@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowLeft, RefreshCw, Shield, Server, Globe, FileText, AlertTriangle, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { SUMMARY_COUNT_IS_BAD } from '../utils/dataforseoChecks';
 
 export default function OnPageSummaryPage() {
     const { id } = useParams();
@@ -262,7 +263,17 @@ export default function OnPageSummaryPage() {
                         {/* Detailed Page Checks Grid */}
                         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
                             <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>Page Metrics & Checks</h2>
-                            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '20px' }}>Breakdown of issues found across crawled pages. Click on an issue to see affected pages.</p>
+                            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>Breakdown of issues found across crawled pages. Click on an issue to see affected pages.</p>
+                            <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '20px', lineHeight: 1.5 }}>
+                                Counts come from{' '}
+                                <a href="https://docs.dataforseo.com/v3/on_page/summary/" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb' }}>
+                                    DataForSEO&apos;s crawl
+                                </a>
+                                . <strong>Render-blocking</strong> resources are common (most sites have some).{' '}
+                                <strong>Meta charset consistency</strong> flags when declared encoding doesn&apos;t match detected
+                                content. <strong>Duplicate meta tags</strong> means more than one meta of the same type on the
+                                page. These are signals to verify in your HTML, not guaranteed Google penalties.
+                            </p>
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
                                 {/* Primary Metrics */}
@@ -277,7 +288,11 @@ export default function OnPageSummaryPage() {
                                         key={key}
                                         label={key.replace(/_/g, ' ')}
                                         count={count}
-                                        isError={count > 0 && ['is_broken', 'is_4xx_code', 'is_5xx_code', 'duplicate_title', 'duplicate_description', 'no_h1_tag', 'title_too_short', 'title_too_long'].includes(key)}
+                                        isError={
+                                            typeof count === 'number' &&
+                                            count > 0 &&
+                                            SUMMARY_COUNT_IS_BAD.has(key)
+                                        }
                                         onClick={() => navigate(`/sites/${id}/onpage/pages?filter=${key}`)}
                                     />
                                 ))}
@@ -378,8 +393,8 @@ const CheckItem = ({ label, count, isError, onClick }) => (
     >
         <span style={{ fontSize: '12px', color: '#475569', textTransform: 'capitalize' }}>{label}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a' }}>{count !== undefined ? count : 0}</span>
-            {isError && (count > 0 || count === undefined) && <AlertTriangle size={14} color="#ef4444" />}
+            <span style={{ fontSize: '14px', fontWeight: '600', color: '#0f172a' }}>{count !== undefined && count !== null ? count : 0}</span>
+            {isError && typeof count === 'number' && count > 0 && <AlertTriangle size={14} color="#ef4444" />}
         </div>
     </div>
 );

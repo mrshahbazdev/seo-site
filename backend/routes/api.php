@@ -69,6 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/onpage/crawl', [\App\Http\Controllers\Api\SiteOnPageController::class, 'crawl']);
         Route::get('/{id}/onpage/summary', [\App\Http\Controllers\Api\SiteOnPageController::class, 'summary']);
         Route::get('/{id}/onpage/pages', [\App\Http\Controllers\Api\SiteOnPageController::class, 'pages']);
+        Route::get('/{id}/onpage/pages/{pageId}/duplicates', [\App\Http\Controllers\Api\SiteOnPageController::class, 'duplicatePeers']);
         Route::get('/{id}/onpage/pages/{pageId}', [\App\Http\Controllers\Api\SiteOnPageController::class, 'pageDetails']);
         Route::get('/{id}/onpage/links', [\App\Http\Controllers\Api\SiteOnPageController::class, 'pageLinks']);
         Route::post('/{id}/onpage/pages/{pageId}/analyze-content', [\App\Http\Controllers\Api\SiteOnPageController::class, 'analyzeContent']);

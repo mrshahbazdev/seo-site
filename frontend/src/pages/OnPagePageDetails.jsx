@@ -7,6 +7,7 @@ import DeepInspector from './components/Analysis/DeepInspector';
 import DuplicateCandidates from './components/Analysis/DuplicateCandidates';
 import SocialPreview from './components/Analysis/SocialPreview';
 import SchemaValidator from './components/Analysis/SchemaValidator';
+import { getDataForSeoCheckStatus } from '../utils/dataforseoChecks';
 
 export default function OnPagePageDetails() {
     const { id, pageId } = useParams();
@@ -57,32 +58,6 @@ export default function OnPagePageDetails() {
 
     if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Loading details...</div>;
     if (!page) return <div style={{ padding: '40px', textAlign: 'center' }}>Page not found</div>;
-
-    // Helper to determine if a check result is "Good" or "Bad"
-    const getCheckStatus = (key, value) => {
-        // Negative checks: true = Bad, false = Good
-        const negativeChecks = [
-            'duplicate_title', 'duplicate_description', 'duplicate_content',
-            'no_h1_tag', 'is_broken', 'is_4xx_code', 'is_5xx_code',
-            'high_loading_time', 'is_http', 'is_redirect', 'no_image_alt',
-            'no_image_title', 'seo_friendly_url_characters_check'
-        ];
-
-        // Positive checks: true = Good, false = Bad
-        const positiveChecks = [
-            'is_https', 'seo_friendly_url', 'has_meta_title', 'has_h1',
-            'canonical'
-        ];
-
-        let status = 'neutral';
-        if (negativeChecks.includes(key)) {
-            status = value ? 'bad' : 'good';
-        } else if (positiveChecks.includes(key)) {
-            status = value ? 'good' : 'bad';
-        }
-
-        return status;
-    };
 
     return (
         <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '40px' }}>
@@ -290,7 +265,7 @@ export default function OnPagePageDetails() {
                         </h3>
                         <div style={{ display: 'grid', gap: '12px' }}>
                             {page.checks && Object.entries(page.checks).map(([key, value]) => {
-                                const status = getCheckStatus(key, value);
+                                const status = getDataForSeoCheckStatus(key, value);
                                 let statusColor = '#64748b'; // Neutral
                                 let icon = null;
                                 let statusText = String(value);
@@ -303,6 +278,8 @@ export default function OnPagePageDetails() {
                                     statusColor = '#dc2626';
                                     icon = <XCircle size={16} />;
                                     statusText = 'Fail';
+                                } else if (typeof value === 'boolean') {
+                                    statusText = value ? 'Yes' : 'No';
                                 }
 
                                 return (
@@ -316,6 +293,16 @@ export default function OnPagePageDetails() {
                                 );
                             })}
                         </div>
+                        <p style={{ fontSize: '12px', color: '#64748b', margin: '16px 0 0 0', lineHeight: 1.5 }}>
+                            Pass/Fail follows{' '}
+                            <a href="https://docs.dataforseo.com/v3/on_page/pages/" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb' }}>
+                                DataForSEO
+                            </a>{' '}
+                            definitions. <strong>no_image_alt</strong> can flag any image without an alt attribute (including
+                            icons or lazy placeholders) even if your main photo has alt text. <strong>has render blocking</strong>{' '}
+                            is common for CSS/JS and is not always wrong. <strong>meta charset consistency</strong> compares
+                            declared encoding to detected bytes — occasional false positives happen.
+                        </p>
                     </div>
                 </div>
 

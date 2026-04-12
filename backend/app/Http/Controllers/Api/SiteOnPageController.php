@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Site;
 use App\Services\DataForSEOService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SiteOnPageController extends Controller
@@ -291,6 +292,139 @@ class SiteOnPageController extends Controller
             'success' => true,
             'data' => $page
         ]);
+    }
+
+    /**
+     * Other crawled pages on this site that share the same title, meta description,
+     * or normalized main-body text — for duplicate-content UI.
+     */
+    public function duplicatePeers(Request $request, $siteId, $pageId)
+    {
+        $site = $request->user()->sites()->findOrFail($siteId);
+        $page = \App\Models\SiteCrawledPage::where('site_id', $site->id)->findOrFail($pageId);
+
+        $titleNorm = $this->normalizeKeyForDbMatch($page->title ?? '');
+        $descNorm = $this->normalizeKeyForDbMatch($page->meta['description'] ?? '');
+
+        $sameTitle = collect();
+        if ($titleNorm !== '') {
+            $sameTitle = \App\Models\SiteCrawledPage::query()
+                ->where('site_id', $site->id)
+                ->where('id', '!=', $page->id)
+                ->whereRaw('LOWER(TRIM(COALESCE(title, \'\'))) = ?', [$titleNorm])
+                ->get(['id', 'url', 'title', 'meta', 'content', 'raw_data']);
+        }
+
+        $sameDescription = collect();
+        if ($descNorm !== '') {
+            $q = \App\Models\SiteCrawledPage::query()
+                ->where('site_id', $site->id)
+                ->where('id', '!=', $page->id);
+            $this->whereMetaDescriptionNormalized($q, $descNorm);
+            $sameDescription = $q->get(['id', 'url', 'title', 'meta', 'content', 'raw_data']);
+        }
+
+        $sameBody = collect();
+        $bodyNorm = $this->normalizedPlainBody($page);
+        if (mb_strlen($bodyNorm) >= 40) {
+            \App\Models\SiteCrawledPage::query()
+                ->where('site_id', $site->id)
+                ->where('id', '!=', $page->id)
+                ->select(['id', 'url', 'title', 'meta', 'content', 'raw_data'])
+                ->chunkById(150, function ($chunk) use ($bodyNorm, &$sameBody) {
+                    foreach ($chunk as $peer) {
+                        if ($this->normalizedPlainBody($peer) === $bodyNorm) {
+                            $sameBody->push($peer);
+                        }
+                    }
+                });
+        }
+
+        return response()->json([
+            'success' => true,
+            'current' => [
+                'id' => $page->id,
+                'url' => $page->url,
+                'title' => $page->title,
+                'description' => $page->meta['description'] ?? '',
+            ],
+            'same_title' => $sameTitle->map(fn ($p) => $this->duplicatePeerPayload($p))->values(),
+            'same_description' => $sameDescription->map(fn ($p) => $this->duplicatePeerPayload($p))->values(),
+            'same_body' => $sameBody->map(fn ($p) => $this->duplicatePeerPayload($p))->values(),
+        ]);
+    }
+
+    private function duplicatePeerPayload(\App\Models\SiteCrawledPage $p): array
+    {
+        $desc = $p->meta['description'] ?? '';
+
+        return [
+            'id' => $p->id,
+            'url' => $p->url,
+            'title' => $p->title,
+            'description' => $desc,
+            'description_preview' => $this->truncateMiddle($desc, 180),
+        ];
+    }
+
+    private function truncateMiddle(string $text, int $max): string
+    {
+        if (mb_strlen($text) <= $max) {
+            return $text;
+        }
+
+        return mb_substr($text, 0, (int) floor($max * 0.55)) . ' … ' . mb_substr($text, -(int) floor($max * 0.35));
+    }
+
+    private function normalizeWhitespaceKey(?string $value): string
+    {
+        $value = $value ?? '';
+        $collapsed = preg_replace('/\s+/u', ' ', trim($value));
+
+        return mb_strtolower($collapsed ?? '', 'UTF-8');
+    }
+
+    private function normalizedPlainBody(\App\Models\SiteCrawledPage $p): string
+    {
+        $plain = $p->content['plain_text'] ?? ($p->raw_data['content']['plain_text'] ?? '');
+        $plain = is_string($plain) ? $plain : '';
+
+        return $this->normalizeWhitespaceKey($plain);
+    }
+
+    /** Lowercase + trim only — must match SQL LOWER(TRIM(...)) for title/description. */
+    private function normalizeKeyForDbMatch(?string $value): string
+    {
+        return mb_strtolower(trim($value ?? ''), 'UTF-8');
+    }
+
+    private function whereMetaDescriptionNormalized($query, string $descNorm): void
+    {
+        $driver = DB::connection()->getDriverName();
+
+        if ($driver === 'mysql') {
+            $query->whereRaw(
+                'LOWER(TRIM(COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`meta`, \'$.description\')), \'\'))) = ?',
+                [$descNorm]
+            );
+
+            return;
+        }
+
+        if ($driver === 'pgsql') {
+            $query->whereRaw(
+                'LOWER(TRIM(COALESCE(meta->>\'description\', \'\'))) = ?',
+                [$descNorm]
+            );
+
+            return;
+        }
+
+        // sqlite and other drivers with json_extract
+        $query->whereRaw(
+            'LOWER(TRIM(COALESCE(json_extract(meta, \'$.description\'), \'\'))) = ?',
+            [$descNorm]
+        );
     }
 
     public function pageLinks(Request $request, $siteId)
