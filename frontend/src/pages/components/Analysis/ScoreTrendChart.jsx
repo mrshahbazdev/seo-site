@@ -30,6 +30,13 @@ export default function ScoreTrendChart({ siteId }) {
             Accept: 'application/json',
           },
         });
+
+        // Silently skip if site not found (404) or any server error
+        if (!res.ok) {
+          setData([]);
+          return;
+        }
+
         const json = await res.json();
         if (json.success) {
           // Format data for chart
@@ -41,16 +48,17 @@ export default function ScoreTrendChart({ siteId }) {
           }));
           setData(formatted);
         } else {
-          setError(json.message || 'Failed to load history');
+          setData([]);
         }
       } catch (err) {
-        setError('Network error loading trend data');
+        // Network error — fail silently, chart will show empty state
+        setData([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchHistory();
+    if (siteId) fetchHistory();
   }, [siteId]);
 
   if (loading) {

@@ -14,7 +14,11 @@ class HistoryController extends Controller
      */
     public function scoreHistory(Request $request, $siteId)
     {
-        $site = $request->user()->sites()->findOrFail($siteId);
+        $site = $request->user()->sites()->find($siteId);
+
+        if (!$site) {
+            return response()->json(['success' => true, 'data' => []]);
+        }
 
         $history = $site->audits()
             ->where('status', 'completed')
