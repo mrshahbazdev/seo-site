@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('audit_issues', function (Blueprint $table) {
-            $table->string('status')->default('open')->index(); // open, fixed, ignored
-        });
+        if (!Schema::hasColumn('audit_issues', 'status')) {
+            Schema::table('audit_issues', function (Blueprint $table) {
+                $table->string('status')->default('open')->index(); // open, fixed, ignored
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('audit_issues', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        if (Schema::hasColumn('audit_issues', 'status')) {
+            Schema::table('audit_issues', function (Blueprint $table) {
+                $table->dropColumn('status');
+            });
+        }
     }
 };

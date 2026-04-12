@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sites', function (Blueprint $table) {
-            $table->string('audit_frequency')->nullable(); // daily, weekly, monthly
-            $table->timestamp('next_audit_at')->nullable();
-            $table->string('slack_webhook_url')->nullable();
-            $table->boolean('notifications_enabled')->default(true);
+            if (!Schema::hasColumn('sites', 'audit_frequency')) {
+                $table->string('audit_frequency')->nullable(); // daily, weekly, monthly
+            }
+            if (!Schema::hasColumn('sites', 'next_audit_at')) {
+                $table->timestamp('next_audit_at')->nullable();
+            }
+            if (!Schema::hasColumn('sites', 'slack_webhook_url')) {
+                $table->string('slack_webhook_url')->nullable();
+            }
+            if (!Schema::hasColumn('sites', 'notifications_enabled')) {
+                $table->boolean('notifications_enabled')->default(true);
+            }
         });
     }
 
