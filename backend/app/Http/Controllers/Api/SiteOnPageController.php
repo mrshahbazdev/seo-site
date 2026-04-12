@@ -306,35 +306,60 @@ class SiteOnPageController extends Controller
         $titleNorm = $this->normalizeKeyForDbMatch($page->title ?? '');
         $descNorm = $this->normalizeKeyForDbMatch($page->meta['description'] ?? '');
 
+        // 1. Same Title
         $sameTitle = collect();
         if ($titleNorm !== '') {
             $sameTitle = \App\Models\SiteCrawledPage::query()
                 ->where('site_id', $site->id)
                 ->where('id', '!=', $page->id)
                 ->whereRaw('LOWER(TRIM(COALESCE(title, \'\'))) = ?', [$titleNorm])
+                ->limit(50)
                 ->get(['id', 'url', 'title', 'meta', 'content', 'raw_data']);
         }
 
+        // 2. Same Description
         $sameDescription = collect();
         if ($descNorm !== '') {
             $q = \App\Models\SiteCrawledPage::query()
                 ->where('site_id', $site->id)
                 ->where('id', '!=', $page->id);
             $this->whereMetaDescriptionNormalized($q, $descNorm);
-            $sameDescription = $q->get(['id', 'url', 'title', 'meta', 'content', 'raw_data']);
+            $sameDescription = $q->limit(50)->get(['id', 'url', 'title', 'meta', 'content', 'raw_data']);
         }
 
+        // 3. Same Body (Optimized)
         $sameBody = collect();
         $bodyNorm = $this->normalizedPlainBody($page);
+
+        // Only search if body is substantial
         if (mb_strlen($bodyNorm) >= 40) {
-            \App\Models\SiteCrawledPage::query()
+            // Optimization: Only search pages that DataForSEO already flagged as duplicate_content
+            // or have the same title/description (high correlation)
+            $candidatesQuery = \App\Models\SiteCrawledPage::query()
                 ->where('site_id', $site->id)
-                ->where('id', '!=', $page->id)
-                ->select(['id', 'url', 'title', 'meta', 'content', 'raw_data'])
-                ->chunkById(150, function ($chunk) use ($bodyNorm, &$sameBody) {
+                ->where('id', '!=', $page->id);
+
+            $driver = DB::connection()->getDriverName();
+            if ($driver === 'mysql' || $driver === 'pgsql') {
+                // Use JSON optimization if possible
+                $candidatesQuery->where(function ($q) {
+                    $q->whereRaw('JSON_EXTRACT(raw_data, "$.duplicate_content") = true')
+                      ->orWhereRaw('JSON_EXTRACT(raw_data, "$.duplicate_title") = true')
+                      ->orWhereRaw('JSON_EXTRACT(raw_data, "$.duplicate_description") = true');
+                });
+            } else {
+                // Fallback for other drivers
+                $candidatesQuery->where('raw_data', 'like', '%"duplicate_content":true%');
+            }
+
+            // Only process up to 200 candidates to avoid OOM/Timeout
+            $candidatesQuery->select(['id', 'url', 'title', 'meta', 'content', 'raw_data'])
+                ->limit(200)
+                ->chunkById(100, function ($chunk) use ($bodyNorm, &$sameBody) {
                     foreach ($chunk as $peer) {
                         if ($this->normalizedPlainBody($peer) === $bodyNorm) {
                             $sameBody->push($peer);
+                            if ($sameBody->count() >= 50) return false; // Stop if we found enough
                         }
                     }
                 });

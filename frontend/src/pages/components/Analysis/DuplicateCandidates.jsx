@@ -86,13 +86,33 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                     `}</style>
                 </div>
             ) : error ? (
-                <div style={{ fontSize: '13px', color: '#b91c1c' }}>{error}</div>
+                <div style={{ 
+                    padding: '12px', 
+                    background: '#fff', 
+                    borderRadius: '8px', 
+                    border: '1px solid #fecdd3',
+                    fontSize: '13px', 
+                    color: '#b91c1c',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px'
+                }}>
+                    <strong>Unable to fetch duplicate details</strong>
+                    <p style={{ margin: 0 }}>{error}</p>
+                    <button 
+                        onClick={() => window.location.reload()}
+                        style={{ alignSelf: 'flex-start', background: 'none', border: 'none', padding: 0, color: '#2563eb', cursor: 'pointer', fontWeight: 600, fontSize: '12px', marginTop: '4px' }}
+                    >
+                        Try refreshing
+                    </button>
+                </div>
             ) : (
                 <>
                     {data?.current && (
                         <div style={{ marginBottom: '16px' }}>
-                            <div style={{ fontSize: '12px', fontWeight: '700', color: '#881337', marginBottom: '8px' }}>
-                                This page
+                            <div style={{ fontSize: '12px', fontWeight: '700', color: '#881337', marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                                <span>Current page</span>
+                                {totalPeers > 0 && <span style={{ fontWeight: 400, opacity: 0.8 }}>Matched with {totalPeers} other page{totalPeers > 1 ? 's' : ''}</span>}
                             </div>
                             <PeerTable
                                 rows={[
@@ -111,16 +131,24 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                     )}
 
                     {totalPeers === 0 ? (
-                        <p style={{ fontSize: '13px', color: '#881337', margin: '8px 0 0 0', lineHeight: 1.5 }}>
-                            No other crawled pages on this site matched by <strong>same title</strong>,{' '}
-                            <strong>same meta description</strong>, or <strong>identical normalized body text</strong>.
-                            DataForSEO can still flag near-duplicate or template overlap — use filters on the page list or
-                            re-crawl after changes.
+                        <p style={{ 
+                            fontSize: '13px', 
+                            color: '#881337', 
+                            margin: '8px 0 0 0', 
+                            lineHeight: 1.5,
+                            background: '#fff',
+                            padding: '12px',
+                            borderRadius: '8px',
+                            border: '1px solid #fecdd3'
+                        }}>
+                            <strong>No direct matches found.</strong><br/>
+                            No other crawled pages on this site shared the exact same title, meta description, or identical normalized body text. 
+                            If DataForSEO still flags this page, it may be due to "near-duplicate" content or shared template elements (header/footer) that wasn't captured in the direct comparison.
                         </p>
                     ) : (
                         <>
                             <DuplicateSection
-                                title="Same title (other URLs)"
+                                title="Other pages with Same Title"
                                 emptyHint="—"
                                 rows={data?.same_title}
                                 siteId={siteId}
@@ -128,7 +156,7 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                                 compactEmpty
                             />
                             <DuplicateSection
-                                title="Same meta description"
+                                title="Other pages with Same Meta description"
                                 emptyHint="—"
                                 rows={data?.same_description}
                                 siteId={siteId}
@@ -136,7 +164,7 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                                 compactEmpty
                             />
                             <DuplicateSection
-                                title="Same body text (normalized)"
+                                title="Other pages with Identical Body text"
                                 emptyHint="—"
                                 rows={data?.same_body}
                                 siteId={siteId}
