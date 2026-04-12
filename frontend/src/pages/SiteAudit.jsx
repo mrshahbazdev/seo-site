@@ -139,6 +139,31 @@ export default function SiteAudit() {
         }
     };
 
+    const updateIssueStatus = async (auditId, issueId, newStatus) => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`https://seostory.de/api/audits/${auditId}/issues/${issueId}/status`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast.success(`Issue marked as ${newStatus}`);
+                setIssues(prev => prev.map(i => i.id === issueId ? { ...i, status: newStatus } : i));
+            } else {
+                toast.error(data.message || 'Failed to update status');
+            }
+        } catch (error) {
+            console.error('Error updating issue status:', error);
+            toast.error('Network error updating issue');
+        }
+    };
+
     const countIssuesBySeverity = (severity) => {
         return issues.filter(i => i.severity === severity).length;
     };
@@ -294,9 +319,15 @@ export default function SiteAudit() {
                                                 <p style={{ margin: 0 }}>Great job! No issues in this category.</p>
                                             </div>
                                         ) : (
-                                            filteredIssues.map((issue, i) => (
-                                                <IssueCard key={i} issue={issue} />
-                                            ))
+                                            filteredIssues
+                                                .filter(i => i.status !== 'ignored') // Hide ignored by default
+                                                .map((issue, i) => (
+                                                    <IssueCard 
+                                                        key={i} 
+                                                        issue={issue} 
+                                                        onUpdateStatus={(newStatus) => updateIssueStatus(currentAudit.id, issue.id, newStatus)}
+                                                    />
+                                                ))
                                         )}
                                     </div>
                                 </div>
@@ -410,7 +441,9 @@ const FilterPill = ({ label, count, active, onClick, color = 'blue' }) => {
     );
 };
 
-const IssueCard = ({ issue }) => {
+const IssueCard = ({ issue, onUpdateStatus }) => {
+    const isFixed = issue.status === 'fixed';
+    
     const colors = {
         critical: { border: '#fecaca', bg: '#fef2f2', text: '#991b1b', badge: '#ef4444' },
         high: { border: '#fed7aa', bg: '#fff7ed', text: '#9a3412', badge: '#f97316' },
@@ -419,17 +452,46 @@ const IssueCard = ({ issue }) => {
     }[issue.severity] || { border: '#e2e8f0', bg: 'white', text: '#64748b', badge: '#94a3b8' };
 
     return (
-        <div style={{ background: 'white', border: `1px solid ${colors.border}`, borderRadius: '12px', overflow: 'hidden' }}>
+        <div style={{ background: isFixed ? '#f8fafc' : 'white', border: `1px solid ${isFixed ? '#e2e8f0' : colors.border}`, borderRadius: '12px', overflow: 'hidden', opacity: isFixed ? 0.6 : 1 }}>
             <div style={{ padding: '20px', display: 'flex', gap: '16px', alignItems: 'start' }}>
                 <div style={{ marginTop: '4px' }}>
-                    {issue.severity === 'critical' ? <AlertCircle color={colors.badge} size={20} /> : <AlertTriangle color={colors.badge} size={20} />}
+                    {isFixed ? <CheckCircle color="#22c55e" size={20} /> : (issue.severity === 'critical' ? <AlertCircle color={colors.badge} size={20} /> : <AlertTriangle color={colors.badge} size={20} />)}
                 </div>
                 <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
-                        <span style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', color: colors.badge, border: `1px solid ${colors.badge}`, padding: '2px 6px', borderRadius: '4px' }}>{issue.severity}</span>
-                        <span style={{ fontSize: '13px', color: '#64748b', fontWeight: '500', textTransform: 'capitalize' }}>{issue.category}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', color: isFixed ? '#64748b' : colors.badge, border: `1px solid ${isFixed ? '#cbd5e1' : colors.badge}`, padding: '2px 6px', borderRadius: '4px' }}>
+                                {isFixed ? 'fixed' : issue.severity}
+                            </span>
+                            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: '500', textTransform: 'capitalize' }}>{issue.category}</span>
+                        </div>
+                        
+                        {!isFixed && (
+                             <div style={{ display: 'flex', gap: '8px' }}>
+                                <button 
+                                    onClick={() => onUpdateStatus('fixed')}
+                                    style={{ background: 'none', border: 'none', color: '#16a34a', fontSize: '12px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                                >
+                                    <CheckCircle size={14} /> Mark Fixed
+                                </button>
+                                <button 
+                                    onClick={() => onUpdateStatus('ignored')}
+                                    style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}
+                                >
+                                    Ignore
+                                </button>
+                             </div>
+                        )}
+                        {isFixed && (
+                            <button 
+                                onClick={() => onUpdateStatus('open')}
+                                style={{ background: 'none', border: 'none', color: '#2563eb', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}
+                            >
+                                Reopen
+                            </button>
+                        )}
                     </div>
-                    <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#1e293b' }}>
+                    <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '700', color: '#1e293b', textDecoration: isFixed ? 'line-through' : 'none' }}>
                         {issue.issue_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                     </h4>
                     <p style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#475569', lineHeight: '1.5' }}>
@@ -440,17 +502,6 @@ const IssueCard = ({ issue }) => {
                         <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', fontSize: '13px', fontFamily: 'monospace', color: '#334155', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                             <FileText size={14} color="#94a3b8" />
                             <a href={issue.page_url} target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{issue.page_url}</a>
-                        </div>
-                    )}
-
-                    {issue.recommendation && (
-                        <div style={{ background: '#f0f9ff', padding: '12px', borderRadius: '8px', border: '1px solid #bae6fd' }}>
-                            <div style={{ fontSize: '12px', fontWeight: '700', color: '#0369a1', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <Info size={14} /> How to fix
-                            </div>
-                            <div style={{ fontSize: '13px', color: '#0c4a6e', lineHeight: '1.5' }}>
-                                {issue.recommendation}
-                            </div>
                         </div>
                     )}
                 </div>

@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowLeft, RefreshCw, Shield, Server, Globe, FileText, AlertTriangle, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { SUMMARY_COUNT_IS_BAD } from '../utils/dataforseoChecks';
+import ScoreTrendChart from './components/Analysis/ScoreTrendChart';
+import SiteSettingsModal from './components/Analysis/SiteSettingsModal';
 
 export default function OnPageSummaryPage() {
     const { id } = useParams();
@@ -11,6 +13,7 @@ export default function OnPageSummaryPage() {
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState('loading'); // loading, no_task, in_progress, done, error
     const [refreshing, setRefreshing] = useState(false);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
     useEffect(() => {
         fetchSummary();
@@ -183,6 +186,89 @@ export default function OnPageSummaryPage() {
                         >
                             <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} /> Refresh Data
                         </button>
+                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                            <button
+                                onClick={() => {
+                                    const baseUrl = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
+                                    const token = localStorage.getItem('token');
+                                    fetch(`${baseUrl}/sites/${id}/report/pdf`, {
+                                        headers: { 'Authorization': `Bearer ${token}` }
+                                    })
+                                    .then(res => res.blob())
+                                    .then(blob => {
+                                        const url = window.URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = `seo-report-${id}.pdf`;
+                                        a.click();
+                                    })
+                                    .catch(() => toast.error('Failed to download PDF'));
+                                }}
+                                style={{
+                                    padding: '8px 16px',
+                                    background: '#f1f5f9',
+                                    color: '#0f172a',
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: '6px',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px'
+                                }}
+                            >
+                                <FileText size={14} /> PDF Report
+                            </button>
+                        </div>
+                        <button
+                                onClick={() => {
+                                    const baseUrl = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
+                                    const token = localStorage.getItem('token');
+                                    fetch(`${baseUrl}/sites/${id}/report/csv`, {
+                                        headers: { 'Authorization': `Bearer ${token}` }
+                                    })
+                                    .then(res => res.blob())
+                                    .then(blob => {
+                                        const url = window.URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = `seo-pages-${id}.csv`;
+                                        a.click();
+                                    })
+                                    .catch(() => toast.error('Failed to download CSV'));
+                                }}
+                                style={{
+                                    padding: '8px 16px',
+                                    background: '#f1f5f9',
+                                    color: '#0f172a',
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: '6px',
+                                    fontWeight: '600',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px'
+                                }}
+                            >
+                                <ArrowLeft size={14} style={{ rotate: '270deg' }} /> Export CSV
+                            </button>
+                        <button
+                            onClick={() => setIsSettingsOpen(true)}
+                            style={{
+                                padding: '8px 16px',
+                                background: 'white',
+                                color: '#475569',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '6px',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                            }}
+                        >
+                            <Settings size={14} /> Settings
+                        </button>
                         <button
                             onClick={startAnalysis}
                             disabled={loading || refreshing || (summary?.crawl_status?.pages_in_queue > 0)}
@@ -259,6 +345,9 @@ export default function OnPageSummaryPage() {
                                 <StatBox label="Duplicate Content" value={page_metrics?.duplicate_content || 0} isBad={(page_metrics?.duplicate_content || 0) > 0} onClick={() => navigate(`/sites/${id}/onpage/pages?filter=duplicate_content`)} />
                             </div>
                         </div>
+
+                        {/* SEO Health Trend Chart */}
+                        <ScoreTrendChart siteId={id} />
 
                         {/* Detailed Page Checks Grid */}
                         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
@@ -340,6 +429,20 @@ export default function OnPageSummaryPage() {
                 </div>
 
             </div>
+            <SiteSettingsModal 
+                site={{ id, ...summary?.domain_info, audit_frequency: summary?.domain_info?.audit_frequency, slack_webhook_url: summary?.domain_info?.slack_webhook_url }} 
+                isOpen={isSettingsOpen} 
+                onClose={() => setIsSettingsOpen(false)} 
+                onSave={(newData) => {
+                    setSummary(prev => ({
+                        ...prev,
+                        domain_info: {
+                            ...prev.domain_info,
+                            ...newData
+                        }
+                    }));
+                }}
+            />
         </div>
     );
 }

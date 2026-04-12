@@ -73,6 +73,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}/onpage/pages/{pageId}', [\App\Http\Controllers\Api\SiteOnPageController::class, 'pageDetails']);
         Route::get('/{id}/onpage/links', [\App\Http\Controllers\Api\SiteOnPageController::class, 'pageLinks']);
         Route::post('/{id}/onpage/pages/{pageId}/analyze-content', [\App\Http\Controllers\Api\SiteOnPageController::class, 'analyzeContent']);
+
+        // History & Trends
+        Route::get('/{siteId}/history', [\App\Http\Controllers\Api\HistoryController::class, 'scoreHistory']);
+
+        // Reports
+        Route::get('/{siteId}/report/pdf', [\App\Http\Controllers\Api\ReportController::class, 'downloadPdf']);
+        Route::get('/{siteId}/report/csv', [\App\Http\Controllers\Api\ReportController::class, 'downloadCsv']);
     });
 
     // Competitors

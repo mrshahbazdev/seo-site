@@ -92,9 +92,23 @@ class SiteController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
             'status' => 'sometimes|in:active,paused,deleted',
+            'audit_frequency' => 'sometimes|string|in:manual,daily,weekly,monthly',
+            'slack_webhook_url' => 'sometimes|nullable|url|max:255',
+            'notifications_enabled' => 'sometimes|boolean',
         ]);
 
-        $site->update($validated);
+        if (isset($validated['audit_frequency']) && $validated['audit_frequency'] !== 'manual') {
+            $site->next_audit_at = match($validated['audit_frequency']) {
+                'daily' => now()->addDay(),
+                'weekly' => now()->addWeek(),
+                'monthly' => now()->addMonth(),
+            };
+        } elseif (isset($validated['audit_frequency']) && $validated['audit_frequency'] === 'manual') {
+            $site->next_audit_at = null;
+        }
+
+        $site->fill($validated);
+        $site->save();
 
         return response()->json([
             'success' => true,
