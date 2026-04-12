@@ -132,7 +132,26 @@ export default function OnPageSummaryPage() {
         );
     }
 
-    if (!summary) return null;
+    if (status === 'error' || !summary) {
+        return (
+            <div style={{ minHeight: '100vh', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', textAlign: 'center' }}>
+                <div style={{ marginBottom: '20px', color: '#ef4444', background: '#fee2e2', padding: '20px', borderRadius: '50%' }}>
+                    <ShieldAlert size={48} />
+                </div>
+                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>Resource Not Found</h1>
+                <p style={{ color: '#64748b', marginBottom: '24px', maxWidth: '400px' }}>
+                    The site you are looking for could not be found, or you do not have permission to access it.
+                </p>
+                <button
+                    onClick={() => navigate('/dashboard')}
+                    style={{ padding: '12px 32px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', fontWeight: '600', cursor: 'pointer', fontSize: '16px' }}
+                >
+                    Back to Dashboard
+                </button>
+            </div>
+        );
+    }
+
 
     const { domain_info = {}, page_metrics = {}, crawl_status = {} } = summary || {};
 
