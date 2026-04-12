@@ -93,9 +93,9 @@ class SiteOnPageController extends Controller
                 ]);
             }
 
-            // Check for 40401 Task Not Found (Expired)
+            // Check for 40401/40402 Task Not Found or 40403 Results Expired
             $statusCode = $result['tasks'][0]['status_code'] ?? 0;
-            if ($statusCode == 40401) {
+            if ($statusCode == 40401 || $statusCode == 40402 || $statusCode == 40403) {
                 // Task expired or invalid, reset DB
                 $site->on_page_task_id = null;
                 $site->on_page_summary = null;
@@ -104,7 +104,7 @@ class SiteOnPageController extends Controller
                 return response()->json([
                     'success' => false,
                     'status' => 'no_task',
-                    'message' => 'Analysis session expired. Please start a new analysis.'
+                    'message' => 'Analysis session expired or results are no longer available. Please start a new analysis.'
                 ]);
             }
 
@@ -118,6 +118,7 @@ class SiteOnPageController extends Controller
                 ]);
             }
 
+            Log::warning('DataForSeo OnPage Fetch Failed: ', ['result' => $result, 'task_id' => $site->on_page_task_id]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve summary data',
@@ -255,6 +256,19 @@ class SiteOnPageController extends Controller
                 } else {
                     // API returned error or no data structure
                     if ($offset === 0) {
+                        $statusCode = $result['tasks'][0]['status_code'] ?? 0;
+                        if ($statusCode == 40401 || $statusCode == 40402 || $statusCode == 40403) {
+                            $site->on_page_task_id = null;
+                            $site->on_page_summary = null;
+                            $site->save();
+                            return response()->json([
+                                'success' => false,
+                                'status' => 'no_task',
+                                'message' => 'Analysis session expired or results are no longer available. Please start a new analysis.'
+                            ]);
+                        }
+
+                        Log::warning('DataForSeo Pages Fetch Failed: ', ['result' => $result, 'task_id' => $site->on_page_task_id]);
                         return response()->json([
                             'success' => false,
                             'message' => 'Failed to retrieve pages list from API',
