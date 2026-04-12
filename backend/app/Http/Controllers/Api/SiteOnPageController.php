@@ -20,7 +20,7 @@ class SiteOnPageController extends Controller
 
     public function crawl(Request $request, $siteId)
     {
-        $site = Site::findOrFail($siteId);
+        $site = $request->user()->sites()->findOrFail($siteId);
 
         try {
             // Start the crawl
@@ -56,7 +56,7 @@ class SiteOnPageController extends Controller
 
     public function summary(Request $request, $siteId)
     {
-        $site = Site::findOrFail($siteId);
+        $site = $request->user()->sites()->findOrFail($siteId);
         $refresh = $request->query('refresh', false);
 
         // If we have data and not refreshing, return it
@@ -135,7 +135,7 @@ class SiteOnPageController extends Controller
 
     public function pages(Request $request, $siteId)
     {
-        $site = Site::findOrFail($siteId);
+        $site = $request->user()->sites()->findOrFail($siteId);
         $refresh = $request->query('refresh', false);
 
         // If we have local pages and not refreshing, return them
@@ -286,7 +286,8 @@ class SiteOnPageController extends Controller
     }
     public function pageDetails(Request $request, $siteId, $pageId)
     {
-        $page = \App\Models\SiteCrawledPage::where('site_id', $siteId)->findOrFail($pageId);
+        $site = $request->user()->sites()->findOrFail($siteId);
+        $page = \App\Models\SiteCrawledPage::where('site_id', $site->id)->findOrFail($pageId);
 
         return response()->json([
             'success' => true,
@@ -454,7 +455,7 @@ class SiteOnPageController extends Controller
 
     public function pageLinks(Request $request, $siteId)
     {
-        $site = Site::findOrFail($siteId);
+        $site = $request->user()->sites()->findOrFail($siteId);
         $url = $request->query('url');
 
         if (!$url) {
@@ -489,7 +490,8 @@ class SiteOnPageController extends Controller
             'keyword' => 'required|string|min:1'
         ]);
 
-        $page = \App\Models\SiteCrawledPage::where('site_id', $siteId)->findOrFail($pageId);
+        $site = $request->user()->sites()->findOrFail($siteId);
+        $page = \App\Models\SiteCrawledPage::where('site_id', $site->id)->findOrFail($pageId);
         $keyword = $request->input('keyword');
 
         // Prepare data for service

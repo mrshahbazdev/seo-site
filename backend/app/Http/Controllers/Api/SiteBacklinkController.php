@@ -19,7 +19,7 @@ class SiteBacklinkController extends Controller
 
     public function analyze(Request $request, $siteId)
     {
-        $site = Site::findOrFail($siteId);
+        $site = $request->user()->sites()->findOrFail($siteId);
         $domain = parse_url($site->url, PHP_URL_HOST) ?? $site->url;
 
         // Clean domain (remove www if needed, but DataForSEO usually handles it)
@@ -75,7 +75,8 @@ class SiteBacklinkController extends Controller
 
     public function analyzePage(Request $request, $siteId, $pageId)
     {
-        $page = \App\Models\SitePage::where('site_id', $siteId)->findOrFail($pageId);
+        $site = $request->user()->sites()->findOrFail($siteId);
+        $page = \App\Models\SitePage::where('site_id', $site->id)->findOrFail($pageId);
         $url = $page->url;
 
         // Clean URL if needed, or pass full URL to DataForSEO (which supports full URLs for summary)
@@ -115,7 +116,7 @@ class SiteBacklinkController extends Controller
     }
     public function list(Request $request, $siteId)
     {
-        $site = Site::findOrFail($siteId);
+        $site = $request->user()->sites()->findOrFail($siteId);
         $domain = parse_url($site->url, PHP_URL_HOST) ?? $site->url;
         $domain = preg_replace('/^www\./', '', $domain);
 
