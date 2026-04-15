@@ -80,7 +80,10 @@ class KeywordResearchController extends Controller
             Log::error('Keyword Search Error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to search keywords'
+                'message' => 'Failed to search keywords',
+                // Return underlying provider error to make debugging possible.
+                // If you want to hide this in production later, gate it behind APP_DEBUG.
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
