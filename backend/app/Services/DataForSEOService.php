@@ -504,7 +504,21 @@ class DataForSEOService
         };
 
         try {
-            $result = $this->makeRequest($endpoint, $buildPayload($languageCode));
+            try {
+                $result = $this->makeRequest($endpoint, $buildPayload($languageCode));
+            } catch (\Exception $e) {
+                // Some DataForSEO Labs schemas/environments may reject language_code for certain locations.
+                // If so, retry without language_code and let API pick default language for that location.
+                if (str_contains($e->getMessage(), "Invalid Field: 'language_code'")) {
+                    Log::warning("DataForSEO Labs rejected language_code, retrying without it", [
+                        'location_code' => $locationCode,
+                        'language_code' => $languageCode,
+                    ]);
+                    $result = $this->makeRequest($endpoint, $buildPayload(null));
+                } else {
+                    throw $e;
+                }
+            }
 
             $task = $result['tasks'][0] ?? null;
             $statusCode = $task['status_code'] ?? null;
