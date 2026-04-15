@@ -487,25 +487,53 @@ class DataForSEOService
         // Switching to DataForSEO Labs API which is better for keyword ideas
         $endpoint = '/v3/dataforseo_labs/google/keyword_suggestions/live';
 
-        $data = [
-            [
+        $buildPayload = function (?string $lang) use ($keyword, $locationCode) {
+            $payload = [
                 'keyword' => $keyword,
                 'location_code' => $locationCode,
-                'language_code' => $languageCode,
                 'include_seed_keyword' => true,
-                'limit' => 100
-            ]
-        ];
+                'limit' => 100,
+            ];
+
+            // Per DataForSEO docs: if language_code omitted, defaults to language with most keyword records for the location.
+            if ($lang !== null && $lang !== '') {
+                $payload['language_code'] = $lang;
+            }
+
+            return [$payload];
+        };
 
         try {
-            $result = $this->makeRequest($endpoint, $data);
+            $result = $this->makeRequest($endpoint, $buildPayload($languageCode));
 
             $task = $result['tasks'][0] ?? null;
             $statusCode = $task['status_code'] ?? null;
             $statusMessage = $task['status_message'] ?? null;
 
             if (isset($task['result'][0]['items'])) {
-                return $result['tasks'][0]['result'][0]['items'];
+                $items = $task['result'][0]['items'];
+
+                // Smart fallback: if items empty for location+language combination, retry without language_code (API default).
+                if (is_array($items) && count($items) === 0 && $languageCode !== '') {
+                    $retry = $this->makeRequest($endpoint, $buildPayload(null));
+                    $retryTask = $retry['tasks'][0] ?? null;
+                    $retryItems = $retryTask['result'][0]['items'] ?? [];
+                    if (is_array($retryItems) && count($retryItems) > 0) {
+                        return $retryItems;
+                    }
+
+                    // Special-case: Germany with English often yields no records; try German.
+                    if ((int) $locationCode === 2276 && $languageCode === 'en') {
+                        $retryDe = $this->makeRequest($endpoint, $buildPayload('de'));
+                        $retryDeTask = $retryDe['tasks'][0] ?? null;
+                        $retryDeItems = $retryDeTask['result'][0]['items'] ?? [];
+                        if (is_array($retryDeItems) && count($retryDeItems) > 0) {
+                            return $retryDeItems;
+                        }
+                    }
+                }
+
+                return $items;
             }
 
             // If DataForSEO returned a non-success status, surface it (don't silently cache empty).
