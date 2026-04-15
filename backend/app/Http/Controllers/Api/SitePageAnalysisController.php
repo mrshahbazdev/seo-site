@@ -116,63 +116,41 @@ class SitePageAnalysisController extends Controller
             // Use simple Guzzle/Http get for now? Or use DataForSEO?
             // A simple GET is faster for HTML parsing.
 
-            $html = null;
-
-            // Option 1: Fetch live
-            try {
-                $response = \Illuminate\Support\Facades\Http::timeout(30)
-                    ->withHeaders([
-                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-                        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-                        'Accept-Language' => 'en-US,en;q=0.9',
-                        'Cache-Control' => 'no-cache',
-                        'Pragma' => 'no-cache',
-                        'Upgrade-Insecure-Requests' => '1',
-                        'Sec-Ch-Ua' => '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
-                        'Sec-Ch-Ua-Mobile' => '?0',
-                        'Sec-Ch-Ua-Platform' => '"Windows"',
-                        'Sec-Fetch-Dest' => 'document',
-                        'Sec-Fetch-Mode' => 'navigate',
-                        'Sec-Fetch-Site' => 'none',
-                        'Sec-Fetch-User' => '?1'
-                    ])
-                    ->get($crawledPage->url);
-
-                if ($response->successful()) {
-                    $html = $response->body();
-                } else {
-                    Log::warning("Deep Analysis Fetch Failed: " . $response->status());
-                }
-            } catch (\Exception $e) {
-                // Fail silently on fetch, maybe try fallback?
-                Log::warning("Failed to fetch live HTML for deep analysis: " . $e->getMessage());
-                return response()->json(['success' => false, 'message' => 'Could not fetch page content: ' . $e->getMessage()], 400);
-            }
+            $html = $this->fetchLiveHtmlForDeepAnalysis($crawledPage->url);
 
             if (!$html) {
-                // FALLBACK: Try to use content from DB if available
-                if (!empty($crawledPage->content['plain_text'])) {
-                    // This is text, not HTML, but better than nothing for some checks?
-                    // Actually, AdvancedAnalyzer needs HTML.
-                    // If we have 'html' key in content?
-                }
+                $html = $this->extractStoredHtmlFromCrawledPage($crawledPage);
+            }
 
-                return response()->json(['success' => false, 'message' => 'Empty HTML content. The page could not be fetched live.'], 400);
+            $htmlSource = $html ? 'live_or_stored' : null;
+
+            if (!$html) {
+                $html = $this->buildSyntheticHtmlFromCrawledPage($crawledPage);
+                $htmlSource = 'synthetic_from_crawl';
+            }
+
+            if (!$html || ! is_string($html) || trim($html) === '') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Empty HTML content. The page could not be fetched live and no usable crawl data was found to fall back on.',
+                    'hint' => 'Common causes: bot protection (Cloudflare), geo blocking, wrong URL, or a JavaScript-only shell with no HTML in the first response. Try again from a network that can open the URL, or re-run the on-page crawl so we have fresh stored content.',
+                ], 400);
             }
 
             $analysis = $this->advancedAnalyzer->analyze($html, $crawledPage->url);
 
             // SAVE RESULT - MERGE instead of overwrite
             $existing = $crawledPage->analysis_data ?? [];
-            // Merge new deep analysis keys into existing
             $existing = array_merge($existing, $analysis);
+            $existing['_deep_html_source'] = $htmlSource;
 
             $crawledPage->analysis_data = $existing;
             $crawledPage->save();
 
             return response()->json([
                 'success' => true,
-                'data' => $existing // Return merged data
+                'data' => $existing,
+                'html_source' => $htmlSource,
             ]);
 
         } catch (\Exception $e) {
@@ -358,5 +336,133 @@ class SitePageAnalysisController extends Controller
                 'message' => 'Failed to fetch ranked keywords'
             ], 500);
         }
+    }
+
+    /**
+     * Try several HTTP strategies — many hosts block "browser" Sec-* headers from server IPs or return empty bodies.
+     */
+    private function fetchLiveHtmlForDeepAnalysis(string $url): ?string
+    {
+        $http = \Illuminate\Support\Facades\Http::accept('text/html,application/xhtml+xml;q=0.9,*/*;q=0.8');
+
+        $attempts = [
+            [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                'Accept-Language' => 'en-US,en;q=0.9',
+            ],
+            [
+                'User-Agent' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+                'Accept' => 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',
+            ],
+            [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',
+                'Accept' => 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',
+            ],
+        ];
+
+        foreach ($attempts as $i => $headers) {
+            try {
+                $response = $http->timeout(45)
+                    ->withHeaders($headers)
+                    ->get($url);
+
+                if ($response->successful()) {
+                    $body = $response->body();
+                    if ($this->bodyLooksLikeHtmlDocument($body)) {
+                        return $body;
+                    }
+                    Log::warning('Deep analysis live fetch: non-HTML or empty body', [
+                        'attempt' => $i,
+                        'status' => $response->status(),
+                        'len' => strlen((string) $body),
+                    ]);
+                } else {
+                    Log::warning('Deep analysis live fetch failed status', [
+                        'attempt' => $i,
+                        'status' => $response->status(),
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::warning('Deep analysis live fetch exception: '.$e->getMessage(), ['attempt' => $i]);
+            }
+        }
+
+        return null;
+    }
+
+    private function bodyLooksLikeHtmlDocument(string $body): bool
+    {
+        $body = ltrim($body);
+        if ($body === '' || strlen($body) < 80) {
+            return false;
+        }
+
+        $head = strtolower(substr($body, 0, 800));
+        if (str_contains($head, 'cf-browser-verification') || (str_contains($head, 'cloudflare') && str_contains($head, 'challenge'))) {
+            return false;
+        }
+
+        return str_contains($head, '<html')
+            || str_contains($head, '<!doctype')
+            || (str_contains($head, '<head') && str_contains($head, '<body'));
+    }
+
+    /**
+     * DataForSEO sometimes includes an html fragment under content (depends on crawl settings).
+     */
+    private function extractStoredHtmlFromCrawledPage(SiteCrawledPage $page): ?string
+    {
+        $content = $page->content;
+        if (is_array($content) && ! empty($content['html']) && is_string($content['html'])) {
+            return $content['html'];
+        }
+
+        $raw = $page->raw_data;
+        if (! is_array($raw)) {
+            return null;
+        }
+
+        $nested = $raw['content'] ?? [];
+        if (is_array($nested) && ! empty($nested['html']) && is_string($nested['html'])) {
+            return $nested['html'];
+        }
+
+        return null;
+    }
+
+    /**
+     * Last resort: rebuild a minimal HTML document from meta + plain text we already have from the crawl.
+     * Image/link structure will be incomplete vs live HTML.
+     */
+    private function buildSyntheticHtmlFromCrawledPage(SiteCrawledPage $page): ?string
+    {
+        $plain = $page->content['plain_text'] ?? ($page->raw_data['content']['plain_text'] ?? '');
+        $plain = is_string($plain) ? trim($plain) : '';
+        if ($plain === '' || strlen($plain) < 30) {
+            return null;
+        }
+
+        $title = htmlspecialchars((string) ($page->meta['title'] ?? $page->title ?? 'Page'), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $parts = ['<!DOCTYPE html>', '<html lang="en"><head><meta charset="UTF-8"><title>', $title, '</title></head><body>'];
+
+        $htags = $page->meta['htags'] ?? [];
+        if (is_array($htags)) {
+            foreach (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] as $tag) {
+                if (empty($htags[$tag]) || ! is_array($htags[$tag])) {
+                    continue;
+                }
+                foreach ($htags[$tag] as $text) {
+                    $safe = htmlspecialchars((string) $text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    $parts[] = '<'.$tag.'>'.$safe.'</'.$tag.'>';
+                }
+            }
+        }
+
+        $parts[] = '<article class="synthetic-crawl-fallback">';
+        $parts[] = '<p>'.nl2br(htmlspecialchars($plain, ENT_QUOTES | ENT_HTML5, 'UTF-8')).'</p>';
+        $parts[] = '</article></body></html>';
+
+        return implode('', $parts);
     }
 }
