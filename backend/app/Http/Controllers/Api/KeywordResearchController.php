@@ -86,8 +86,25 @@ class KeywordResearchController extends Controller
     {
         try {
             $locations = Cache::remember('keyword_locations_google', now()->addDays(7), function () {
-                $result = $this->dataForSEO->makeRequest('/v3/serp/google/locations', [], false);
-                $items = $result['tasks'][0]['result'] ?? [];
+                $items = [];
+
+                // Primary attempt: GET endpoint
+                try {
+                    $result = $this->dataForSEO->makeRequest('/v3/serp/google/locations', [], false);
+                    $items = $result['tasks'][0]['result'] ?? [];
+                } catch (\Throwable $e) {
+                    Log::warning('Keyword locations GET failed, trying POST fallback: ' . $e->getMessage());
+                }
+
+                // Fallback attempt: some accounts/environments respond only with POST style payload
+                if (empty($items)) {
+                    try {
+                        $result = $this->dataForSEO->makeRequest('/v3/serp/google/locations', [[]], true);
+                        $items = $result['tasks'][0]['result'] ?? [];
+                    } catch (\Throwable $e) {
+                        Log::warning('Keyword locations POST fallback failed: ' . $e->getMessage());
+                    }
+                }
 
                 return collect($items)
                     ->filter(fn ($item) => isset($item['location_code'], $item['location_name']))
@@ -106,6 +123,10 @@ class KeywordResearchController extends Controller
                     ->all();
             });
 
+            if (empty($locations)) {
+                $locations = $this->fallbackLocations();
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => $locations,
@@ -114,9 +135,27 @@ class KeywordResearchController extends Controller
             Log::error('Keyword locations fetch error: ' . $e->getMessage());
 
             return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch locations',
-            ], 500);
+                'success' => true,
+                'data' => $this->fallbackLocations(),
+                'fallback' => true,
+                'message' => 'Loaded fallback locations',
+            ]);
         }
+    }
+
+    private function fallbackLocations(): array
+    {
+        return [
+            ['code' => 2840, 'name' => 'United States (US)', 'country_iso_code' => 'US'],
+            ['code' => 2826, 'name' => 'United Kingdom (GB)', 'country_iso_code' => 'GB'],
+            ['code' => 2124, 'name' => 'Canada (CA)', 'country_iso_code' => 'CA'],
+            ['code' => 2036, 'name' => 'Australia (AU)', 'country_iso_code' => 'AU'],
+            ['code' => 2356, 'name' => 'India (IN)', 'country_iso_code' => 'IN'],
+            ['code' => 2276, 'name' => 'Germany (DE)', 'country_iso_code' => 'DE'],
+            ['code' => 2250, 'name' => 'France (FR)', 'country_iso_code' => 'FR'],
+            ['code' => 2724, 'name' => 'Spain (ES)', 'country_iso_code' => 'ES'],
+            ['code' => 2380, 'name' => 'Italy (IT)', 'country_iso_code' => 'IT'],
+            ['code' => 2484, 'name' => 'Mexico (MX)', 'country_iso_code' => 'MX'],
+        ];
     }
 }
