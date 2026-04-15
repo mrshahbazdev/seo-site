@@ -153,7 +153,9 @@ export default function OnPageSummaryPage() {
     }
 
 
-    const { domain_info = {}, page_metrics = {}, crawl_status = {} } = summary || {};
+    const domain_info = summary?.domain_info ?? {};
+    const page_metrics = summary?.page_metrics ?? {};
+    const crawl_status = summary?.crawl_status ?? {};
 
     return (
         <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '40px' }}>
@@ -166,7 +168,7 @@ export default function OnPageSummaryPage() {
                         </button>
                         <div>
                             <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>On-Page Summary</h1>
-                            <div style={{ fontSize: '14px', color: '#64748b' }}>{domain_info.main_domain}</div>
+                            <div style={{ fontSize: '14px', color: '#64748b' }}>{domain_info?.main_domain ?? '—'}</div>
                         </div>
                     </div>
                     <div style={{ display: 'flex', gap: '12px' }}>
@@ -456,7 +458,7 @@ export default function OnPageSummaryPage() {
                     setSummary(prev => ({
                         ...prev,
                         domain_info: {
-                            ...prev.domain_info,
+                            ...(prev?.domain_info ?? {}),
                             ...newData
                         }
                     }));
