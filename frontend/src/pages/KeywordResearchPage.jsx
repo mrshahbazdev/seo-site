@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Search, Loader2, Database, TrendingUp, DollarSign, BarChart2, ArrowLeft } from 'lucide-react';
+import { Search, Loader2, Database, TrendingUp, ArrowLeft, Download, Filter } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function KeywordResearchPage() {
@@ -10,6 +10,12 @@ export default function KeywordResearchPage() {
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
     const [cached, setCached] = useState(false);
+    const [filters, setFilters] = useState({
+        query: '',
+        competition: 'ALL', // ALL, LOW, MEDIUM, HIGH
+        minVolume: '',
+        sortBy: 'volume_desc', // volume_desc, volume_asc, cpc_desc, cpc_asc, keyword_asc
+    });
     const [locationQuery, setLocationQuery] = useState('');
     const [locations, setLocations] = useState([
         { code: 2840, name: 'United States (US)' },
@@ -94,6 +100,94 @@ export default function KeywordResearchPage() {
         if (kd < 50) return '#f59e0b'; // Medium
         if (kd < 70) return '#f97316'; // Hard
         return '#ef4444'; // Very Hard
+    };
+
+    const normalizeCompetition = (level) => {
+        if (!level) return 'UNKNOWN';
+        const v = String(level).toUpperCase();
+        if (v === 'LOW' || v === 'MEDIUM' || v === 'HIGH') return v;
+        return 'UNKNOWN';
+    };
+
+    const getCompetitionBadge = (level) => {
+        const v = normalizeCompetition(level);
+        const score = v === 'HIGH' ? 80 : v === 'MEDIUM' ? 50 : v === 'LOW' ? 20 : 0;
+        const color = getDifficultyColor(score);
+        return { v, color };
+    };
+
+    const filteredResults = (results || [])
+        .filter((item) => {
+            const q = filters.query.trim().toLowerCase();
+            if (q && !String(item.keyword || '').toLowerCase().includes(q)) return false;
+
+            const comp = normalizeCompetition(item.keyword_info?.competition_level);
+            if (filters.competition !== 'ALL' && comp !== filters.competition) return false;
+
+            const minVol = filters.minVolume === '' ? null : Number(filters.minVolume);
+            if (minVol !== null && !Number.isNaN(minVol)) {
+                const vol = Number(item.keyword_info?.search_volume || 0);
+                if (vol < minVol) return false;
+            }
+
+            return true;
+        })
+        .sort((a, b) => {
+            const aVol = Number(a.keyword_info?.search_volume || 0);
+            const bVol = Number(b.keyword_info?.search_volume || 0);
+            const aCpc = Number(a.keyword_info?.cpc || 0);
+            const bCpc = Number(b.keyword_info?.cpc || 0);
+            const aKw = String(a.keyword || '');
+            const bKw = String(b.keyword || '');
+
+            switch (filters.sortBy) {
+                case 'volume_asc':
+                    return aVol - bVol;
+                case 'cpc_desc':
+                    return bCpc - aCpc;
+                case 'cpc_asc':
+                    return aCpc - bCpc;
+                case 'keyword_asc':
+                    return aKw.localeCompare(bKw);
+                case 'volume_desc':
+                default:
+                    return bVol - aVol;
+            }
+        });
+
+    const downloadCsv = () => {
+        if (!results || results.length === 0) {
+            toast.error('No results to export');
+            return;
+        }
+
+        const rows = filteredResults.map((item) => ({
+            keyword: item.keyword ?? '',
+            search_volume: item.keyword_info?.search_volume ?? '',
+            cpc_usd: item.keyword_info?.cpc ?? '',
+            competition_level: normalizeCompetition(item.keyword_info?.competition_level),
+            location_code: item.location_code ?? '',
+            language_code: item.language_code ?? '',
+        }));
+
+        const headers = Object.keys(rows[0] || { keyword: '' });
+        const escape = (v) => {
+            const s = String(v ?? '');
+            if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+            return s;
+        };
+        const csv = [headers.join(','), ...rows.map((r) => headers.map((h) => escape(r[h])).join(','))].join('\n');
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `keyword-research-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        toast.success('CSV downloaded');
     };
 
     return (
@@ -237,23 +331,109 @@ export default function KeywordResearchPage() {
                 <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                         <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>
-                            Results ({results.length})
+                            Results ({filteredResults.length}{filteredResults.length !== results.length ? ` / ${results.length}` : ''})
                         </h2>
-                        {cached && (
-                            <span style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                background: '#f0fdf4',
-                                color: '#16a34a',
-                                padding: '6px 12px',
-                                borderRadius: '20px',
-                                fontSize: '13px',
-                                fontWeight: '500'
-                            }}>
-                                <Database size={14} /> Retrieved from cache
-                            </span>
-                        )}
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            {cached && (
+                                <span style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    background: '#f0fdf4',
+                                    color: '#16a34a',
+                                    padding: '6px 12px',
+                                    borderRadius: '20px',
+                                    fontSize: '13px',
+                                    fontWeight: '500'
+                                }}>
+                                    <Database size={14} /> Retrieved from cache
+                                </span>
+                            )}
+                            <button
+                                onClick={downloadCsv}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    background: '#0f172a',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '10px',
+                                    padding: '10px 14px',
+                                    fontSize: '13px',
+                                    fontWeight: 700,
+                                    cursor: 'pointer'
+                                }}
+                                title="Export filtered results to CSV"
+                            >
+                                <Download size={16} /> Export CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Filters */}
+                    <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', marginBottom: '16px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px', color: '#334155', fontWeight: 800 }}>
+                            <Filter size={16} /> Filters
+                        </div>
+                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                            <div style={{ flex: '1 1 260px' }}>
+                                <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '6px' }}>Keyword contains</label>
+                                <input
+                                    value={filters.query}
+                                    onChange={(e) => setFilters((f) => ({ ...f, query: e.target.value }))}
+                                    placeholder="e.g. local, agency, tool..."
+                                    style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+                                />
+                            </div>
+                            <div style={{ width: '200px' }}>
+                                <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '6px' }}>Competition</label>
+                                <select
+                                    value={filters.competition}
+                                    onChange={(e) => setFilters((f) => ({ ...f, competition: e.target.value }))}
+                                    style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+                                >
+                                    <option value="ALL">All</option>
+                                    <option value="LOW">Low</option>
+                                    <option value="MEDIUM">Medium</option>
+                                    <option value="HIGH">High</option>
+                                </select>
+                            </div>
+                            <div style={{ width: '200px' }}>
+                                <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '6px' }}>Min volume</label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    value={filters.minVolume}
+                                    onChange={(e) => setFilters((f) => ({ ...f, minVolume: e.target.value }))}
+                                    placeholder="0"
+                                    style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+                                />
+                            </div>
+                            <div style={{ width: '220px' }}>
+                                <label style={{ display: 'block', fontSize: '12px', color: '#64748b', marginBottom: '6px' }}>Sort</label>
+                                <select
+                                    value={filters.sortBy}
+                                    onChange={(e) => setFilters((f) => ({ ...f, sortBy: e.target.value }))}
+                                    style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '14px' }}
+                                >
+                                    <option value="volume_desc">Volume (high → low)</option>
+                                    <option value="volume_asc">Volume (low → high)</option>
+                                    <option value="cpc_desc">CPC (high → low)</option>
+                                    <option value="cpc_asc">CPC (low → high)</option>
+                                    <option value="keyword_asc">Keyword (A → Z)</option>
+                                </select>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'end' }}>
+                                <button
+                                    type="button"
+                                    onClick={() => setFilters({ query: '', competition: 'ALL', minVolume: '', sortBy: 'volume_desc' })}
+                                    style={{ padding: '10px 12px', borderRadius: '10px', border: '1px solid #e2e8f0', background: '#f8fafc', fontWeight: 800, cursor: 'pointer' }}
+                                >
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', overflow: 'hidden' }}>
@@ -268,7 +448,7 @@ export default function KeywordResearchPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {results.map((item, i) => (
+                                    {filteredResults.map((item, i) => (
                                         <tr key={i} style={{ borderBottom: '1px solid #f1f5f9', fontSize: '15px' }}>
                                             <td style={{ padding: '16px', fontWeight: '500', color: '#0f172a' }}>
                                                 {item.keyword}
@@ -283,16 +463,21 @@ export default function KeywordResearchPage() {
                                                 {item.keyword_info?.cpc ? `$${item.keyword_info.cpc}` : '-'}
                                             </td>
                                             <td style={{ padding: '16px', textAlign: 'right' }}>
-                                                <span style={{
-                                                    padding: '4px 12px',
-                                                    borderRadius: '16px',
-                                                    fontSize: '13px',
-                                                    fontWeight: '600',
-                                                    background: getDifficultyColor(item.keyword_info?.competition_level === 'HIGH' ? 80 : item.keyword_info?.competition_level === 'MEDIUM' ? 50 : 20) + '20',
-                                                    color: getDifficultyColor(item.keyword_info?.competition_level === 'HIGH' ? 80 : item.keyword_info?.competition_level === 'MEDIUM' ? 50 : 20)
-                                                }}>
-                                                    {item.keyword_info?.competition_level || 'UNKNOWN'}
-                                                </span>
+                                                {(() => {
+                                                    const { v, color } = getCompetitionBadge(item.keyword_info?.competition_level);
+                                                    return (
+                                                        <span style={{
+                                                            padding: '4px 12px',
+                                                            borderRadius: '16px',
+                                                            fontSize: '13px',
+                                                            fontWeight: '600',
+                                                            background: color + '20',
+                                                            color
+                                                        }}>
+                                                            {v}
+                                                        </span>
+                                                    );
+                                                })()}
                                             </td>
                                         </tr>
                                     ))}
