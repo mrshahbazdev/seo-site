@@ -94,37 +94,24 @@ class KeywordResearchController extends Controller
     public function locations()
     {
         try {
-            $locations = Cache::remember('keyword_locations_google', now()->addDays(7), function () {
-                $items = [];
-
-                // Primary attempt: GET endpoint
-                try {
-                    $result = $this->dataForSEO->makeRequest('/v3/serp/google/locations', [], false);
-                    $items = $result['tasks'][0]['result'] ?? [];
-                } catch (\Throwable $e) {
-                    Log::warning('Keyword locations GET failed, trying POST fallback: ' . $e->getMessage());
-                }
-
-                // Fallback attempt: some accounts/environments respond only with POST style payload
-                if (empty($items)) {
-                    try {
-                        $result = $this->dataForSEO->makeRequest('/v3/serp/google/locations', [[]], true);
-                        $items = $result['tasks'][0]['result'] ?? [];
-                    } catch (\Throwable $e) {
-                        Log::warning('Keyword locations POST fallback failed: ' . $e->getMessage());
-                    }
-                }
+            $locations = Cache::remember('keyword_locations_labs', now()->addDays(7), function () {
+                // For keyword research we use DataForSEO Labs, so we must use Labs locations list
+                // (e.g. 2276, Germany, DE, Country).
+                $result = $this->dataForSEO->makeRequest('/v3/dataforseo_labs/locations_and_languages', [], false);
+                $items = $result['tasks'][0]['result'] ?? [];
 
                 return collect($items)
                     ->filter(fn ($item) => isset($item['location_code'], $item['location_name']))
                     ->map(function ($item) {
                         $country = $item['country_iso_code'] ?? '';
                         $name = $item['location_name'];
+                        $type = $item['location_type'] ?? null; // should be Country
 
                         return [
                             'code' => (int) $item['location_code'],
                             'name' => $country ? "{$name} ({$country})" : $name,
                             'country_iso_code' => $country,
+                            'location_type' => $type,
                         ];
                     })
                     ->sortBy('name')
