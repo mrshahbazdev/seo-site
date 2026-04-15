@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Alert;
 use App\Models\Site;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -45,6 +46,18 @@ class AuditSchedulerJob implements ShouldQueue
                 // Trigger the crawl (reusing the logic from the controller)
                 $job = new \App\Jobs\StartFullCrawlJob($site);
                 dispatch($job);
+
+                Alert::create([
+                    'site_id' => $site->id,
+                    'type' => 'scheduled_audit',
+                    'severity' => 'info',
+                    'title' => 'Scheduled audit started',
+                    'message' => "Automatic {$site->audit_frequency} audit has been started for {$site->domain}.",
+                    'payload' => [
+                        'frequency' => $site->audit_frequency,
+                        'next_run_at' => optional($nextRun)->toDateTimeString(),
+                    ],
+                ]);
 
             } catch (\Exception $e) {
                 Log::error("Failed to schedule audit for site {$site->id}: " . $e->getMessage());

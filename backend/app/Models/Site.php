@@ -53,4 +53,9 @@ class Site extends Model
     {
         return $this->hasMany(SitePage::class);
     }
+
+    public function alerts(): HasMany
+    {
+        return $this->hasMany(Alert::class);
+    }
 }

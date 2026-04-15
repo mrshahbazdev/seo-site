@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Search, Loader2, Database, TrendingUp, DollarSign, BarChart2, ArrowLeft } from 'lucide-react';
@@ -10,6 +10,40 @@ export default function KeywordResearchPage() {
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
     const [cached, setCached] = useState(false);
+    const [locationQuery, setLocationQuery] = useState('');
+    const [locations, setLocations] = useState([
+        { code: 2840, name: 'United States (US)' },
+        { code: 2826, name: 'United Kingdom (GB)' },
+        { code: 2124, name: 'Canada (CA)' },
+        { code: 2036, name: 'Australia (AU)' },
+        { code: 2356, name: 'India (IN)' },
+    ]);
+    const [locationsLoading, setLocationsLoading] = useState(false);
+
+    useEffect(() => {
+        const loadLocations = async () => {
+            setLocationsLoading(true);
+            try {
+                const res = await fetch('https://seostory.de/api/keywords/locations', {
+                    headers: { Accept: 'application/json' },
+                });
+                const data = await res.json();
+                if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+                    setLocations(data.data);
+                }
+            } catch (error) {
+                console.error('Failed to load locations', error);
+            } finally {
+                setLocationsLoading(false);
+            }
+        };
+
+        loadLocations();
+    }, []);
+
+    const filteredLocations = locations.filter((loc) =>
+        loc.name.toLowerCase().includes(locationQuery.toLowerCase())
+    );
 
     const onSubmit = async (data) => {
         setLoading(true);
@@ -24,7 +58,7 @@ export default function KeywordResearchPage() {
                 },
                 body: JSON.stringify({
                     keyword: data.keyword,
-                    location_code: parseInt(data.location),
+                    location_code: Number.parseInt(data.location, 10) || 2840,
                     language_code: data.language
                 })
             });
@@ -110,10 +144,24 @@ export default function KeywordResearchPage() {
                         />
                     </div>
 
-                    <div style={{ width: '200px' }}>
+                    <div style={{ width: '280px' }}>
                         <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#64748b' }}>
-                            Location
+                            Location {locationsLoading ? '(loading...)' : ''}
                         </label>
+                        <input
+                            type="text"
+                            value={locationQuery}
+                            onChange={(e) => setLocationQuery(e.target.value)}
+                            placeholder="Search location..."
+                            style={{
+                                width: '100%',
+                                padding: '10px 12px',
+                                borderRadius: '8px',
+                                border: '1px solid #cbd5e1',
+                                fontSize: '14px',
+                                marginBottom: '8px'
+                            }}
+                        />
                         <select
                             {...register('location')}
                             defaultValue="2840"
@@ -125,12 +173,17 @@ export default function KeywordResearchPage() {
                                 fontSize: '16px'
                             }}
                         >
-                            <option value="2840">United States</option>
-                            <option value="2826">United Kingdom</option>
-                            <option value="2124">Canada</option>
-                            <option value="2036">Australia</option>
-                            <option value="2356">India</option>
+                            {filteredLocations.map((loc) => (
+                                <option key={loc.code} value={loc.code}>
+                                    {loc.name}
+                                </option>
+                            ))}
                         </select>
+                        {filteredLocations.length === 0 && (
+                            <div style={{ marginTop: '6px', fontSize: '12px', color: '#64748b' }}>
+                                No locations found for "{locationQuery}"
+                            </div>
+                        )}
                     </div>
 
                     <div style={{ width: '150px' }}>

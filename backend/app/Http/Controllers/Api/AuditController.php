@@ -216,13 +216,26 @@ class AuditController extends Controller
 
         $validated = $request->validate([
             'status' => 'required|in:open,fixed,ignored',
+            'comment' => 'nullable|string|max:2000',
         ]);
 
-        $issue->update($validated);
+        $update = ['status' => $validated['status']];
+        if ($validated['status'] === 'fixed') {
+            $update['resolved_at'] = now();
+        }
+        $issue->update($update);
+
+        if (!empty($validated['comment'])) {
+            $issue->comments()->create([
+                'user_id' => $request->user()->id,
+                'author_name' => $request->user()->name,
+                'comment' => $validated['comment'],
+            ]);
+        }
 
         return response()->json([
             'success' => true,
-            'issue' => $issue,
+            'issue' => $issue->fresh('comments'),
             'message' => 'Issue status updated',
         ]);
     }

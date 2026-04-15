@@ -5,6 +5,8 @@ import { ArrowLeft, RefreshCw, Shield, ShieldAlert, Server, Globe, FileText, Ale
 import { SUMMARY_COUNT_IS_BAD } from '../utils/dataforseoChecks';
 import ScoreTrendChart from './components/Analysis/ScoreTrendChart';
 import SiteSettingsModal from './components/Analysis/SiteSettingsModal';
+import PhaseTwoInsights from './components/Analysis/PhaseTwoInsights';
+import PhaseThreeOps from './components/Analysis/PhaseThreeOps';
 
 export default function OnPageSummaryPage() {
     const { id } = useParams();
@@ -370,6 +372,12 @@ export default function OnPageSummaryPage() {
 
                         {/* SEO Health Trend Chart */}
                         <ScoreTrendChart siteId={id} />
+
+                        {/* Phase 2 insights */}
+                        <PhaseTwoInsights siteId={id} onNavigate={navigate} />
+
+                        {/* Phase 3 operations */}
+                        <PhaseThreeOps siteId={id} />
 
                         {/* Detailed Page Checks Grid */}
                         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\KeywordSearch;
 use App\Services\DataForSEOService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class KeywordResearchController extends Controller
@@ -74,6 +75,47 @@ class KeywordResearchController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to search keywords'
+            ], 500);
+        }
+    }
+
+    /**
+     * Return available Google locations from DataForSEO.
+     */
+    public function locations()
+    {
+        try {
+            $locations = Cache::remember('keyword_locations_google', now()->addDays(7), function () {
+                $result = $this->dataForSEO->makeRequest('/v3/serp/google/locations', [], false);
+                $items = $result['tasks'][0]['result'] ?? [];
+
+                return collect($items)
+                    ->filter(fn ($item) => isset($item['location_code'], $item['location_name']))
+                    ->map(function ($item) {
+                        $country = $item['country_iso_code'] ?? '';
+                        $name = $item['location_name'];
+
+                        return [
+                            'code' => (int) $item['location_code'],
+                            'name' => $country ? "{$name} ({$country})" : $name,
+                            'country_iso_code' => $country,
+                        ];
+                    })
+                    ->sortBy('name')
+                    ->values()
+                    ->all();
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $locations,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Keyword locations fetch error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch locations',
             ], 500);
         }
     }

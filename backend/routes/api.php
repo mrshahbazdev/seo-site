@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\OpportunityController;
 
 Route::prefix('keywords')->group(function () {
     Route::post('/research', [KeywordResearchController::class, 'search']);
+    Route::get('/locations', [KeywordResearchController::class, 'locations']);
 });
 
 Route::prefix('opportunities')->group(function () {
@@ -87,6 +88,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // History & Trends
         Route::get('/{siteId}/history', [\App\Http\Controllers\Api\HistoryController::class, 'scoreHistory']);
+        Route::get('/{id}/insights/cannibalization', [\App\Http\Controllers\Api\PhaseTwoInsightsController::class, 'cannibalization']);
+        Route::get('/{id}/insights/internal-linking', [\App\Http\Controllers\Api\PhaseTwoInsightsController::class, 'internalLinking']);
+        Route::get('/{id}/insights/decay-alerts', [\App\Http\Controllers\Api\PhaseTwoInsightsController::class, 'decayAlerts']);
+        Route::get('/{id}/alerts', [\App\Http\Controllers\Api\PhaseThreeOpsController::class, 'alerts']);
+        Route::post('/{id}/alerts/{alertId}/read', [\App\Http\Controllers\Api\PhaseThreeOpsController::class, 'markAlertRead']);
+        Route::get('/{id}/roi-summary', [\App\Http\Controllers\Api\PhaseThreeOpsController::class, 'roiSummary']);
 
         // Reports
         Route::get('/{siteId}/report/pdf', [\App\Http\Controllers\Api\ReportController::class, 'downloadPdf']);
@@ -112,6 +119,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [AuditController::class, 'show']);
         Route::get('/{id}/issues', [AuditController::class, 'issues']);
         Route::post('/{id}/issues/{issueId}/status', [AuditController::class, 'updateIssueStatus']);
+        Route::post('/{id}/issues/{issueId}/assign', [\App\Http\Controllers\Api\PhaseThreeOpsController::class, 'assignIssue']);
+        Route::get('/{id}/issues/{issueId}/comments', [\App\Http\Controllers\Api\PhaseThreeOpsController::class, 'issueComments']);
+        Route::post('/{id}/issues/{issueId}/comments', [\App\Http\Controllers\Api\PhaseThreeOpsController::class, 'addIssueComment']);
     });
 
     // Content Brief Generation
