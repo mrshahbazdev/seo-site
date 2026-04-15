@@ -21,6 +21,11 @@ class AuditSchedulerJob implements ShouldQueue
     public function handle(): void
     {
         $sites = Site::whereNotNull('audit_frequency')
+            ->where('audit_frequency', '!=', 'manual')
+            ->where(function ($query) {
+                $query->whereNull('notifications_enabled')
+                    ->orWhere('notifications_enabled', true);
+            })
             ->where(function ($query) {
                 $query->whereNull('next_audit_at')
                     ->orWhere('next_audit_at', '<=', now());

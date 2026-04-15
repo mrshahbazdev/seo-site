@@ -156,6 +156,7 @@ export default function OnPageSummaryPage() {
     const domain_info = summary?.domain_info ?? {};
     const page_metrics = summary?.page_metrics ?? {};
     const crawl_status = summary?.crawl_status ?? {};
+    const topFixes = buildTopFixes(page_metrics);
 
     return (
         <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '40px' }}>
@@ -396,7 +397,27 @@ export default function OnPageSummaryPage() {
                                 {page_metrics?.checks && Object.entries(page_metrics.checks).map(([key, count]) => (
                                     <CheckItem
                                         key={key}
-                                        label={key.replace(/_/g, ' ')}
+                                        label={(
+                                            <span>
+                                                {key.replace(/_/g, ' ')}
+                                                {CHECK_HINTS[key] ? (
+                                                    <span
+                                                        title={CHECK_HINTS[key]}
+                                                        style={{
+                                                            marginLeft: '6px',
+                                                            background: '#e2e8f0',
+                                                            color: '#475569',
+                                                            borderRadius: '999px',
+                                                            padding: '1px 6px',
+                                                            fontSize: '10px',
+                                                            fontWeight: 700,
+                                                        }}
+                                                    >
+                                                        ?
+                                                    </span>
+                                                ) : null}
+                                            </span>
+                                        )}
                                         count={count}
                                         isError={
                                             typeof count === 'number' &&
@@ -413,6 +434,44 @@ export default function OnPageSummaryPage() {
                     {/* Right Column: Crawl Status & Technicals */}
                     <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
+                            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '16px' }}>Top 10 Fixes This Week</h2>
+                            {topFixes.length > 0 ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                    {topFixes.map((fix, index) => (
+                                        <button
+                                            key={fix.key}
+                                            onClick={() => navigate(`/sites/${id}/onpage/pages?filter=${fix.key}`)}
+                                            style={{
+                                                textAlign: 'left',
+                                                border: '1px solid #f1f5f9',
+                                                background: '#f8fafc',
+                                                borderRadius: '8px',
+                                                padding: '10px 12px',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                <span style={{ fontSize: '12px', color: '#334155', fontWeight: 600 }}>
+                                                    {index + 1}. {fix.label}
+                                                </span>
+                                                <span style={{ fontSize: '11px', color: '#b91c1c', fontWeight: 700 }}>
+                                                    P{fix.priorityScore}
+                                                </span>
+                                            </div>
+                                            <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
+                                                Affected pages: {fix.count}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>
+                                    No urgent issues found from current crawl metrics.
+                                </p>
+                            )}
+                        </div>
+
+                        <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
                             <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '20px' }}>Crawl Status</h2>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                                 <InfoItem label="Status" value={crawl_status?.extended_crawl_status || crawl_status?.crawl_progress || 'Unknown'} valueColor={crawl_status?.crawl_progress === 'finished' ? '#166534' : '#2563eb'} />
@@ -422,6 +481,11 @@ export default function OnPageSummaryPage() {
                                 </div>
                                 <InfoItem label="Max Limit" value={crawl_status?.max_crawl_pages} />
                                 <InfoItem label="Gateway" value={crawl_status?.crawl_gateway_address} />
+                                <InfoItem label="Audit Frequency" value={domain_info?.audit_frequency || 'manual'} />
+                                <InfoItem
+                                    label="Next Scheduled Run"
+                                    value={domain_info?.next_audit_at ? new Date(domain_info.next_audit_at).toLocaleString() : 'Not scheduled'}
+                                />
 
                                 <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '12px', marginTop: '4px' }}>
                                     <div style={{ fontSize: '12px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -466,6 +530,62 @@ export default function OnPageSummaryPage() {
             />
         </div>
     );
+}
+
+const CHECK_HINTS = {
+    no_image_alt: 'Flags pages where at least one image has no alt attribute (icons/placeholders can trigger this).',
+    meta_charset_consistency: 'True means declared charset does not match detected page encoding.',
+    has_render_blocking_resources: 'Usually means CSS/JS blocks first render; common on many sites.',
+    duplicate_meta_tags: 'More than one meta tag of the same type appears on the page.',
+};
+
+const PRIORITY_WEIGHTS = {
+    is_5xx_code: 10,
+    is_4xx_code: 9,
+    is_broken: 9,
+    canonical_to_broken: 9,
+    duplicate_content: 8,
+    duplicate_title: 7,
+    duplicate_description: 7,
+    duplicate_meta_tags: 6,
+    redirect_loop: 6,
+    no_title: 6,
+    no_description: 6,
+    no_h1_tag: 5,
+    no_image_alt: 4,
+    high_loading_time: 4,
+    has_render_blocking_resources: 3,
+    meta_charset_consistency: 3,
+};
+
+function buildTopFixes(pageMetrics) {
+    const metrics = [];
+
+    const baseCounts = {
+        broken_links: pageMetrics?.broken_links ?? 0,
+        broken_resources: pageMetrics?.broken_resources ?? 0,
+        redirect_loop: pageMetrics?.redirect_loop ?? 0,
+        links_relation_conflict: pageMetrics?.links_relation_conflict ?? 0,
+    };
+
+    Object.entries(baseCounts).forEach(([key, count]) => {
+        if (typeof count === 'number' && count > 0) {
+            const weight = PRIORITY_WEIGHTS[key] ?? 4;
+            metrics.push({ key, label: key.replace(/_/g, ' '), count, priorityScore: Math.min(99, weight * count) });
+        }
+    });
+
+    const checks = pageMetrics?.checks ?? {};
+    Object.entries(checks).forEach(([key, count]) => {
+        if (!SUMMARY_COUNT_IS_BAD.has(key)) return;
+        if (typeof count !== 'number' || count <= 0) return;
+        const weight = PRIORITY_WEIGHTS[key] ?? 3;
+        metrics.push({ key, label: key.replace(/_/g, ' '), count, priorityScore: Math.min(99, weight * count) });
+    });
+
+    return metrics
+        .sort((a, b) => b.priorityScore - a.priorityScore)
+        .slice(0, 10);
 }
 
 const InfoItem = ({ label, value, subValue, valueColor = '#1e293b', icon }) => (

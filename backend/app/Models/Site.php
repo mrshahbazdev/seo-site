@@ -18,6 +18,7 @@ class Site extends Model
         'audit_frequency',
         'next_audit_at',
         'slack_webhook_url',
+        'notifications_enabled',
         'backlinks_data',
         'backlinks_list_data',
         'on_page_task_id',
@@ -26,6 +27,8 @@ class Site extends Model
 
     protected $casts = [
         'last_audit_at' => 'datetime',
+        'next_audit_at' => 'datetime',
+        'notifications_enabled' => 'boolean',
         'backlinks_data' => 'array',
         'backlinks_list_data' => 'array',
         'on_page_summary' => 'array',

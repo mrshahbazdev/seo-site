@@ -151,6 +151,7 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                                 title="Other pages with Same Title"
                                 emptyHint="—"
                                 rows={data?.same_title}
+                                strategy="title"
                                 siteId={siteId}
                                 onNavigate={onNavigate}
                                 compactEmpty
@@ -159,6 +160,7 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                                 title="Other pages with Same Meta description"
                                 emptyHint="—"
                                 rows={data?.same_description}
+                                strategy="description"
                                 siteId={siteId}
                                 onNavigate={onNavigate}
                                 compactEmpty
@@ -167,6 +169,7 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                                 title="Other pages with Identical Body text"
                                 emptyHint="—"
                                 rows={data?.same_body}
+                                strategy="body"
                                 siteId={siteId}
                                 onNavigate={onNavigate}
                                 compactEmpty
@@ -179,7 +182,7 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
     );
 }
 
-function DuplicateSection({ title, emptyHint, rows, siteId, onNavigate, compactEmpty }) {
+function DuplicateSection({ title, emptyHint, rows, siteId, onNavigate, compactEmpty, strategy }) {
     if (!rows || rows.length === 0) {
         if (compactEmpty) return null;
         return (
@@ -196,12 +199,19 @@ function DuplicateSection({ title, emptyHint, rows, siteId, onNavigate, compactE
                 {title}{' '}
                 <span style={{ fontWeight: '600', color: '#be185d' }}>({rows.length})</span>
             </div>
-            <PeerTable rows={rows} siteId={siteId} onNavigate={onNavigate} />
+            <PeerTable rows={rows} siteId={siteId} onNavigate={onNavigate} strategy={strategy} />
         </div>
     );
 }
 
-function PeerTable({ rows, siteId, onNavigate }) {
+function getRecommendation(strategy) {
+    if (strategy === 'title') return 'Keep unique title or canonicalize duplicate pages';
+    if (strategy === 'description') return 'Rewrite meta descriptions to avoid duplication';
+    if (strategy === 'body') return 'Merge thin duplicates or add unique body sections';
+    return 'Review and differentiate this page';
+}
+
+function PeerTable({ rows, siteId, onNavigate, strategy }) {
     return (
         <div style={{ overflowX: 'auto', borderRadius: '8px', border: '1px solid #fda4af', background: '#fff' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
@@ -210,6 +220,7 @@ function PeerTable({ rows, siteId, onNavigate }) {
                         <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>URL</th>
                         <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>Title</th>
                         <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>Meta description</th>
+                        <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>Suggested action</th>
                         <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700', width: '100px' }} />
                     </tr>
                 </thead>
@@ -244,6 +255,9 @@ function PeerTable({ rows, siteId, onNavigate }) {
                             </td>
                             <td style={{ padding: '8px 10px', verticalAlign: 'top', color: '#475569', lineHeight: 1.4 }}>
                                 {row.description_preview || row.description || '—'}
+                            </td>
+                            <td style={{ padding: '8px 10px', verticalAlign: 'top', color: '#475569', lineHeight: 1.4 }}>
+                                {row.isCurrent ? 'Source page' : getRecommendation(strategy)}
                             </td>
                             <td style={{ padding: '8px 10px', verticalAlign: 'top', whiteSpace: 'nowrap' }}>
                                 {!row.isCurrent && (

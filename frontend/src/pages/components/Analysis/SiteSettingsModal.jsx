@@ -31,7 +31,7 @@ export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
       const data = await res.json();
       if (data.success) {
         toast.success('Settings updated successfully');
-        onSave(data.data);
+        onSave(data.site ?? data.data ?? {});
         onClose();
       } else {
         toast.error(data.message || 'Failed to update settings');
