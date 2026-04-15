@@ -500,8 +500,17 @@ class DataForSEOService
         try {
             $result = $this->makeRequest($endpoint, $data);
 
-            if (isset($result['tasks'][0]['result'][0]['items'])) {
+            $task = $result['tasks'][0] ?? null;
+            $statusCode = $task['status_code'] ?? null;
+            $statusMessage = $task['status_message'] ?? null;
+
+            if (isset($task['result'][0]['items'])) {
                 return $result['tasks'][0]['result'][0]['items'];
+            }
+
+            // If DataForSEO returned a non-success status, surface it (don't silently cache empty).
+            if ($statusCode && (int) $statusCode !== 20000) {
+                throw new \Exception("DataForSEO keyword suggestions failed ({$statusCode}): " . ($statusMessage ?: 'Unknown error'));
             }
 
             return [];

@@ -29,7 +29,13 @@ class KeywordResearchController extends Controller
             'language_code' => 'sometimes|string|size:2'
         ]);
 
-        $keyword = strtolower($request->keyword);
+        $keyword = strtolower(trim((string) $request->keyword));
+        if ($keyword === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Keyword cannot be empty',
+            ], 422);
+        }
         $location = $request->location_code ?? 2840; // Default US
         $language = $request->language_code ?? 'en';
 
