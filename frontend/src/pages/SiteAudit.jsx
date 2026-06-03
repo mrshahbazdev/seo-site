@@ -195,7 +195,8 @@ export default function SiteAudit() {
                             <h1 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', margin: '0 0 4px 0' }}>{t('siteDetails.siteAudit')}</h1>
                             <p style={{ color: '#64748b', margin: 0 }}>{site?.domain}</p>
                         </div>
-                        <div style={{ display: 'flex', gap: '12px' }}>
+                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                            <LanguageSwitcher />
                             {!running && processingCount === 0 && (
                                 <button
                                     onClick={startAudit}

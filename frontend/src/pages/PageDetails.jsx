@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowLeft, CheckCircle, AlertTriangle, XCircle, ChevronDown, ChevronRight, Layout, Image as ImageIcon, Link as LinkIcon, FileText, Globe } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function PageDetails() {
     const { t } = useTranslation();
@@ -163,8 +164,8 @@ export default function PageDetails() {
                                 </a>
                             </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '12px' }}>
-
+                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                            <LanguageSwitcher />
                             <button
                                 onClick={handlePaidAnalysis}
                                 disabled={analyzingPaid}

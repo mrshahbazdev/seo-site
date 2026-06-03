@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowLeft, RefreshCw, Shield, ShieldAlert, Server, Globe, FileText, AlertTriangle, CheckCircle, XCircle, Clock, Settings } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import { SUMMARY_COUNT_IS_BAD } from '../utils/dataforseoChecks';
 import ScoreTrendChart from './components/Analysis/ScoreTrendChart';
 import SiteSettingsModal from './components/Analysis/SiteSettingsModal';
@@ -175,7 +176,8 @@ export default function OnPageSummaryPage() {
                             <div style={{ fontSize: '14px', color: '#64748b' }}>{domain_info?.main_domain ?? '—'}</div>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '12px' }}>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <LanguageSwitcher />
                         <button
                             onClick={() => navigate(`/sites/${id}/onpage/pages`)}
                             style={{

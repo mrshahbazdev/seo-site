@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Award, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function CompetitorComparison() {
     const { t } = useTranslation();
@@ -119,22 +120,24 @@ export default function CompetitorComparison() {
         <div style={{ padding: '32px', maxWidth: '1400px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{ marginBottom: '32px' }}>
-                <button
-                    onClick={() => navigate(`/sites/${id}/competitors`)}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        background: 'none',
-                        border: 'none',
-                        color: '#3b82f6',
-                        fontSize: '14px',
-                        cursor: 'pointer',
-                        marginBottom: '16px'
-                    }}
-                >
-                    <ArrowLeft size={16} /> Back to Competitors
-                </button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                    <button
+                        onClick={() => navigate(`/sites/${id}/competitors`)}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            background: 'none',
+                            border: 'none',
+                            color: '#3b82f6',
+                            fontSize: '14px',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <ArrowLeft size={16} /> Back to Competitors
+                    </button>
+                    <LanguageSwitcher />
+                </div>
 
                 <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: '0 0 8px 0' }}>
                     Competitor Comparison

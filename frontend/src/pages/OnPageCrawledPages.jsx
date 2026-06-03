@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, AlertTriangle, CheckCircle, XCircle, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function OnPageCrawledPages() {
     const { t } = useTranslation();
@@ -90,6 +91,8 @@ export default function OnPageCrawledPages() {
                             </div>
                         </div>
                     </div>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <LanguageSwitcher />
                     <button
                         onClick={() => fetchPages(true)}
                         disabled={loading}
@@ -108,6 +111,7 @@ export default function OnPageCrawledPages() {
                     >
                         {loading ? 'Refreshing...' : 'Refresh List'}
                     </button>
+                    </div>
                 </div>
             </div>
 

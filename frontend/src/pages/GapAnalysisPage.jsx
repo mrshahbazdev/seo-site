@@ -62,9 +62,12 @@ export default function GapAnalysisPage() {
     return (
         <div style={{ padding: '40px', maxWidth: '1200px', margin: '0 auto' }}>
             <div style={{ marginBottom: '32px' }}>
-                <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#0f172a', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Target size={32} color="#3b82f6" /> Content Gap Analysis
-                </h1>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#0f172a', margin: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <Target size={32} color="#3b82f6" /> Content Gap Analysis
+                    </h1>
+                    <LanguageSwitcher />
+                </div>
                 <p style={{ color: '#64748b', fontSize: '16px' }}>
                     Find high-value keywords your competitors rank for, but you don't.
                 </p>

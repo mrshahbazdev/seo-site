@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowLeft, CheckCircle, AlertTriangle, XCircle, Globe } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function PaidAnalysisPage() {
     const { t } = useTranslation();
@@ -94,16 +95,19 @@ export default function PaidAnalysisPage() {
                     <button onClick={() => navigate(`/sites/${siteId}/pages/${pageId}`)} style={{ display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'none', color: '#64748b', cursor: 'pointer', marginBottom: '12px' }}>
                         <ArrowLeft size={16} /> Back to Page Details
                     </button>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: '40px', height: '40px', background: '#8b5cf6', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', numberOfLines: 1 }}>
-                            <span style={{ fontSize: '20px', color: 'white' }}>⚡</span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ width: '40px', height: '40px', background: '#8b5cf6', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', numberOfLines: 1 }}>
+                                <span style={{ fontSize: '20px', color: 'white' }}>⚡</span>
+                            </div>
+                            <div>
+                                <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>Paid Deep Analysis Report</h1>
+                                <a href={analysis.overview.url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <Globe size={13} /> {analysis.overview.url}
+                                </a>
+                            </div>
                         </div>
-                        <div>
-                            <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>Paid Deep Analysis Report</h1>
-                            <a href={analysis.overview.url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <Globe size={13} /> {analysis.overview.url}
-                            </a>
-                        </div>
+                        <LanguageSwitcher />
                     </div>
                 </div>
             </div>
