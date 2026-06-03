@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Link2, RefreshCw, ExternalLink, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function CompetitorDetailsPage() {
+    const { t } = useTranslation();
     const { id, competitorId } = useParams();
     const navigate = useNavigate();
     const [competitor, setCompetitor] = useState(null);

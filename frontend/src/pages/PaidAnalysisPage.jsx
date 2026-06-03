@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowLeft, CheckCircle, AlertTriangle, XCircle, Globe } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function PaidAnalysisPage() {
+    const { t } = useTranslation();
     const { siteId, pageId } = useParams();
     const navigate = useNavigate();
     const [page, setPage] = useState(null);

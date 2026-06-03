@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ExternalLink, AlertTriangle, CheckCircle, XCircle, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function OnPageCrawledPages() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();

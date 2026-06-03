@@ -1,4 +1,9 @@
+import { useState } from 'react';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+
 export default function Login() {
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -26,10 +31,10 @@ export default function Login() {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 window.location.href = '/dashboard';
             } else {
-                setError(data.message || 'Login failed');
+                setError(data.message || t('auth.loginFailed'));
             }
         } catch (err) {
-            setError('Connection error');
+            setError(t('common.connectionError'));
         } finally {
             setLoading(false);
         }
@@ -44,6 +49,9 @@ export default function Login() {
             background: '#f7fafc',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
         }}>
+            <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
+                <LanguageSwitcher />
+            </div>
             <div style={{
                 background: 'white',
                 borderRadius: '16px',
@@ -61,10 +69,10 @@ export default function Login() {
                         color: '#1a202c',
                         marginBottom: '8px'
                     }}>
-                        SEO Multi-Tool
+                        {t('common.appName')}
                     </h1>
                     <p style={{ color: '#718096', fontSize: '16px' }}>
-                        Sign in to your account
+                        {t('auth.signInToAccount')}
                     </p>
                 </div>
 
@@ -93,7 +101,7 @@ export default function Login() {
                             color: '#2d3748',
                             marginBottom: '8px'
                         }}>
-                            Email
+                            {t('common.email')}
                         </label>
                         <input
                             type="email"
@@ -124,7 +132,7 @@ export default function Login() {
                             color: '#2d3748',
                             marginBottom: '8px'
                         }}>
-                            Password
+                            {t('common.password')}
                         </label>
                         <input
                             type="password"
@@ -174,7 +182,7 @@ export default function Login() {
                             e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
                         }}
                     >
-                        {loading ? 'Signing in...' : 'Sign In'}
+                        {loading ? t('auth.signingIn') : t('auth.signIn')}
                     </button>
                 </form>
 
@@ -184,7 +192,7 @@ export default function Login() {
                     color: '#718096',
                     marginTop: '24px'
                 }}>
-                    Don't have an account?{' '}
+                    {t('auth.dontHaveAccount')}{' '}
                     <a
                         href="/register"
                         style={{
@@ -195,12 +203,10 @@ export default function Login() {
                         onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
                         onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
                     >
-                        Sign up
+                        {t('auth.signUp')}
                     </a>
                 </p>
             </div>
         </div>
     );
 }
-
-import { useState } from 'react';

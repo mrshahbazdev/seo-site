@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Activity, Users, Link as LinkIcon, FileText, ArrowLeft, Globe } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function SiteDetailsPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [site, setSite] = useState(null);
@@ -31,37 +34,37 @@ export default function SiteDetailsPage() {
 
     const Tools = [
         {
-            name: 'Site Audit',
+            name: t('siteDetails.siteAudit'),
             path: `/sites/${id}/audit`,
             icon: <Activity size={24} color="#3b82f6" />,
-            desc: 'Technical SEO health check. Crawl pages and find issues.',
+            desc: t('siteDetails.siteAuditDesc'),
             color: '#eff6ff'
         },
         {
-            name: 'Competitor Analysis',
+            name: t('siteDetails.competitorAnalysis'),
             path: `/sites/${id}/competitors`,
             icon: <Users size={24} color="#ef4444" />,
-            desc: 'Track and compare performance against your top rivals.',
+            desc: t('siteDetails.competitorAnalysisDesc'),
             color: '#fef2f2'
         },
         {
-            name: 'Backlink Profile',
+            name: t('siteDetails.backlinkProfile'),
             path: `/sites/${id}/backlinks`,
             icon: <LinkIcon size={24} color="#10b981" />,
-            desc: 'Monitor inbound links and referring domains.',
+            desc: t('siteDetails.backlinkProfileDesc'),
             color: '#ecfdf5'
         },
         {
-            name: 'On-Page SEO',
+            name: t('siteDetails.onPageSeo'),
             path: `/sites/${id}/onpage-summary`,
             icon: <FileText size={24} color="#f59e0b" />,
-            desc: 'Analyze content, meta tags, and keyword usage per page.',
+            desc: t('siteDetails.onPageSeoDesc'),
             color: '#fffbeb'
         }
     ];
 
-    if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Loading...</div>;
-    if (!site) return <div style={{ padding: '40px', textAlign: 'center' }}>Site not found</div>;
+    if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>{t('common.loading')}</div>;
+    if (!site) return <div style={{ padding: '40px', textAlign: 'center' }}>{t('siteDetails.siteNotFound')}</div>;
 
     return (
         <div style={{ padding: '32px', maxWidth: '1200px', margin: '0 auto', fontFamily: '-apple-system, sans-serif' }}>
@@ -79,8 +82,12 @@ export default function SiteDetailsPage() {
                     fontSize: '14px'
                 }}
             >
-                <ArrowLeft size={16} /> Back to Dashboard
+                <ArrowLeft size={16} /> {t('common.backToDashboard')}
             </button>
+
+            <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
+                <LanguageSwitcher />
+            </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
                 <div style={{ width: '64px', height: '64px', background: 'white', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
@@ -94,7 +101,7 @@ export default function SiteDetailsPage() {
                 </div>
             </div>
 
-            <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a202c', marginBottom: '24px' }}>Project Tools</h2>
+            <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a202c', marginBottom: '24px' }}>{t('siteDetails.projectTools')}</h2>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
                 {Tools.map((tool, i) => (

@@ -3,8 +3,11 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Search, Loader2, Sparkles, TrendingUp, Info, Target, ArrowLeft, Clipboard, Check, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function OpportunityFinderPage() {
+    const { t } = useTranslation();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);

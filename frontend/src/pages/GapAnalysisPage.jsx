@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Layout, ArrowRight, Search, TrendingUp, BarChart2, Target, Shield, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function GapAnalysisPage() {
+    const { t } = useTranslation();
     const [target, setTarget] = useState('jobspic.com'); // Default for demo
     const [competitors, setCompetitors] = useState(['rozee.pk', '']);
     const [results, setResults] = useState(null);
