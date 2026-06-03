@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Sparkles, Users, Target } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function Dashboard() {
+    const { t } = useTranslation();
     const [sites, setSites] = useState([]);
     const [stats, setStats] = useState({
         totalSites: 0,
@@ -63,7 +66,7 @@ export default function Dashboard() {
                 minHeight: '100vh',
                 background: '#f7fafc'
             }}>
-                <div style={{ color: '#718096', fontSize: '16px' }}>Loading...</div>
+                <div style={{ color: '#718096', fontSize: '16px' }}>{t('common.loading')}</div>
             </div>
         );
     }
@@ -95,7 +98,7 @@ export default function Dashboard() {
                             color: '#1a202c',
                             margin: 0
                         }}>
-                            SEO Multi-Tool
+                            {t('common.appName')}
                         </h1>
                         {user && (
                             <p style={{
@@ -103,28 +106,31 @@ export default function Dashboard() {
                                 color: '#718096',
                                 margin: '4px 0 0 0'
                             }}>
-                                Welcome, {user.name}
+                                {t('dashboard.welcome', { name: user.name })}
                             </p>
                         )}
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        style={{
-                            padding: '8px 16px',
-                            background: '#e2e8f0',
-                            color: '#2d3748',
-                            border: 'none',
-                            borderRadius: '6px',
-                            fontSize: '14px',
-                            fontWeight: '500',
-                            cursor: 'pointer',
-                            transition: 'background 0.2s'
-                        }}
-                        onMouseEnter={(e) => e.target.style.background = '#cbd5e0'}
-                        onMouseLeave={(e) => e.target.style.background = '#e2e8f0'}
-                    >
-                        Logout
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <LanguageSwitcher />
+                        <button
+                            onClick={handleLogout}
+                            style={{
+                                padding: '8px 16px',
+                                background: '#e2e8f0',
+                                color: '#2d3748',
+                                border: 'none',
+                                borderRadius: '6px',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                cursor: 'pointer',
+                                transition: 'background 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.target.style.background = '#cbd5e0'}
+                            onMouseLeave={(e) => e.target.style.background = '#e2e8f0'}
+                        >
+                            {t('auth.logout')}
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -141,10 +147,10 @@ export default function Dashboard() {
                     marginBottom: '32px'
                 }}>
                     {[
-                        { label: 'Total Sites', value: stats.totalSites, color: '#3b82f6' },
-                        { label: 'Total Audits', value: stats.totalAudits, color: '#10b981' },
-                        { label: 'Critical Issues', value: stats.criticalIssues, color: '#ef4444' },
-                        { label: 'Avg Health Score', value: stats.avgScore, color: '#8b5cf6' }
+                        { label: t('dashboard.totalSites'), value: stats.totalSites, color: '#3b82f6' },
+                        { label: t('dashboard.totalAudits'), value: stats.totalAudits, color: '#10b981' },
+                        { label: t('dashboard.criticalIssues'), value: stats.criticalIssues, color: '#ef4444' },
+                        { label: t('dashboard.avgHealthScore'), value: stats.avgScore, color: '#8b5cf6' }
                     ].map((stat, index) => (
                         <div key={index} style={{
                             background: 'white',
@@ -173,7 +179,7 @@ export default function Dashboard() {
                 </div>
 
                 {/* Power Tools Grid */}
-                <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a202c', marginBottom: '16px' }}>Power Tools</h2>
+                <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1a202c', marginBottom: '16px' }}>{t('dashboard.powerTools')}</h2>
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
@@ -198,10 +204,8 @@ export default function Dashboard() {
                             <div style={{ background: '#f5f3ff', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                                 <Sparkles size={24} color="#7c3aed" />
                             </div>
-                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0' }}>Opportunity Finder</h3>
-                            <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: '1.5' }}>
-                                Find "Blue Ocean" keywords with our <strong>Strategy Generator</strong>. Generate titles & outlines instantly.
-                            </p>
+                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0' }}>{t('dashboard.opportunityFinder')}</h3>
+                            <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: '1.5' }} dangerouslySetInnerHTML={{ __html: t('dashboard.opportunityFinderDesc') }} />
                         </div>
                     </Link>
 
@@ -223,9 +227,9 @@ export default function Dashboard() {
                             <div style={{ background: '#fce7f3', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                                 <Users size={24} color="#db2777" />
                             </div>
-                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0' }}>Competitor Spy</h3>
+                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0' }}>{t('dashboard.competitorSpy')}</h3>
                             <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: '1.5' }}>
-                                Steal your competitor's traffic. See every keyword they rank for, their volume, and value.
+                                {t('dashboard.competitorSpyDesc')}
                             </p>
                         </div>
                     </Link>
@@ -248,9 +252,9 @@ export default function Dashboard() {
                             <div style={{ background: '#e0f2fe', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                                 <Search size={24} color="#0284c7" />
                             </div>
-                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0' }}>Keyword Research</h3>
+                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0' }}>{t('dashboard.keywordResearch')}</h3>
                             <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: '1.5' }}>
-                                Classic keyword data. Check volume, CPC, and difficulty for any term.
+                                {t('dashboard.keywordResearchDesc')}
                             </p>
                         </div>
                     </Link>
@@ -273,9 +277,9 @@ export default function Dashboard() {
                             <div style={{ background: '#dcfce7', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
                                 <Target size={24} color="#166534" />
                             </div>
-                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0' }}>Content Gap</h3>
+                            <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0' }}>{t('dashboard.contentGap')}</h3>
                             <p style={{ fontSize: '14px', color: '#64748b', margin: 0, lineHeight: '1.5' }}>
-                                Find keywords your competitors rank for but you miss. High ROI.
+                                {t('dashboard.contentGapDesc')}
                             </p>
                         </div>
                     </Link>
@@ -299,7 +303,7 @@ export default function Dashboard() {
                             color: '#1a202c',
                             margin: 0
                         }}>
-                            Your Sites
+                            {t('dashboard.yourSites')}
                         </h2>
                         <a
                             href="/sites/add"
@@ -316,7 +320,7 @@ export default function Dashboard() {
                             onMouseEnter={(e) => e.target.style.background = '#2563eb'}
                             onMouseLeave={(e) => e.target.style.background = '#3b82f6'}
                         >
-                            Add New Site
+                            {t('dashboard.addNewSite')}
                         </a>
                     </div>
 
@@ -330,7 +334,7 @@ export default function Dashboard() {
                                 marginBottom: '16px',
                                 fontSize: '16px'
                             }}>
-                                No sites added yet
+                                {t('dashboard.noSitesYet')}
                             </p>
                             <a
                                 href="/sites/add"
@@ -345,7 +349,7 @@ export default function Dashboard() {
                                     fontWeight: '600'
                                 }}
                             >
-                                Add Your First Site
+                                {t('dashboard.addFirstSite')}
                             </a>
                         </div>
                     ) : (
@@ -397,7 +401,7 @@ export default function Dashboard() {
                                                     fontWeight: '600'
                                                 }}
                                             >
-                                                Run Audit
+                                                {t('dashboard.runAudit')}
                                             </a>
                                             <a
                                                 href={`/sites/${site.id}`}
@@ -411,7 +415,7 @@ export default function Dashboard() {
                                                     fontWeight: '600'
                                                 }}
                                             >
-                                                View Details
+                                                {t('dashboard.viewDetails')}
                                             </a>
                                         </div>
                                     </div>

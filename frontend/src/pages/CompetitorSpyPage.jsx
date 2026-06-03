@@ -3,8 +3,11 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { Search, Loader2, Globe, TrendingUp, DollarSign, ArrowLeft, Target, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function CompetitorSpyPage() {
+    const { t } = useTranslation();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);

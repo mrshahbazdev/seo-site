@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { LinkIcon, FileText, Activity, AlertTriangle, AlertCircle, CheckCircle, Info, Play, Loader2, ArrowLeft } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function SiteAudit() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [site, setSite] = useState(null);
@@ -173,7 +176,7 @@ export default function SiteAudit() {
         : issues.filter(i => i.severity === issueCategory);
 
     if (loading) {
-        return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>Loading...</div>;
+        return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>{t('common.loading')}</div>;
     }
 
     return (
@@ -185,11 +188,11 @@ export default function SiteAudit() {
                         onClick={() => navigate(`/sites/${id}`)}
                         style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'none', border: 'none', color: '#64748b', marginBottom: '16px', cursor: 'pointer', fontSize: '14px' }}
                     >
-                        <ArrowLeft size={16} /> Back to Site Details
+                        <ArrowLeft size={16} /> {t('common.back')}
                     </button>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                            <h1 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', margin: '0 0 4px 0' }}>Site Audit Report</h1>
+                            <h1 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', margin: '0 0 4px 0' }}>{t('siteDetails.siteAudit')}</h1>
                             <p style={{ color: '#64748b', margin: 0 }}>{site?.domain}</p>
                         </div>
                         <div style={{ display: 'flex', gap: '12px' }}>
@@ -198,7 +201,7 @@ export default function SiteAudit() {
                                     onClick={startAudit}
                                     style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: '#2563eb', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }}
                                 >
-                                    <Play size={16} /> Run New Audit
+                                    <Play size={16} /> {t('dashboard.runAudit')}
                                 </button>
                             )}
                         </div>
@@ -225,7 +228,7 @@ export default function SiteAudit() {
                         <div style={{ width: '64px', height: '64px', background: '#eff6ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                             <Activity size={32} color="#3b82f6" />
                         </div>
-                        <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>No Audit Data Yet</h2>
+                        <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>{t('audit.noAudits')}</h2>
                         <p style={{ color: '#64748b', maxWidth: '400px', margin: '0 auto 24px' }}>Run a comprehensive technical audit to identify SEO issues, broken links, and optimization opportunities.</p>
                         <button
                             onClick={startAudit}

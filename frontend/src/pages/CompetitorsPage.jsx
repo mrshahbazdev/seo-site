@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, TrendingUp, Link2, Users, RefreshCw, Trash2, Eye, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function CompetitorsPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [competitors, setCompetitors] = useState([]);

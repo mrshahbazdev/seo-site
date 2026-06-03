@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Award, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function CompetitorComparison() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const navigate = useNavigate();
     const [competitors, setCompetitors] = useState([]);

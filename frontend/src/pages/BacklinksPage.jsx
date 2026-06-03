@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Link as LinkIcon, AlertTriangle, ExternalLink, RotateCw } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function BacklinksPage() {
+    const { t } = useTranslation();
     const { siteId, pageId } = useParams();
     const navigate = useNavigate();
     const [backlinks, setBacklinks] = useState(null);

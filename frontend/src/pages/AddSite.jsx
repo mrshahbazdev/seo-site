@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function AddSite() {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         name: '',
         domain: '',
@@ -30,10 +33,10 @@ export default function AddSite() {
             if (data.success) {
                 window.location.href = '/dashboard';
             } else {
-                setError(data.message || 'Failed to add site');
+                setError(data.message || t('addSite.failedToAdd'));
             }
         } catch (err) {
-            setError('Connection error');
+            setError(t('common.connectionError'));
         } finally {
             setLoading(false);
         }
@@ -53,7 +56,10 @@ export default function AddSite() {
                 <div style={{
                     maxWidth: '800px',
                     margin: '0 auto',
-                    padding: '0 24px'
+                    padding: '0 24px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
                 }}>
                     <h1 style={{
                         fontSize: '24px',
@@ -61,8 +67,9 @@ export default function AddSite() {
                         color: '#1a202c',
                         margin: 0
                     }}>
-                        Add New Site
+                        {t('addSite.title')}
                     </h1>
+                    <LanguageSwitcher />
                 </div>
             </header>
 
@@ -101,13 +108,13 @@ export default function AddSite() {
                                 color: '#2d3748',
                                 marginBottom: '8px'
                             }}>
-                                Site Name
+                                {t('addSite.siteName')}
                             </label>
                             <input
                                 type="text"
                                 value={formData.name}
                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                placeholder="My Awesome Website"
+                                placeholder={t('addSite.siteNamePlaceholder')}
                                 required
                                 style={{
                                     width: '100%',
@@ -127,7 +134,7 @@ export default function AddSite() {
                                 color: '#718096',
                                 margin: '6px 0 0 0'
                             }}>
-                                A friendly name to identify your site
+                                {t('addSite.siteNameHelp')}
                             </p>
                         </div>
 
@@ -139,7 +146,7 @@ export default function AddSite() {
                                 color: '#2d3748',
                                 marginBottom: '8px'
                             }}>
-                                Domain
+                                {t('addSite.domain')}
                             </label>
                             <input
                                 type="text"
@@ -165,7 +172,7 @@ export default function AddSite() {
                                 color: '#718096',
                                 margin: '6px 0 0 0'
                             }}>
-                                Enter your domain without http:// or https://
+                                {t('addSite.domainHelp')}
                             </p>
                         </div>
 
@@ -188,7 +195,7 @@ export default function AddSite() {
                                 onMouseEnter={(e) => e.target.style.background = '#cbd5e0'}
                                 onMouseLeave={(e) => e.target.style.background = '#e2e8f0'}
                             >
-                                Cancel
+                                {t('common.cancel')}
                             </button>
                             <button
                                 type="submit"
@@ -212,7 +219,7 @@ export default function AddSite() {
                                     if (!loading) e.target.style.background = '#3b82f6';
                                 }}
                             >
-                                {loading ? 'Adding...' : 'Add Site'}
+                                {loading ? t('addSite.adding') : t('addSite.addSite')}
                             </button>
                         </div>
                     </form>

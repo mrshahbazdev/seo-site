@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, FileText, Smartphone, Monitor } from 'lucide-react';
+import { useTranslation } from '../i18n/LanguageContext';
 
 export default function PageContent() {
+    const { t } = useTranslation();
     const { siteId, pageId } = useParams();
     const navigate = useNavigate();
     const [page, setPage] = useState(null);

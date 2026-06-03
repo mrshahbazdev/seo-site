@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function Register() {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -15,7 +18,7 @@ export default function Register() {
         setError('');
 
         if (formData.password !== formData.password_confirmation) {
-            setError('Passwords do not match');
+            setError(t('auth.passwordsDoNotMatch'));
             return;
         }
 
@@ -38,10 +41,10 @@ export default function Register() {
                 localStorage.setItem('user', JSON.stringify(data.user));
                 window.location.href = '/dashboard';
             } else {
-                setError(data.message || 'Registration failed');
+                setError(data.message || t('auth.registrationFailed'));
             }
         } catch (err) {
-            setError('Connection error');
+            setError(t('common.connectionError'));
         } finally {
             setLoading(false);
         }
@@ -68,6 +71,9 @@ export default function Register() {
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
             padding: '20px'
         }}>
+            <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
+                <LanguageSwitcher />
+            </div>
             <div style={{
                 background: 'white',
                 borderRadius: '12px',
@@ -85,10 +91,10 @@ export default function Register() {
                         color: '#1a202c',
                         marginBottom: '6px'
                     }}>
-                        Create Account
+                        {t('auth.createAccount')}
                     </h1>
                     <p style={{ color: '#718096', fontSize: '15px' }}>
-                        Start optimizing your SEO today
+                        {t('auth.startOptimizing')}
                     </p>
                 </div>
 
@@ -117,7 +123,7 @@ export default function Register() {
                             color: '#2d3748',
                             marginBottom: '6px'
                         }}>
-                            Name
+                            {t('common.name')}
                         </label>
                         <input
                             type="text"
@@ -138,7 +144,7 @@ export default function Register() {
                             color: '#2d3748',
                             marginBottom: '6px'
                         }}>
-                            Email
+                            {t('common.email')}
                         </label>
                         <input
                             type="email"
@@ -159,7 +165,7 @@ export default function Register() {
                             color: '#2d3748',
                             marginBottom: '6px'
                         }}>
-                            Password
+                            {t('common.password')}
                         </label>
                         <input
                             type="password"
@@ -180,7 +186,7 @@ export default function Register() {
                             color: '#2d3748',
                             marginBottom: '6px'
                         }}>
-                            Confirm Password
+                            {t('auth.confirmPassword')}
                         </label>
                         <input
                             type="password"
@@ -220,7 +226,7 @@ export default function Register() {
                             e.target.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
                         }}
                     >
-                        {loading ? 'Creating account...' : 'Sign Up'}
+                        {loading ? t('auth.creatingAccount') : t('auth.signUp')}
                     </button>
                 </form>
 
@@ -230,7 +236,7 @@ export default function Register() {
                     color: '#718096',
                     marginTop: '20px'
                 }}>
-                    Already have an account?{' '}
+                    {t('auth.alreadyHaveAccount')}{' '}
                     <a
                         href="/login"
                         style={{
@@ -241,7 +247,7 @@ export default function Register() {
                         onMouseEnter={(e) => e.target.style.textDecoration = 'underline'}
                         onMouseLeave={(e) => e.target.style.textDecoration = 'none'}
                     >
-                        Sign in
+                        {t('auth.signIn')}
                     </a>
                 </p>
             </div>
