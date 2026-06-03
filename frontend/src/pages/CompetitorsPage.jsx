@@ -167,7 +167,8 @@ export default function CompetitorsPage() {
                             Track and compare your competitors' SEO performance
                         </p>
                     </div>
-                    <div style={{ display: 'flex', gap: '12px' }}>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <LanguageSwitcher />
                         {competitors.filter(c => c.metrics_data && Object.keys(c.metrics_data).length > 0).length >= 2 && (
                             <button
                                 onClick={() => navigate(`/sites/${id}/competitors-comparison`)}

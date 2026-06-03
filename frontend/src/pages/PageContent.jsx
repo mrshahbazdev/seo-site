@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, FileText, Smartphone, Monitor } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function PageContent() {
     const { t } = useTranslation();
@@ -62,29 +63,32 @@ export default function PageContent() {
                             </h1>
                             <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>{analysis.overview.url}</p>
                         </div>
-                        <div style={{ display: 'flex', gap: '8px', background: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
-                            <button
-                                onClick={() => setViewMode('desktop')}
-                                style={{
-                                    padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: '600',
-                                    background: viewMode === 'desktop' ? 'white' : 'transparent',
-                                    color: viewMode === 'desktop' ? '#0f172a' : '#64748b',
-                                    boxShadow: viewMode === 'desktop' ? '0 1px 2px rgba(0,0,0,0.1)' : 'none'
-                                }}
-                            >
-                                <Monitor size={14} /> Desktop
-                            </button>
-                            <button
-                                onClick={() => setViewMode('mobile')}
-                                style={{
-                                    padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: '600',
-                                    background: viewMode === 'mobile' ? 'white' : 'transparent',
-                                    color: viewMode === 'mobile' ? '#0f172a' : '#64748b',
-                                    boxShadow: viewMode === 'mobile' ? '0 1px 2px rgba(0,0,0,0.1)' : 'none'
-                                }}
-                            >
-                                <Smartphone size={14} /> Mobile
-                            </button>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <LanguageSwitcher />
+                            <div style={{ display: 'flex', gap: '8px', background: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
+                                <button
+                                    onClick={() => setViewMode('desktop')}
+                                    style={{
+                                        padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: '600',
+                                        background: viewMode === 'desktop' ? 'white' : 'transparent',
+                                        color: viewMode === 'desktop' ? '#0f172a' : '#64748b',
+                                        boxShadow: viewMode === 'desktop' ? '0 1px 2px rgba(0,0,0,0.1)' : 'none'
+                                    }}
+                                >
+                                    <Monitor size={14} /> Desktop
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('mobile')}
+                                    style={{
+                                        padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: '600',
+                                        background: viewMode === 'mobile' ? 'white' : 'transparent',
+                                        color: viewMode === 'mobile' ? '#0f172a' : '#64748b',
+                                        boxShadow: viewMode === 'mobile' ? '0 1px 2px rgba(0,0,0,0.1)' : 'none'
+                                    }}
+                                >
+                                    <Smartphone size={14} /> Mobile
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

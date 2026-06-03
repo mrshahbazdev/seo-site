@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, TrendingUp, Link2, RefreshCw, ExternalLink, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function CompetitorDetailsPage() {
     const { t } = useTranslation();
@@ -145,6 +146,8 @@ export default function CompetitorDetailsPage() {
                             <ExternalLink size={14} />
                         </div>
                     </div>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <LanguageSwitcher />
                     <button
                         onClick={handleAnalyze}
                         style={{
@@ -163,6 +166,7 @@ export default function CompetitorDetailsPage() {
                     >
                         <RefreshCw size={18} /> Refresh Metrics
                     </button>
+                    </div>
                 </div>
             </div>
 

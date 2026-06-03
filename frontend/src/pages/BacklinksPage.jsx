@@ -149,7 +149,8 @@ export default function BacklinksPage() {
                             <div style={{ fontSize: '14px', color: '#64748b' }}>Comprehensive link profile summary</div>
                         </div>
                     </div>
-                    <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
+                    <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                        <LanguageSwitcher />
                         <div style={{ background: '#e2e8f0', padding: '4px', borderRadius: '8px', display: 'flex' }}>
                             <button
                                 onClick={() => setViewMode('summary')}

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, Clock, Code, FileText, Layout, Server, ExternalLink, Copy, Globe, Target, RefreshCw, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import ContentOptimizer from './components/Analysis/ContentOptimizer';
 import DeepInspector from './components/Analysis/DeepInspector';
 import DuplicateCandidates from './components/Analysis/DuplicateCandidates';
@@ -75,7 +76,8 @@ export default function OnPagePageDetails() {
                             </h1>
                         </div>
                     </div>
-                    <div style={{ flexShrink: 0, marginLeft: '16px', display: 'flex', gap: '8px' }}>
+                    <div style={{ flexShrink: 0, marginLeft: '16px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <LanguageSwitcher />
                         <button
                             onClick={() => window.open(`https://www.google.com/search?q=site:${encodeURIComponent(page.url)}`, '_blank')}
                             style={{ padding: '8px 16px', background: 'white', color: '#3b82f6', border: '1px solid #3b82f6', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}

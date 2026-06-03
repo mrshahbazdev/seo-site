@@ -73,22 +73,24 @@ export default function OpportunityFinderPage() {
         <div style={{ padding: '32px', maxWidth: '1200px', margin: '0 auto' }}>
             {/* Header */}
             <div style={{ marginBottom: '32px' }}>
-                <button
-                    onClick={() => navigate('/dashboard')}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        background: 'none',
-                        border: 'none',
-                        color: '#3b82f6',
-                        fontSize: '14px',
-                        cursor: 'pointer',
-                        marginBottom: '16px'
-                    }}
-                >
-                    <ArrowLeft size={16} /> Back to Dashboard
-                </button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                    <button
+                        onClick={() => navigate('/dashboard')}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            background: 'none',
+                            border: 'none',
+                            color: '#3b82f6',
+                            fontSize: '14px',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <ArrowLeft size={16} /> Back to Dashboard
+                    </button>
+                    <LanguageSwitcher />
+                </div>
                 <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <Sparkles size={28} color="#8b5cf6" /> Opportunity Finder
                 </h1>

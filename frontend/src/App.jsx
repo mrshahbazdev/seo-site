@@ -20,6 +20,7 @@ import CompetitorSpyPage from './pages/CompetitorSpyPage';
 import GapAnalysisPage from './pages/GapAnalysisPage';
 import SiteDetailsPage from './pages/SiteDetailsPage';
 import SettingsPage from './pages/SettingsPage';
+import LandingPage from './pages/LandingPage';
 import './index.css';
 
 import { Toaster } from 'react-hot-toast';
@@ -199,7 +200,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+        <Route path="/" element={<LandingPage />} />
       </Routes>
     </BrowserRouter>
   );
