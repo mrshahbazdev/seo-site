@@ -11,10 +11,12 @@ import {
   Area
 } from 'recharts';
 import { Loader2, TrendingUp, AlertCircle } from 'lucide-react';
+import { useTranslation } from '../../../i18n/LanguageContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
 
 export default function ScoreTrendChart({ siteId }) {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -65,7 +67,7 @@ export default function ScoreTrendChart({ siteId }) {
     return (
       <div className="flex flex-col items-center justify-center p-8 bg-white rounded-xl border border-slate-100 h-[300px]">
         <Loader2 className="animate-spin text-blue-500 mb-2" size={24} />
-        <span className="text-sm text-slate-500 font-medium">Loading health trends...</span>
+        <span className="text-sm text-slate-500 font-medium">{t('scoreTrend.loadingTrends')}</span>
       </div>
     );
   }
@@ -74,9 +76,9 @@ export default function ScoreTrendChart({ siteId }) {
     return (
       <div className="flex flex-col items-center justify-center p-8 bg-white rounded-xl border border-slate-100 h-[300px] text-center">
         <AlertCircle className="text-slate-300 mb-2" size={32} />
-        <h4 className="text-sm font-semibold text-slate-700">Not enough data to show trends</h4>
+        <h4 className="text-sm font-semibold text-slate-700">{t('scoreTrend.notEnoughData')}</h4>
         <p className="text-xs text-slate-500 max-w-[200px] mt-1">
-          Complete more audits to see your SEO improvement progress.
+          {t('scoreTrend.notEnoughDataDesc')}
         </p>
       </div>
     );
@@ -93,9 +95,9 @@ export default function ScoreTrendChart({ siteId }) {
         <div>
           <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
             <TrendingUp size={16} className="text-blue-500" />
-            SEO Health Trend
+            {t('scoreTrend.seoHealthTrend')}
           </h3>
-          <p className="text-xs text-slate-500 mt-0.5">Overall site health score progress</p>
+          <p className="text-xs text-slate-500 mt-0.5">{t('scoreTrend.overallProgress')}</p>
         </div>
         
         <div className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 ${

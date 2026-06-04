@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Sparkles, Wand2, X, Check, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../i18n/LanguageContext';
 
 export default function AiFixButton({ type, originalContent, onFix }) {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [generatedContent, setGeneratedContent] = useState(null);
@@ -18,7 +20,7 @@ export default function AiFixButton({ type, originalContent, onFix }) {
 
             setGeneratedContent(mockFix);
             setLoading(false);
-            toast.success("AI fix generated!");
+            toast.success(t('aifix.aiFixGenerated'));
         }, 1500);
     };
 
@@ -41,7 +43,7 @@ export default function AiFixButton({ type, originalContent, onFix }) {
                     fontSize: '11px', fontWeight: '600'
                 }}
             >
-                <Wand2 size={12} /> Fix with AI
+                <Wand2 size={12} /> {t('aifix.fixWithAi')}
             </button>
 
             {isOpen && (
@@ -59,7 +61,7 @@ export default function AiFixButton({ type, originalContent, onFix }) {
                                 <div style={{ background: '#f3e8ff', padding: '8px', borderRadius: '50%' }}>
                                     <Sparkles size={20} color="#9333ea" />
                                 </div>
-                                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>AI Magic Fixer</h3>
+                                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>{t('aifix.aiMagicFixer')}</h3>
                             </div>
                             <button onClick={() => setIsOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                                 <X size={20} color="#64748b" />
@@ -67,16 +69,16 @@ export default function AiFixButton({ type, originalContent, onFix }) {
                         </div>
 
                         <div style={{ marginBottom: '20px' }}>
-                            <label style={{ fontSize: '12px', fontWeight: '600', color: '#64748b', display: 'block', marginBottom: '4px' }}>ORIGINAL {type.toUpperCase()}</label>
+                            <label style={{ fontSize: '12px', fontWeight: '600', color: '#64748b', display: 'block', marginBottom: '4px' }}>{t('aifix.original')} {type.toUpperCase()}</label>
                             <div style={{ padding: '12px', background: '#f1f5f9', borderRadius: '6px', fontSize: '14px', color: '#334155' }}>
-                                {originalContent || <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>(Empty)</span>}
+                                {originalContent || <span style={{ color: '#94a3b8', fontStyle: 'italic' }}>{t('aifix.empty')}</span>}
                             </div>
                         </div>
 
                         {generatedContent && (
                             <div style={{ marginBottom: '24px' }}>
                                 <label style={{ fontSize: '12px', fontWeight: '600', color: '#64748b', display: 'block', marginBottom: '4px' }}>
-                                    ✨ AI PROPOSAL
+                                    ✨ {t('aifix.aiProposal')}
                                 </label>
                                 <div style={{ padding: '12px', background: '#faf5ff', border: '1px solid #e9d5ff', borderRadius: '6px', fontSize: '14px', color: '#6b21a8' }}>
                                     {generatedContent}
@@ -96,7 +98,7 @@ export default function AiFixButton({ type, originalContent, onFix }) {
                                     }}
                                 >
                                     {loading ? <Loader2 size={16} className="animate-spin" /> : <Wand2 size={16} />}
-                                    {loading ? 'Generating...' : 'Generate Magic Fix'}
+                                    {loading ? t('aifix.generating') : t('aifix.generate')}
                                 </button>
                             ) : (
                                 <>
@@ -107,7 +109,7 @@ export default function AiFixButton({ type, originalContent, onFix }) {
                                             border: '1px solid #e2e8f0', borderRadius: '6px', fontWeight: '600', cursor: 'pointer'
                                         }}
                                     >
-                                        Try Again
+                                        {t('aifix.generate')}
                                     </button>
                                     <button
                                         onClick={handleApply}
@@ -117,7 +119,7 @@ export default function AiFixButton({ type, originalContent, onFix }) {
                                             display: 'flex', alignItems: 'center', gap: '8px'
                                         }}
                                     >
-                                        <Check size={16} /> Apply Fix
+                                        <Check size={16} /> {t('aifix.applyFix')}
                                     </button>
                                 </>
                             )}
