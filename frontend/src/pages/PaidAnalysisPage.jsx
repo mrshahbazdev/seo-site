@@ -41,11 +41,11 @@ export default function PaidAnalysisPage() {
                 setPage(data.page);
                 setAnalysis(data.analysis);
             } else {
-                toast.error(data.message || 'Failed to load analysis');
+                toast.error(data.message || t('paidAnalysis.failedToLoadAnalysis'));
             }
         } catch (error) {
             console.error('Error fetching analysis:', error);
-            toast.error('Failed to load analysis data');
+            toast.error(t('paidAnalysis.failedToLoadAnalysis'));
         } finally {
             setLoading(false);
         }
@@ -60,7 +60,7 @@ export default function PaidAnalysisPage() {
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
                     <div style={{ width: '40px', height: '40px', border: '3px solid #e2e8f0', borderTopColor: '#8b5cf6', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                    <p style={{ color: '#64748b' }}>Loading DataForSEO Report...</p>
+                    <p style={{ color: '#64748b' }}>{t('paidAnalysis.loadingReport')}</p>
                     <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
                 </div>
             </div>
@@ -73,13 +73,13 @@ export default function PaidAnalysisPage() {
                 <div style={{ marginBottom: '20px', color: '#94a3b8' }}>
                     <AlertTriangle size={48} />
                 </div>
-                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>No Paid Analysis Found</h1>
-                <p style={{ color: '#64748b', marginBottom: '24px' }}>This page has not been analyzed with the Deep Analysis tool yet.</p>
+                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>{t('paidAnalysis.noPaidAnalysis')}</h1>
+                <p style={{ color: '#64748b', marginBottom: '24px' }}>{t('paidAnalysis.noPaidAnalysisDesc')}</p>
                 <button
                     onClick={() => navigate(`/sites/${siteId}/pages/${pageId}`)}
                     style={{ padding: '10px 24px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', fontWeight: '600', cursor: 'pointer' }}
                 >
-                    Go Back & Run Analysis
+                    {t('paidAnalysis.goBackAndRun')}
                 </button>
             </div>
         );
@@ -93,7 +93,7 @@ export default function PaidAnalysisPage() {
             <div style={{ background: 'white', borderBottom: '1px solid #e2e8f0', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 10 }}>
                 <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
                     <button onClick={() => navigate(`/sites/${siteId}/pages/${pageId}`)} style={{ display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'none', color: '#64748b', cursor: 'pointer', marginBottom: '12px' }}>
-                        <ArrowLeft size={16} /> Back to Page Details
+                        <ArrowLeft size={16} /> {t('paidAnalysis.backToPageDetails')}
                     </button>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -101,7 +101,7 @@ export default function PaidAnalysisPage() {
                                 <span style={{ fontSize: '20px', color: 'white' }}>⚡</span>
                             </div>
                             <div>
-                                <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>Paid Deep Analysis Report</h1>
+                                <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>{t('paidAnalysis.paidDeepAnalysisReport')}</h1>
                                 <a href={analysis.overview.url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <Globe size={13} /> {analysis.overview.url}
                                 </a>

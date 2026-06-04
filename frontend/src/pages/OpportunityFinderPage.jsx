@@ -40,15 +40,15 @@ export default function OpportunityFinderPage() {
             if (dataRes.success) {
                 setStep(3);
                 setResult(dataRes.data);
-                toast.success('Opportunity Analysis Complete!');
+                toast.success(t('opportunity.analysisComplete'));
             } else {
                 setStep(0);
-                toast.error(dataRes.message || 'Analysis failed');
+                toast.error(dataRes.message || t('opportunity.analysisFailed'));
             }
         } catch (error) {
             console.error(error);
             setStep(0);
-            toast.error('Something went wrong');
+            toast.error(t('common.somethingWentWrong'));
         } finally {
             setLoading(false);
         }
@@ -58,7 +58,7 @@ export default function OpportunityFinderPage() {
         if (!result) return;
         navigator.clipboard.writeText(result.brief.prompt);
         setCopied(true);
-        toast.success('Prompt copied to clipboard!');
+        toast.success(t('opportunity.promptCopied'));
         setTimeout(() => setCopied(false), 2000);
     };
 
@@ -87,15 +87,15 @@ export default function OpportunityFinderPage() {
                             cursor: 'pointer',
                         }}
                     >
-                        <ArrowLeft size={16} /> Back to Dashboard
+                        <ArrowLeft size={16} /> {t('common.backToDashboard')}
                     </button>
                     <LanguageSwitcher />
                 </div>
                 <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Sparkles size={28} color="#8b5cf6" /> Opportunity Finder
+                    <Sparkles size={28} color="#8b5cf6" /> {t('opportunity.opportunityFinder')}
                 </h1>
                 <p style={{ color: '#64748b', margin: 0 }}>
-                    Find "Blue Ocean" keywords and generate AI content strategies instantly.
+                    {t('opportunity.opportunityFinderDesc')}
                 </p>
             </div>
 

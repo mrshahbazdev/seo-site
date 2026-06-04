@@ -107,7 +107,7 @@ export default function BacklinksPage() {
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
                     <div style={{ width: '40px', height: '40px', border: '3px solid #e2e8f0', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                    <p style={{ color: '#64748b' }}>Analyzing Backlinks...</p>
+                    <p style={{ color: '#64748b' }}>{t('backlinks.analyzingBacklinks')}</p>
                     <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
                 </div>
             </div>
@@ -120,13 +120,13 @@ export default function BacklinksPage() {
                 <div style={{ marginBottom: '20px', color: '#94a3b8' }}>
                     <AlertTriangle size={48} />
                 </div>
-                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>No Backlink Data Found</h1>
-                <p style={{ color: '#64748b', marginBottom: '24px' }}>Could not retrieve backlink summary for this page.</p>
+                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>{t('backlinks.noBacklinkData')}</h1>
+                <p style={{ color: '#64748b', marginBottom: '24px' }}>{t('backlinks.noBacklinkDataDesc')}</p>
                 <button
                     onClick={() => navigate(-1)}
                     style={{ padding: '10px 24px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', fontWeight: '600', cursor: 'pointer' }}
                 >
-                    Go Back
+                    {t('common.goBack')}
                 </button>
             </div>
         );
@@ -138,15 +138,15 @@ export default function BacklinksPage() {
             <div style={{ background: 'white', borderBottom: '1px solid #e2e8f0', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 10 }}>
                 <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'none', color: '#64748b', cursor: 'pointer', marginBottom: '12px' }}>
-                        <ArrowLeft size={16} /> Back
+                        <ArrowLeft size={16} /> {t('common.back')}
                     </button>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{ width: '40px', height: '40px', background: '#3b82f6', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <LinkIcon size={20} color="white" />
                         </div>
                         <div>
-                            <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>Backlink Analysis</h1>
-                            <div style={{ fontSize: '14px', color: '#64748b' }}>Comprehensive link profile summary</div>
+                            <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>{t('backlinks.backlinkAnalysis')}</h1>
+                            <div style={{ fontSize: '14px', color: '#64748b' }}>{t('backlinks.linkProfileSummary')}</div>
                         </div>
                     </div>
                     <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -166,7 +166,7 @@ export default function BacklinksPage() {
                                     boxShadow: viewMode === 'summary' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none'
                                 }}
                             >
-                                Summary
+                                {t('common.summary')}
                             </button>
                             <button
                                 onClick={() => setViewMode('list')}
@@ -182,7 +182,7 @@ export default function BacklinksPage() {
                                     boxShadow: viewMode === 'list' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none'
                                 }}
                             >
-                                Backlinks List
+                                {t('backlinks.backlinksList')}
                             </button>
                         </div>
                         <button
@@ -205,7 +205,7 @@ export default function BacklinksPage() {
                                 <>Updating...</>
                             ) : (
                                 <>
-                                    <RotateCw size={14} /> Refresh Data
+                                    <RotateCw size={14} /> {t('backlinks.refreshData')}
                                 </>
                             )}
                         </button>

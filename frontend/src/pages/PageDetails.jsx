@@ -49,11 +49,11 @@ export default function PageDetails() {
                 setPage(data.page);
                 setAnalysis(data.analysis);
             } else {
-                toast.error(data.message || 'Failed to load analysis');
+                toast.error(data.message || t('pageDetails.failedToLoadAnalysis'));
             }
         } catch (error) {
             console.error('Error fetching analysis:', error);
-            toast.error('Failed to load analysis data');
+            toast.error(t('pageDetails.failedToLoadAnalysis'));
         } finally {
             setLoading(false);
             if (refresh) setAnalyzing(false);
@@ -71,7 +71,7 @@ export default function PageDetails() {
             return;
         }
 
-        if (!window.confirm('This analysis costs credits. dataforseo costs credits per request. Do you want to proceed?')) return;
+        if (!window.confirm(t('pageDetails.paidAnalysisConfirm'))) return;
 
         try {
             setAnalyzingPaid(true);
@@ -88,15 +88,15 @@ export default function PageDetails() {
             const data = await res.json();
 
             if (data.success) {
-                toast.success('Deep Analysis Completed!');
+                toast.success(t('pageDetails.deepAnalysisComplete'));
                 // Navigate to the new page
                 navigate(`/sites/${siteId}/pages/${pageId}/paid-analysis`);
             } else {
-                toast.error(data.message || 'Analysis failed');
+                toast.error(data.message || t('pageDetails.analysisFailed'));
             }
         } catch (error) {
             console.error('Paid Analysis error:', error);
-            toast.error('Failed to run paid analysis');
+            toast.error(t('pageDetails.failedToRunPaid'));
         } finally {
             setAnalyzingPaid(false);
         }
@@ -107,14 +107,14 @@ export default function PageDetails() {
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
                     <div style={{ width: '40px', height: '40px', border: '3px solid #e2e8f0', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                    <p style={{ color: '#64748b' }}>Analyzing page structure...</p>
+                    <p style={{ color: '#64748b' }}>{t('pageDetails.analyzingPageStructure')}</p>
                     <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
                 </div>
             </div>
         );
     }
 
-    if (!analysis) return <div>Failed to load analysis.</div>;
+    if (!analysis) return <div>{t('pageDetails.failedToLoadAnalysis')}</div>;
 
     return (
         <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '40px' }}>
@@ -122,7 +122,7 @@ export default function PageDetails() {
             <div style={{ background: 'white', borderBottom: '1px solid #e2e8f0', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 10 }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                     <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'none', color: '#64748b', cursor: 'pointer', marginBottom: '12px' }}>
-                        <ArrowLeft size={16} /> Back to Audit
+                        <ArrowLeft size={16} /> {t('pageDetails.backToAudit')}
                     </button>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -157,7 +157,7 @@ export default function PageDetails() {
 
                             <div>
                                 <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 4px 0', wordBreak: 'break-all' }}>
-                                    {analysis.overview.title || 'Untitled Page'}
+                                    {analysis.overview.title || t('pageDetails.untitledPage')}
                                 </h1>
                                 <a href={analysis.overview.url} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'none', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <Globe size={14} /> {analysis.overview.url}

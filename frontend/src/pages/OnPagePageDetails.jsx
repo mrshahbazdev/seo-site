@@ -14,6 +14,7 @@ import { getDataForSeoCheckStatus } from '../utils/dataforseoChecks';
 export default function OnPagePageDetails() {
     const { id, pageId } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [page, setPage] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -38,14 +39,14 @@ export default function OnPagePageDetails() {
             if (data.success) {
                 setPage(data.data);
             } else if (data.status === 'no_task') {
-                toast.error('Analysis session expired. Redirecting...');
+                toast.error(t('onPage.sessionExpired'));
                 navigate(`/sites/${id}/onpage/summary`);
             } else {
-                toast.error(data.message || 'Failed to load page details');
+                toast.error(data.message || t('onPage.failedToLoadPages'));
             }
         } catch (error) {
             console.error('Error fetching page details:', error);
-            toast.error('Failed to load page details');
+            toast.error(t('onPage.failedToLoadPages'));
         } finally {
             setLoading(false);
         }
@@ -58,8 +59,8 @@ export default function OnPagePageDetails() {
         return '#dc2626';
     };
 
-    if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>Loading details...</div>;
-    if (!page) return <div style={{ padding: '40px', textAlign: 'center' }}>Page not found</div>;
+    if (loading) return <div style={{ padding: '40px', textAlign: 'center' }}>{t('onPage.loadingDetails')}</div>;
+    if (!page) return <div style={{ padding: '40px', textAlign: 'center' }}>{t('onPage.pageNotFound')}</div>;
 
     return (
         <div style={{ minHeight: '100vh', background: '#f8fafc', paddingBottom: '40px' }}>
@@ -83,7 +84,7 @@ export default function OnPagePageDetails() {
                             style={{ padding: '8px 16px', background: 'white', color: '#3b82f6', border: '1px solid #3b82f6', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
                         >
                             <Globe size={16} />
-                            <span className="btn-text-desktop">Check Index</span>
+                            <span className="btn-text-desktop">{t('onPage.checkIndex')}</span>
                             <span className="btn-text-mobile">Index</span>
                         </button>
                         <button
@@ -91,7 +92,7 @@ export default function OnPagePageDetails() {
                             style={{ padding: '8px 16px', background: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' }}
                         >
                             <Code size={16} />
-                            <span className="btn-text-desktop">View Raw Data</span>
+                            <span className="btn-text-desktop">{t('onPage.viewRawData')}</span>
                             <span className="btn-text-mobile">Raw</span>
                         </button>
                     </div>
@@ -134,34 +135,34 @@ export default function OnPagePageDetails() {
                     <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '24px' }}>
                             <div>
-                                <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '0 0 8px 0' }}>{page.title || 'No Title'}</h2>
+                                <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: '0 0 8px 0' }}>{page.title || t('common.noTitle')}</h2>
                                 <a href={page.url} target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    Visit Page <ArrowLeft size={12} style={{ transform: 'rotate(135deg)' }} />
+                                    {t('common.visitPage')} <ArrowLeft size={12} style={{ transform: 'rotate(135deg)' }} />
                                 </a>
                             </div>
                             <div style={{ textAlign: 'right' }}>
                                 <div style={{ fontSize: '32px', fontWeight: 'bold', color: getScoreColor(page.onpage_score) }}>
                                     {page.onpage_score ? Number(page.onpage_score).toFixed(0) : '-'}
                                 </div>
-                                <div style={{ fontSize: '12px', color: '#64748b' }}>OnPage Score</div>
+                                <div style={{ fontSize: '12px', color: '#64748b' }}>{t('onPage.onpageScore')}</div>
                             </div>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px' }}>
                             <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Status Code</div>
+                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.statusCode')}</div>
                                 <div style={{ fontWeight: '600' }}>{page.status_code}</div>
                             </div>
                             <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Size</div>
+                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.size')}</div>
                                 <div style={{ fontWeight: '600' }}>{((page.meta?.size || 0) / 1024).toFixed(1)} KB</div>
                             </div>
                             <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Word Count</div>
+                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.wordCount')}</div>
                                 <div style={{ fontWeight: '600' }}>{page.meta?.content?.plain_text_word_count || page.content?.plain_text_word_count || 0}</div>
                             </div>
                             <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
-                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Load Time</div>
+                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.loadTime')}</div>
                                 <div style={{ fontWeight: '600' }}>{page.page_timing?.duration_time || 0} ms</div>
                             </div>
                         </div>

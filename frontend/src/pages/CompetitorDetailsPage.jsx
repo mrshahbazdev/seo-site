@@ -35,7 +35,7 @@ export default function CompetitorDetailsPage() {
             }
         } catch (error) {
             console.error(error);
-            toast.error('Failed to load competitor');
+            toast.error(t('competitors.failedToLoad'));
         } finally {
             setLoading(false);
         }
@@ -56,13 +56,13 @@ export default function CompetitorDetailsPage() {
             if (data.success) {
                 console.log('Pages data:', data.data); // Debug log
                 setPages(data.data);
-                toast.success(`Loaded ${data.data.length} pages!`);
+                toast.success(t('competitors.loadedPages', { count: data.data.length }));
             } else {
-                toast.error(data.message || 'Failed to load pages');
+                toast.error(data.message || t('competitors.failedToLoadPages'));
             }
         } catch (error) {
             console.error('Fetch pages error:', error);
-            toast.error('Failed to load pages');
+            toast.error(t('competitors.failedToLoadPages'));
         } finally {
             setLoadingPages(false);
         }
@@ -71,7 +71,7 @@ export default function CompetitorDetailsPage() {
     const handleAnalyze = async () => {
         try {
             const token = localStorage.getItem('token');
-            toast.loading('Analyzing competitor...', { id: 'analyze' });
+            toast.loading(t('competitors.analyzingCompetitor'), { id: 'analyze' });
 
             const res = await fetch(`https://seostory.de/api/sites/${id}/competitors/${competitorId}/analyze`, {
                 method: 'POST',
@@ -83,20 +83,20 @@ export default function CompetitorDetailsPage() {
             const data = await res.json();
 
             if (data.success) {
-                toast.success('Analysis complete!', { id: 'analyze' });
+                toast.success(t('competitors.analysisComplete'), { id: 'analyze' });
                 setCompetitor(data.data);
             } else {
-                toast.error(data.message || 'Analysis failed', { id: 'analyze' });
+                toast.error(data.message || t('competitors.analysisFailed'), { id: 'analyze' });
             }
         } catch (error) {
-            toast.error('Analysis failed', { id: 'analyze' });
+            toast.error(t('competitors.analysisFailed'), { id: 'analyze' });
         }
     };
 
     if (loading) {
         return (
             <div style={{ padding: '40px', textAlign: 'center' }}>
-                <div style={{ fontSize: '16px', color: '#64748b' }}>Loading competitor...</div>
+                <div style={{ fontSize: '16px', color: '#64748b' }}>{t('competitors.loadingCompetitor')}</div>
             </div>
         );
     }
@@ -104,7 +104,7 @@ export default function CompetitorDetailsPage() {
     if (!competitor) {
         return (
             <div style={{ padding: '40px', textAlign: 'center' }}>
-                <div style={{ fontSize: '16px', color: '#64748b' }}>Competitor not found</div>
+                <div style={{ fontSize: '16px', color: '#64748b' }}>{t('competitors.competitorNotFound')}</div>
             </div>
         );
     }
@@ -130,7 +130,7 @@ export default function CompetitorDetailsPage() {
                         marginBottom: '16px'
                     }}
                 >
-                    <ArrowLeft size={16} /> Back to Competitors
+                    <ArrowLeft size={16} /> {t('common.backToCompetitors')}
                 </button>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

@@ -13,6 +13,7 @@ import PhaseThreeOps from './components/Analysis/PhaseThreeOps';
 export default function OnPageSummaryPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState('loading'); // loading, no_task, in_progress, done, error
@@ -49,7 +50,7 @@ export default function OnPageSummaryPage() {
             } else if (data.status === 'in_progress') {
                 setStatus('in_progress');
             } else {
-                toast.error(data.message || 'Failed to load summary');
+                toast.error(data.message || t('onPage.failedToLoadSummary'));
                 setStatus('error');
             }
         } catch (error) {
@@ -74,17 +75,17 @@ export default function OnPageSummaryPage() {
             });
             const data = await res.json();
             if (data.success) {
-                toast.success('Analysis started! Please wait...');
+                toast.success(t('onPage.analysisStarted'));
                 setStatus('in_progress');
                 // Poll for updates
                 setTimeout(() => fetchSummary(), 5000);
             } else {
-                toast.error(data.message || 'Failed to start analysis');
+                toast.error(data.message || t('onPage.failedToStartAnalysis'));
                 setLoading(false);
             }
         } catch (error) {
             console.error('Error starting analysis:', error);
-            toast.error('Failed to start analysis');
+            toast.error(t('onPage.failedToStartAnalysis'));
             setLoading(false);
         }
     };
@@ -94,7 +95,7 @@ export default function OnPageSummaryPage() {
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px' }}>
                     <RefreshCw size={40} className="animate-spin" color="#3b82f6" />
-                    <p style={{ color: '#64748b' }}>Loading Summary...</p>
+                    <p style={{ color: '#64748b' }}>{t('onPage.loadingSummary')}</p>
                     <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; }`}</style>
                 </div>
             </div>
@@ -107,13 +108,13 @@ export default function OnPageSummaryPage() {
                 <div style={{ marginBottom: '20px', color: '#3b82f6', background: '#dbeafe', padding: '20px', borderRadius: '50%' }}>
                     <FileText size={48} />
                 </div>
-                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>No Analysis Found</h1>
-                <p style={{ color: '#64748b', marginBottom: '24px', maxWidth: '400px' }}>Start a deep On-Page SEO analysis to get a comprehensive summary of your site's health.</p>
+                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>{t('onPage.noAnalysisFound')}</h1>
+                <p style={{ color: '#64748b', marginBottom: '24px', maxWidth: '400px' }}>{t('onPage.startAnalysisDesc')}</p>
                 <button
                     onClick={startAnalysis}
                     style={{ padding: '12px 32px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', fontWeight: '600', cursor: 'pointer', fontSize: '16px', boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.5)' }}
                 >
-                    Start Analysis
+                    {t('onPage.startAnalysis')}
                 </button>
             </div>
         );
@@ -123,13 +124,13 @@ export default function OnPageSummaryPage() {
         return (
             <div style={{ minHeight: '100vh', padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', textAlign: 'center' }}>
                 <RefreshCw size={48} className="animate-spin" color="#3b82f6" style={{ marginBottom: '24px' }} />
-                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>Analysis in Progress</h1>
-                <p style={{ color: '#64748b', marginBottom: '24px' }}>We are crawling your site. This may take a few minutes depending on the site size.</p>
+                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>{t('onPage.analysisInProgress')}</h1>
+                <p style={{ color: '#64748b', marginBottom: '24px' }}>{t('onPage.crawlingDesc')}</p>
                 <button
                     onClick={() => fetchSummary()}
                     style={{ padding: '10px 24px', background: 'white', color: '#3b82f6', borderRadius: '8px', border: '1px solid #3b82f6', fontWeight: '600', cursor: 'pointer' }}
                 >
-                    Check Status
+                    {t('onPage.checkStatus')}
                 </button>
                 <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; }`}</style>
             </div>
@@ -142,15 +143,15 @@ export default function OnPageSummaryPage() {
                 <div style={{ marginBottom: '20px', color: '#ef4444', background: '#fee2e2', padding: '20px', borderRadius: '50%' }}>
                     <ShieldAlert size={48} />
                 </div>
-                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>Resource Not Found</h1>
+                <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b', marginBottom: '8px' }}>{t('onPage.resourceNotFound')}</h1>
                 <p style={{ color: '#64748b', marginBottom: '24px', maxWidth: '400px' }}>
-                    The site you are looking for could not be found, or you do not have permission to access it.
+                    {t('onPage.resourceNotFoundDesc')}
                 </p>
                 <button
                     onClick={() => navigate('/dashboard')}
                     style={{ padding: '12px 32px', background: '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', fontWeight: '600', cursor: 'pointer', fontSize: '16px' }}
                 >
-                    Back to Dashboard
+                    {t('common.backToDashboard')}
                 </button>
             </div>
         );
@@ -172,7 +173,7 @@ export default function OnPageSummaryPage() {
                             <ArrowLeft size={20} />
                         </button>
                         <div>
-                            <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>On-Page Summary</h1>
+                            <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>{t('onPage.summary')}</h1>
                             <div style={{ fontSize: '14px', color: '#64748b' }}>{domain_info?.main_domain ?? '—'}</div>
                         </div>
                     </div>
@@ -193,7 +194,7 @@ export default function OnPageSummaryPage() {
                                 gap: '6px'
                             }}
                         >
-                            <FileText size={14} /> View All Pages
+                            <FileText size={14} /> {t('onPage.viewAllPages')}
                         </button>
                         <button
                             onClick={() => fetchSummary(true)}
@@ -211,7 +212,7 @@ export default function OnPageSummaryPage() {
                                 gap: '6px'
                             }}
                         >
-                            <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} /> Refresh Data
+                            <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} /> {t('onPage.refreshData')}
                         </button>
                         <div style={{ position: 'relative', display: 'inline-block' }}>
                             <button
@@ -229,7 +230,7 @@ export default function OnPageSummaryPage() {
                                         a.download = `seo-report-${id}.pdf`;
                                         a.click();
                                     })
-                                    .catch(() => toast.error('Failed to download PDF'));
+                                    .catch(() => toast.error(t('onPage.failedToDownloadPdf')));
                                 }}
                                 style={{
                                     padding: '8px 16px',
@@ -244,7 +245,7 @@ export default function OnPageSummaryPage() {
                                     gap: '6px'
                                 }}
                             >
-                                <FileText size={14} /> PDF Report
+                                <FileText size={14} /> {t('onPage.pdfReport')}
                             </button>
                         </div>
                         <button
@@ -262,7 +263,7 @@ export default function OnPageSummaryPage() {
                                         a.download = `seo-pages-${id}.csv`;
                                         a.click();
                                     })
-                                    .catch(() => toast.error('Failed to download CSV'));
+                                    .catch(() => toast.error(t('onPage.failedToDownloadCsv')));
                                 }}
                                 style={{
                                     padding: '8px 16px',
@@ -277,7 +278,7 @@ export default function OnPageSummaryPage() {
                                     gap: '6px'
                                 }}
                             >
-                                <ArrowLeft size={14} style={{ rotate: '270deg' }} /> Export CSV
+                                <ArrowLeft size={14} style={{ rotate: '270deg' }} /> {t('onPage.exportCsv')}
                             </button>
                         <button
                             onClick={() => setIsSettingsOpen(true)}
@@ -294,12 +295,12 @@ export default function OnPageSummaryPage() {
                                 gap: '6px'
                             }}
                         >
-                            <Settings size={14} /> Settings
+                            <Settings size={14} /> {t('common.settings')}
                         </button>
                         <button
                             onClick={startAnalysis}
                             disabled={loading || refreshing || (summary?.crawl_status?.pages_in_queue > 0)}
-                            title={summary?.crawl_status?.pages_in_queue > 0 ? "Analysis in progress (Queue > 0)" : "Start new crawl"}
+                            title={summary?.crawl_status?.pages_in_queue > 0 ? t('audit.analyzingProgress') : t('onPage.newAnalysis')}
                             style={{
                                 padding: '8px 16px',
                                 background: (loading || refreshing || (summary?.crawl_status?.pages_in_queue > 0)) ? '#94a3b8' : '#3b82f6',
@@ -313,7 +314,7 @@ export default function OnPageSummaryPage() {
                                 gap: '6px'
                             }}
                         >
-                            <Shield size={14} /> New Analysis
+                            <Shield size={14} /> {t('onPage.newAnalysis')}
                         </button>
                     </div>
                 </div>
@@ -324,23 +325,23 @@ export default function OnPageSummaryPage() {
                 {/* Domain & Server Info Card */}
                 <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
                     <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Server size={18} color="#3b82f6" /> Domain & Server Checks
+                        <Server size={18} color="#3b82f6" /> {t('onPage.domainServerChecks')}
                     </h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px', marginBottom: '24px' }}>
                         <InfoItem label="CMS" value={domain_info?.cms || 'N/A'} icon={<FileText size={16} color="#64748b" />} />
                         <InfoItem label="Server" value={domain_info?.server} icon={<Server size={16} color="#64748b" />} />
-                        <InfoItem label="IP Address" value={domain_info?.ip} icon={<Globe size={16} color="#64748b" />} />
+                        <InfoItem label={t('onPage.ipAddress')} value={domain_info?.ip} icon={<Globe size={16} color="#64748b" />} />
                         <InfoItem
-                            label="SSL Certificate"
-                            value={domain_info?.ssl_info?.valid_certificate ? 'Valid' : 'Invalid'}
+                            label={t('onPage.sslCertificate')}
+                            value={domain_info?.ssl_info?.valid_certificate ? t('onPage.valid') : t('onPage.invalid')}
                             valueColor={domain_info?.ssl_info?.valid_certificate ? '#166534' : '#ef4444'}
-                            subValue={`Issuer: ${domain_info?.ssl_info?.certificate_issuer || 'N/A'}`}
+                            subValue={`${t('onPage.issuer')}: ${domain_info?.ssl_info?.certificate_issuer || 'N/A'}`}
                             icon={<Shield size={16} color={domain_info?.ssl_info?.valid_certificate ? '#166534' : '#ef4444'} />}
                         />
                     </div>
 
                     {/* Domain Checks Grid */}
-                    <h3 style={{ fontSize: '14px', fontWeight: '600', color: '#64748b', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Domain Tests</h3>
+                    <h3 style={{ fontSize: '14px', fontWeight: '600', color: '#64748b', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('onPage.domainTests')}</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
                         {domain_info?.checks && Object.entries(domain_info.checks).map(([key, passed]) => (
                             <div key={key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '13px', padding: '8px 12px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
@@ -358,7 +359,7 @@ export default function OnPageSummaryPage() {
                         {/* Score & General Stats */}
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px' }}>
                             <div style={{ flex: '1 1 200px', background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                                <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '12px' }}>On-Page Score</div>
+                                <div style={{ fontSize: '14px', color: '#64748b', marginBottom: '12px' }}>{t('onPage.onpageScore')}</div>
                                 <div style={{ fontSize: '48px', fontWeight: '800', color: (page_metrics?.onpage_score || 0) >= 90 ? '#166534' : (page_metrics?.onpage_score || 0) >= 50 ? '#f59e0b' : '#ef4444' }}>
                                     {page_metrics?.onpage_score || 0}
                                 </div>

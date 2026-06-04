@@ -128,15 +128,15 @@ export default function SiteAudit() {
                     toast.success(data.message);
                     fetchPages(); // Refresh pages list
                 } else {
-                    toast.error(data.message || 'Failed to start crawl');
+                    toast.error(data.message || t('audit.failedToStartCrawl'));
                 }
             } else {
                 // Placeholder for other types if implemented later
-                toast.error("Audit type not fully supported yet.");
+                toast.error(t('audit.auditTypeNotSupported'));
             }
         } catch (error) {
             console.error('Failed to start audit:', error);
-            toast.error('Failed to start audit. Please try again.');
+            toast.error(t('audit.failedToStartAudit'));
         } finally {
             setRunning(false);
         }
@@ -156,14 +156,14 @@ export default function SiteAudit() {
             });
             const data = await res.json();
             if (data.success) {
-                toast.success(`Issue marked as ${newStatus}`);
+                toast.success(t('audit.issueMarkedAs', { status: newStatus }));
                 setIssues(prev => prev.map(i => i.id === issueId ? { ...i, status: newStatus } : i));
             } else {
-                toast.error(data.message || 'Failed to update status');
+                toast.error(data.message || t('audit.failedToUpdateStatus'));
             }
         } catch (error) {
             console.error('Error updating issue status:', error);
-            toast.error('Network error updating issue');
+            toast.error(t('audit.networkErrorUpdating'));
         }
     };
 
@@ -217,8 +217,8 @@ export default function SiteAudit() {
                     <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '16px', borderLeft: '4px solid #3b82f6', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
                         <Loader2 className="animate-spin" size={24} color="#3b82f6" />
                         <div>
-                            <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>Audit in Progress</h3>
-                            <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>Analyzing {processingCount} pages... Found {totalPages} so far.</p>
+                            <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>{t('audit.auditInProgress')}</h3>
+                            <p style={{ margin: 0, color: '#64748b', fontSize: '14px' }}>{t('audit.analyzingPagesProgress', { count: processingCount, total: totalPages })}</p>
                         </div>
                     </div>
                 )}
@@ -230,12 +230,12 @@ export default function SiteAudit() {
                             <Activity size={32} color="#3b82f6" />
                         </div>
                         <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>{t('audit.noAudits')}</h2>
-                        <p style={{ color: '#64748b', maxWidth: '400px', margin: '0 auto 24px' }}>Run a comprehensive technical audit to identify SEO issues, broken links, and optimization opportunities.</p>
+                        <p style={{ color: '#64748b', maxWidth: '400px', margin: '0 auto 24px' }}>{t('audit.emptyStateDesc')}</p>
                         <button
                             onClick={startAudit}
                             style={{ padding: '12px 32px', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '600', fontSize: '16px', cursor: 'pointer' }}
                         >
-                            Start First Audit
+                            {t('audit.startFirstAudit')}
                         </button>
                     </div>
                 )}
@@ -255,34 +255,34 @@ export default function SiteAudit() {
                                     <div style={{ position: 'absolute', fontSize: '20px', fontWeight: '800', color: '#1e293b' }}>{currentAudit.score}</div>
                                 </div>
                                 <div>
-                                    <div style={{ fontSize: '14px', color: '#64748b', fontWeight: '500' }}>Health Score</div>
-                                    <div style={{ fontSize: '13px', color: '#94a3b8' }}>Last updated: {new Date(currentAudit.created_at).toLocaleDateString()}</div>
+                                    <div style={{ fontSize: '14px', color: '#64748b', fontWeight: '500' }}>{t('audit.healthScore')}</div>
+                                    <div style={{ fontSize: '13px', color: '#94a3b8' }}>{t('audit.lastUpdated')}: {new Date(currentAudit.created_at).toLocaleDateString()}</div>
                                 </div>
                             </div>
 
                             {/* Critical Errors */}
                             <StatsCard
-                                label="Critical Errors"
+                                label={t('audit.criticalErrors')}
                                 value={countIssuesBySeverity('critical')}
                                 icon={<AlertCircle size={24} color="#ef4444" />}
                                 color="#ef4444"
-                                subtext="Immediate attention needed"
+                                subtext={t('audit.immediateAttention')}
                             />
 
                             {/* Warnings */}
                             <StatsCard
-                                label="Warnings"
+                                label={t('audit.warnings')}
                                 value={countIssuesBySeverity('high') + countIssuesBySeverity('medium')}
                                 icon={<AlertTriangle size={24} color="#f59e0b" />}
                                 color="#f59e0b"
-                                subtext="Impacts SEO performance"
+                                subtext={t('audit.impactsSeo')}
                             />
 
                             {/* Pages Crawled */}
                             <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                                <div style={{ fontSize: '14px', color: '#64748b', fontWeight: '500', marginBottom: '8px' }}>Pages Crawled</div>
+                                <div style={{ fontSize: '14px', color: '#64748b', fontWeight: '500', marginBottom: '8px' }}>{t('audit.pagesCrawled')}</div>
                                 <div style={{ fontSize: '32px', fontWeight: '800', color: '#1e293b' }}>{currentAudit.pages_crawled}</div>
-                                <div style={{ fontSize: '13px', color: '#3b82f6', cursor: 'pointer', marginTop: '4px' }} onClick={() => setActiveTab('pages')}>View all pages →</div>
+                                <div style={{ fontSize: '13px', color: '#3b82f6', cursor: 'pointer', marginTop: '4px' }} onClick={() => setActiveTab('pages')}>{t('audit.viewPages')} →</div>
                             </div>
                         </div>
 
@@ -292,13 +292,13 @@ export default function SiteAudit() {
                                 onClick={() => setActiveTab('overview')}
                                 style={{ padding: '12px 24px', background: 'none', border: 'none', borderBottom: activeTab === 'overview' ? '2px solid #3b82f6' : '2px solid transparent', color: activeTab === 'overview' ? '#3b82f6' : '#64748b', fontWeight: '600', cursor: 'pointer' }}
                             >
-                                Overview & Issues
+                                {t('common.overview')} & {t('common.issues')}
                             </button>
                             <button
                                 onClick={() => setActiveTab('pages')}
                                 style={{ padding: '12px 24px', background: 'none', border: 'none', borderBottom: activeTab === 'pages' ? '2px solid #3b82f6' : '2px solid transparent', color: activeTab === 'pages' ? '#3b82f6' : '#64748b', fontWeight: '600', cursor: 'pointer' }}
                             >
-                                Crawled Pages
+                                {t('audit.crawledPages')}
                             </button>
                         </div>
 
@@ -319,8 +319,8 @@ export default function SiteAudit() {
                                         {filteredIssues.length === 0 ? (
                                             <div style={{ padding: '40px', textAlign: 'center', background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', color: '#64748b' }}>
                                                 <CheckCircle size={48} color="#22c55e" style={{ margin: '0 auto 16px' }} />
-                                                <h3 style={{ margin: '0 0 8px 0', color: '#1e293b' }}>No issues found</h3>
-                                                <p style={{ margin: 0 }}>Great job! No issues in this category.</p>
+                                                <h3 style={{ margin: '0 0 8px 0', color: '#1e293b' }}>{t('audit.noIssues')}</h3>
+                                                <p style={{ margin: 0 }}></p>
                                             </div>
                                         ) : (
                                             filteredIssues
