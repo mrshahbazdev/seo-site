@@ -40,11 +40,11 @@ export default function PageContent() {
 
     if (loading) return (
         <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', color: '#64748b' }}>
-            Loading content...
+            {t('pageContent.loadingContent')}
         </div>
     );
 
-    if (!analysis) return <div>Failed to load content.</div>;
+    if (!analysis) return <div>{t('pageContent.failedToLoad')}</div>;
 
     const paragraphs = analysis.content.paragraphs || [];
 
@@ -54,12 +54,12 @@ export default function PageContent() {
             <div style={{ background: 'white', borderBottom: '1px solid #e2e8f0', padding: '16px 24px', position: 'sticky', top: 0, zIndex: 10 }}>
                 <div style={{ maxWidth: '800px', margin: '0 auto' }}>
                     <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: '8px', border: 'none', background: 'none', color: '#64748b', cursor: 'pointer', marginBottom: '12px' }}>
-                        <ArrowLeft size={16} /> Back to Analysis
+                        <ArrowLeft size={16} /> {t('pageContent.backToAnalysis')}
                     </button>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
                             <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 4px 0' }}>
-                                Extracted Content View
+                                {t('pageContent.extractedContentView')}
                             </h1>
                             <p style={{ margin: 0, fontSize: '14px', color: '#64748b' }}>{analysis.overview.url}</p>
                         </div>
@@ -75,7 +75,7 @@ export default function PageContent() {
                                         boxShadow: viewMode === 'desktop' ? '0 1px 2px rgba(0,0,0,0.1)' : 'none'
                                     }}
                                 >
-                                    <Monitor size={14} /> Desktop
+                                    <Monitor size={14} /> {t('pageContent.desktop')}
                                 </button>
                                 <button
                                     onClick={() => setViewMode('mobile')}
@@ -86,7 +86,7 @@ export default function PageContent() {
                                         boxShadow: viewMode === 'mobile' ? '0 1px 2px rgba(0,0,0,0.1)' : 'none'
                                     }}
                                 >
-                                    <Smartphone size={14} /> Mobile
+                                    <Smartphone size={14} /> {t('pageContent.mobile')}
                                 </button>
                             </div>
                         </div>

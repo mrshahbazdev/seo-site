@@ -28,8 +28,8 @@ export default function GapAnalysisPage() {
 
     const analyze = async () => {
         const activeCompetitors = competitors.filter(c => c.trim() !== '');
-        if (!target) return toast.error("Please enter your domain");
-        if (activeCompetitors.length === 0) return toast.error("Enter at least 1 competitor");
+        if (!target) return toast.error(t('competitors.pleaseEnterDomain'));
+        if (activeCompetitors.length === 0) return toast.error(t('competitors.enterAtLeastOne'));
 
         setLoading(true);
         try {
@@ -50,10 +50,10 @@ export default function GapAnalysisPage() {
             if (data.success) {
                 setResults(data.data);
             } else {
-                toast.error(data.message || 'Analysis failed');
+                toast.error(data.message || t('competitors.analysisFailed'));
             }
         } catch (error) {
-            toast.error('Network error');
+            toast.error(t('common.networkError'));
         } finally {
             setLoading(false);
         }
@@ -64,12 +64,12 @@ export default function GapAnalysisPage() {
             <div style={{ marginBottom: '32px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                     <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#0f172a', margin: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <Target size={32} color="#3b82f6" /> Content Gap Analysis
+                        <Target size={32} color="#3b82f6" /> {t('competitors.gapAnalysis')}
                     </h1>
                     <LanguageSwitcher />
                 </div>
                 <p style={{ color: '#64748b', fontSize: '16px' }}>
-                    Find high-value keywords your competitors rank for, but you don't.
+                    {t('competitors.gapAnalysisDesc')}
                 </p>
             </div>
 
@@ -78,7 +78,7 @@ export default function GapAnalysisPage() {
 
                 {/* Your Site */}
                 <div style={{ flex: '1 1 300px' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#334155', marginBottom: '12px' }}>YOUR WEBSITE</h3>
+                    <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#334155', marginBottom: '12px' }}>{t('competitors.yourWebsite')}</h3>
                     <div style={{ position: 'relative' }}>
                         <Shield style={{ position: 'absolute', left: '12px', top: '12px', color: '#166534' }} size={18} />
                         <input
@@ -98,7 +98,7 @@ export default function GapAnalysisPage() {
 
                 {/* Competitors */}
                 <div style={{ flex: '2 1 400px' }}>
-                    <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#334155', marginBottom: '12px' }}>COMPETITORS</h3>
+                    <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#334155', marginBottom: '12px' }}>{t('competitors.competitorsLabel')}</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         {competitors.map((comp, i) => (
                             <div key={i} style={{ display: 'flex', gap: '8px' }}>

@@ -33,12 +33,12 @@ export default function CompetitorComparison() {
                 setCompetitors(withMetrics);
 
                 if (withMetrics.length === 0) {
-                    toast.error('No competitors with metrics found. Analyze competitors first.');
+                    toast.error(t('competitors.noMetricsFound'));
                 }
             }
         } catch (error) {
             console.error(error);
-            toast.error('Failed to load competitors');
+            toast.error(t('competitors.failedToLoad'));
         } finally {
             setLoading(false);
         }
@@ -47,7 +47,7 @@ export default function CompetitorComparison() {
     if (loading) {
         return (
             <div style={{ padding: '40px', textAlign: 'center' }}>
-                <div style={{ fontSize: '16px', color: '#64748b' }}>Loading comparison...</div>
+                <div style={{ fontSize: '16px', color: '#64748b' }}>{t('competitors.loadingComparison')}</div>
             </div>
         );
     }
@@ -69,7 +69,7 @@ export default function CompetitorComparison() {
                         marginBottom: '24px'
                     }}
                 >
-                    <ArrowLeft size={16} /> Back to Competitors
+                    <ArrowLeft size={16} /> {t('common.backToCompetitors')}
                 </button>
 
                 <div style={{
@@ -80,9 +80,9 @@ export default function CompetitorComparison() {
                     textAlign: 'center'
                 }}>
                     <AlertCircle size={48} color="#f59e0b" style={{ margin: '0 auto 16px' }} />
-                    <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>No Data to Compare</h3>
+                    <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>{t('competitors.noDataToCompare')}</h3>
                     <p style={{ color: '#64748b', marginBottom: '24px' }}>
-                        Add competitors and analyze them to see comparison data.
+                        {t('competitors.noDataToCompareDesc')}
                     </p>
                     <button
                         onClick={() => navigate(`/sites/${id}/competitors`)}
@@ -97,7 +97,7 @@ export default function CompetitorComparison() {
                             cursor: 'pointer'
                         }}
                     >
-                        Go to Competitors
+                        {t('competitors.goToCompetitors')}
                     </button>
                 </div>
             </div>
@@ -134,13 +134,13 @@ export default function CompetitorComparison() {
                             cursor: 'pointer',
                         }}
                     >
-                        <ArrowLeft size={16} /> Back to Competitors
+                        <ArrowLeft size={16} /> {t('common.backToCompetitors')}
                     </button>
                     <LanguageSwitcher />
                 </div>
 
                 <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: '0 0 8px 0' }}>
-                    Competitor Comparison
+                    {t('competitors.comparison')}
                 </h1>
                 <p style={{ color: '#64748b', margin: 0 }}>
                     Comparing {competitors.length} competitor{competitors.length > 1 ? 's' : ''}

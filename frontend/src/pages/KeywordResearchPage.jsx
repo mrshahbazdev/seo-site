@@ -77,16 +77,16 @@ export default function KeywordResearchPage() {
                 setResults(result.data);
                 setCached(result.cached);
                 if (result.cached) {
-                    toast.success('Loaded from cache!');
+                    toast.success(t('keywords.loadedFromCache'));
                 } else {
-                    toast.success('Keywords fetched successfully!');
+                    toast.success(t('keywords.fetchedSuccessfully'));
                 }
             } else {
-                toast.error(result.message || 'Failed to fetch keywords');
+                toast.error(result.message || t('keywords.failedToFetch'));
             }
         } catch (error) {
             console.error(error);
-            toast.error('Something went wrong');
+            toast.error(t('common.somethingWentWrong'));
         } finally {
             setLoading(false);
         }
@@ -160,7 +160,7 @@ export default function KeywordResearchPage() {
 
     const downloadCsv = () => {
         if (!results || results.length === 0) {
-            toast.error('No results to export');
+            toast.error(t('keywords.noResultsToExport'));
             return;
         }
 
@@ -190,7 +190,7 @@ export default function KeywordResearchPage() {
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
-        toast.success('CSV downloaded');
+        toast.success(t('keywords.csvDownloaded'));
     };
 
     return (
@@ -211,15 +211,15 @@ export default function KeywordResearchPage() {
                             cursor: 'pointer',
                         }}
                     >
-                        <ArrowLeft size={16} /> Back to Dashboard
+                        <ArrowLeft size={16} /> {t('common.backToDashboard')}
                     </button>
                     <LanguageSwitcher />
                 </div>
                 <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Search size={28} /> Keyword Research
+                    <Search size={28} /> {t('keywords.keywordResearch')}
                 </h1>
                 <p style={{ color: '#64748b', margin: 0 }}>
-                    Discover high-potential keywords, analyze search volume, and check competition.
+                    {t('keywords.keywordResearchDesc')}
                 </p>
             </div>
 
@@ -228,7 +228,7 @@ export default function KeywordResearchPage() {
                 <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'end' }}>
                     <div style={{ flex: 1, minWidth: '200px' }}>
                         <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#64748b' }}>
-                            Seed Keyword
+                            {t('keywords.seedKeyword')}
                         </label>
                         <input
                             {...register('keyword', { required: true })}
@@ -245,7 +245,7 @@ export default function KeywordResearchPage() {
 
                     <div style={{ width: '280px' }}>
                         <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500', color: '#64748b' }}>
-                            Location {locationsLoading ? '(loading...)' : ''}
+                            {t('keywords.location')} {locationsLoading ? `(${t('common.loading')}...)` : ''}
                         </label>
                         <input
                             type="text"

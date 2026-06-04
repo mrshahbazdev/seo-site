@@ -41,14 +41,14 @@ export default function OnPageCrawledPages() {
                 setPages(data.data || []);
                 setTotal(data.total_count || 0);
             } else if (data.status === 'no_task') {
-                toast.error('Analysis session expired. Redirecting...');
+                toast.error(t('onPage.sessionExpired'));
                 navigate(`/sites/${id}/onpage/summary`);
             } else {
-                toast.error(data.message || 'Failed to load pages');
+                toast.error(data.message || t('onPage.failedToLoadPages'));
             }
         } catch (error) {
             console.error('Error fetching pages:', error);
-            toast.error('Failed to load pages');
+            toast.error(t('onPage.failedToLoadPages'));
         } finally {
             setLoading(false);
         }
@@ -72,7 +72,7 @@ export default function OnPageCrawledPages() {
                         </button>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>Crawled Pages</h1>
+                                <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#0f172a', margin: '0 0 2px 0' }}>{t('onPage.crawledPages')}</h1>
                                 {activeFilter && (
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '2px 8px', background: '#fee2e2', color: '#991b1b', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>
                                         <AlertTriangle size={12} />
@@ -87,7 +87,7 @@ export default function OnPageCrawledPages() {
                                 )}
                             </div>
                             <div style={{ fontSize: '14px', color: '#64748b' }}>
-                                Found {total} Pages
+                                {t('onPage.foundPages', { count: total })}
                             </div>
                         </div>
                     </div>

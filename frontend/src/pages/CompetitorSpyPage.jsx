@@ -31,13 +31,13 @@ export default function CompetitorSpyPage() {
             const dataRes = await res.json();
             if (dataRes.success) {
                 setKeywords(dataRes.data);
-                toast.success(`Found ${dataRes.data.length} keywords!`);
+                toast.success(t('competitors.foundKeywords', { count: dataRes.data.length }));
             } else {
-                toast.error(dataRes.message || 'Analysis failed');
+                toast.error(dataRes.message || t('competitors.analysisFailed'));
             }
         } catch (error) {
             console.error(error);
-            toast.error('Something went wrong');
+            toast.error(t('common.somethingWentWrong'));
         } finally {
             setLoading(false);
         }
@@ -61,15 +61,15 @@ export default function CompetitorSpyPage() {
                             cursor: 'pointer',
                         }}
                     >
-                        <ArrowLeft size={16} /> Back to Dashboard
+                        <ArrowLeft size={16} /> {t('common.backToDashboard')}
                     </button>
                     <LanguageSwitcher />
                 </div>
                 <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Users size={28} color="#ec4899" /> Competitor Spy
+                    <Users size={28} color="#ec4899" /> {t('competitors.spy')}
                 </h1>
                 <p style={{ color: '#64748b', margin: 0 }}>
-                    Enter a competitor's domain to see every keyword they rank for. Steal their traffic!
+                    {t('competitors.spyDesc')}
                 </p>
             </div>
 
@@ -80,7 +80,7 @@ export default function CompetitorSpyPage() {
                         <Globe size={20} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
                         <input
                             {...register('domain', { required: true })}
-                            placeholder="competitor.com (e.g., neilpatel.com)"
+                            placeholder={t('competitors.spyInputPlaceholder')}
                             disabled={loading}
                             style={{
                                 width: '100%',
