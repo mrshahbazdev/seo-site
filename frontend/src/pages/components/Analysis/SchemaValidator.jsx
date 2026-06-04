@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Database, CheckCircle, AlertCircle, ChevronDown, ChevronUp, ExternalLink, Code, RefreshCw } from 'lucide-react';
+import { useTranslation } from '../../../i18n/LanguageContext';
 
 export default function SchemaValidator({ page }) {
+    const { t } = useTranslation();
     const [expandedIndex, setExpandedIndex] = useState(null);
 
     let schemas = [];
@@ -74,10 +76,10 @@ export default function SchemaValidator({ page }) {
         <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0', marginTop: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Database size={18} /> Schema & Structured Data
+                    <Database size={18} /> {t('schema.title')}
                     {page.analysis_data && (
                         <span style={{ fontSize: '10px', background: '#dcfce7', color: '#166534', padding: '2px 6px', borderRadius: '10px', border: '1px solid #bbf7d0' }}>
-                            Deep Scan Data
+                            {t('schema.deepScanData')}
                         </span>
                     )}
                 </h3>
@@ -87,7 +89,7 @@ export default function SchemaValidator({ page }) {
                     rel="noreferrer"
                     style={{ fontSize: '13px', fontWeight: '600', color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}
                 >
-                    Validate in Google <ExternalLink size={14} />
+                    {t('schema.validateInGoogle')} <ExternalLink size={14} />
                 </a>
             </div>
 
@@ -148,11 +150,11 @@ export default function SchemaValidator({ page }) {
                 <div style={{ padding: '20px', background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: '8px', display: 'flex', gap: '12px', alignItems: 'start' }}>
                     <AlertCircle size={20} color="#d97706" style={{ marginTop: '2px' }} />
                     <div>
-                        <div style={{ fontWeight: '600', fontSize: '14px', color: '#92400e', marginBottom: '4px' }}>No Structured Data Found</div>
+                        <div style={{ fontWeight: '600', fontSize: '14px', color: '#92400e', marginBottom: '4px' }}>{t('schema.noStructuredData')}</div>
                         <div style={{ fontSize: '13px', color: '#b45309', lineHeight: '1.5' }}>
-                            We couldn't detect any structured data in the initial crawl.
+                            {t('schema.noStructuredDataDesc')}
                             <br /><br />
-                            <b>Tip:</b> Try running the <b>"Deep Analysis"</b> sidebar tool. It performs a live extraction of JSON-LD scripts that might have been missed.
+                            <b>{t('schema.tip')}</b> {t('schema.tipDesc')}
                         </div>
                     </div>
                 </div>

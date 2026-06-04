@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Settings, X, Bell, Slack, Clock, Save, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../../i18n/LanguageContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
 
 export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     audit_frequency: site?.audit_frequency || 'manual',
@@ -30,14 +32,14 @@ export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
       });
       const data = await res.json();
       if (data.success) {
-        toast.success('Settings updated successfully');
+        toast.success(t('siteSettings.settingsUpdated'));
         onSave(data.site ?? data.data ?? {});
         onClose();
       } else {
-        toast.error(data.message || 'Failed to update settings');
+        toast.error(data.message || t('siteSettings.failedToUpdate'));
       }
     } catch (err) {
-      toast.error('Network error updating settings');
+      toast.error(t('siteSettings.networkError'));
     } finally {
       setLoading(false);
     }
@@ -52,8 +54,8 @@ export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
               <Settings size={20} />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-800">Site Settings</h3>
-              <p className="text-xs text-slate-500">Configure automation and alerts</p>
+              <h3 className="text-lg font-bold text-slate-800">{t('siteSettings.title')}</h3>
+              <p className="text-xs text-slate-500">{t('siteSettings.description')}</p>
             </div>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
@@ -66,7 +68,7 @@ export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
           <div className="space-y-3">
             <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
               <Clock size={16} className="text-slate-400" />
-              Audit Frequency
+              {t('siteSettings.auditFrequency')}
             </label>
             <div className="grid grid-cols-2 gap-2">
               {['manual', 'daily', 'weekly', 'monthly'].map(freq => (
@@ -90,11 +92,11 @@ export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
           <div className="space-y-4 pt-4 border-t border-slate-100">
             <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
               <Bell size={16} className="text-slate-400" />
-              Notifications
+              {t('siteSettings.notifications')}
             </label>
             
             <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-              <span className="text-xs font-medium text-slate-600">Enable Email Alerts</span>
+              <span className="text-xs font-medium text-slate-600">{t('siteSettings.enableEmailAlerts')}</span>
               <button 
                 type="button"
                 onClick={() => setFormData({ ...formData, notifications_enabled: !formData.notifications_enabled })}
@@ -106,7 +108,7 @@ export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
 
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                <Slack size={14} /> Slack Integration
+                <Slack size={14} /> {t('siteSettings.slackIntegration')}
               </div>
               <input 
                 type="url"
@@ -115,7 +117,7 @@ export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
                 onChange={(e) => setFormData({ ...formData, slack_webhook_url: e.target.value })}
                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400"
               />
-              <p className="text-[10px] text-slate-400">Get audit reports directly in your Slack channel.</p>
+              <p className="text-[10px] text-slate-400">{t('siteSettings.slackHint')}</p>
             </div>
           </div>
 
@@ -125,7 +127,7 @@ export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
             className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {loading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-            Save Changes
+            {t('siteSettings.saveChanges')}
           </button>
         </form>
       </div>

@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Facebook, Twitter, Linkedin, Search, Globe, Image as ImageIcon } from 'lucide-react';
+import { useTranslation } from '../../../i18n/LanguageContext';
 
 export default function SocialPreview({ meta, url }) {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('facebook');
 
     // Extract Data
-    const title = meta?.social_media_tags?.['og:title'] || meta?.title || 'No Title';
-    const description = meta?.social_media_tags?.['og:description'] || meta?.description || 'No Description';
+    const title = meta?.social_media_tags?.['og:title'] || meta?.title || t('socialPreview.noTitle');
+    const description = meta?.social_media_tags?.['og:description'] || meta?.description || t('socialPreview.noDescription');
     const image = meta?.social_media_tags?.['og:image'];
     const domain = url ? new URL(url).hostname.replace('www.', '') : 'example.com';
 
@@ -21,7 +23,7 @@ export default function SocialPreview({ meta, url }) {
     return (
         <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0', marginTop: '24px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Globe size={18} /> Social Previews
+                <Globe size={18} /> {t('socialPreview.title')}
             </h3>
 
             {/* Tabs */}
@@ -55,7 +57,7 @@ export default function SocialPreview({ meta, url }) {
                 {/* Facebook Preview */}
                 {activeTab === 'facebook' && (
                     <div style={{ width: '100%', maxWidth: '500px', background: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', border: '1px solid #ddd' }}>
-                        <PreviewImage src={image} height="260px" />
+                        <PreviewImage src={image} height="260px" noImageLabel={t('socialPreview.noImage')} />
                         <div style={{ padding: '12px 16px', background: '#f0f2f5', borderTop: '1px solid #eee' }}>
                             <div style={{ fontSize: '12px', color: '#65676b', textTransform: 'uppercase', marginBottom: '4px' }}>{domain}</div>
                             <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#050505', marginBottom: '4px', lineHeight: '1.2' }}>{title}</div>
@@ -67,7 +69,7 @@ export default function SocialPreview({ meta, url }) {
                 {/* Twitter Preview */}
                 {activeTab === 'twitter' && (
                     <div style={{ width: '100%', maxWidth: '440px', background: 'white', borderRadius: '16px', overflow: 'hidden', border: '1px solid #cfd9de' }}>
-                        <PreviewImage src={image} height="220px" />
+                        <PreviewImage src={image} height="220px" noImageLabel={t('socialPreview.noImage')} />
                         <div style={{ padding: '12px' }}>
                             <div style={{ fontSize: '15px', color: '#0f1419', fontWeight: 'bold', marginBottom: '4px' }}>{title}</div>
                             <div style={{ fontSize: '14px', color: '#536471', marginBottom: '4px' }}>{description}</div>
@@ -79,7 +81,7 @@ export default function SocialPreview({ meta, url }) {
                 {/* LinkedIn Preview */}
                 {activeTab === 'linkedin' && (
                     <div style={{ width: '100%', maxWidth: '500px', background: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', border: '1px solid #e0e0e0' }}>
-                        <PreviewImage src={image} height="260px" />
+                        <PreviewImage src={image} height="260px" noImageLabel={t('socialPreview.noImage')} />
                         <div style={{ padding: '12px 16px', background: 'white' }}>
                             <div style={{ fontSize: '16px', fontWeight: '600', color: '#000000e6', marginBottom: '4px', lineHeight: '1.4' }}>{title}</div>
                             <div style={{ fontSize: '12px', color: '#00000099' }}>{domain}</div>
@@ -109,14 +111,14 @@ export default function SocialPreview({ meta, url }) {
             {!image && activeTab !== 'google' && (
                 <div style={{ marginTop: '16px', padding: '12px', background: '#fff1f2', border: '1px solid #fecaca', borderRadius: '8px', fontSize: '13px', color: '#991b1b', display: 'flex', gap: '8px' }}>
                     <ImageIcon size={16} />
-                    <span>Missing <b>og:image</b>! Your link will look broken when shared. Add an image meta tag to fix this.</span>
+                    <span>{t('socialPreview.missingOgImage')}</span>
                 </div>
             )}
         </div>
     );
 }
 
-const PreviewImage = ({ src, height }) => (
+const PreviewImage = ({ src, height, noImageLabel }) => (
     <div style={{
         width: '100%',
         height: height,
@@ -130,7 +132,7 @@ const PreviewImage = ({ src, height }) => (
         {!src && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                 <ImageIcon size={48} />
-                <span style={{ fontSize: '14px', fontWeight: '500' }}>No Image</span>
+                <span style={{ fontSize: '14px', fontWeight: '500' }}>{noImageLabel}</span>
             </div>
         )}
     </div>

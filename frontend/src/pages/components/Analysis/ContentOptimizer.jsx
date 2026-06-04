@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Search, CheckCircle, XCircle, AlertTriangle, Target } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../../i18n/LanguageContext';
 
 export default function ContentOptimizer({ siteId, pageId, url, savedAnalysis }) {
+    const { t } = useTranslation();
     const [keyword, setKeyword] = useState('');
     const [analyzing, setAnalyzing] = useState(false);
     const [result, setResult] = useState(null);
@@ -36,11 +38,11 @@ export default function ContentOptimizer({ siteId, pageId, url, savedAnalysis })
             if (data.success) {
                 setResult(data.data);
             } else {
-                toast.error(data.message || 'Analysis failed');
+                toast.error(data.message || t('contentOptimizer.analysisFailed'));
             }
         } catch (error) {
             console.error('Analysis error:', error);
-            toast.error('Failed to run analysis');
+            toast.error(t('contentOptimizer.failedToRun'));
         } finally {
             setAnalyzing(false);
         }
@@ -55,11 +57,11 @@ export default function ContentOptimizer({ siteId, pageId, url, savedAnalysis })
     return (
         <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Target size={18} /> Content Optimizer
+                <Target size={18} /> {t('contentOptimizer.title')}
             </h3>
 
             <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '16px' }}>
-                Enter a target keyword to check its density and placement in your content.
+                {t('contentOptimizer.description')}
             </p>
 
             <form onSubmit={handleAnalyze} style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: result ? '24px' : '0' }}>
@@ -67,7 +69,7 @@ export default function ContentOptimizer({ siteId, pageId, url, savedAnalysis })
                     type="text"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="Enter target keyword..."
+                    placeholder={t('contentOptimizer.placeholder')}
                     style={{ flex: 1, padding: '10px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '14px' }}
                 />
                 <button
@@ -88,9 +90,9 @@ export default function ContentOptimizer({ siteId, pageId, url, savedAnalysis })
                     }}
                 >
                     {analyzing ? (
-                        <>Parsing...</>
+                        <>{t('contentOptimizer.parsing')}</>
                     ) : (
-                        <><Search size={16} /> Analyze</>
+                        <><Search size={16} /> {t('contentOptimizer.analyze')}</>
                     )}
                 </button>
             </form>
@@ -100,32 +102,32 @@ export default function ContentOptimizer({ siteId, pageId, url, savedAnalysis })
                     {/* Density Score */}
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center', justifyContent: 'space-between', padding: '16px', background: '#f8fafc', borderRadius: '8px', marginBottom: '24px', border: '1px solid #e2e8f0' }}>
                         <div>
-                            <div style={{ fontSize: '12px', color: '#64748b', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>Keyword Density</div>
+                            <div style={{ fontSize: '12px', color: '#64748b', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.05em' }}>{t('contentOptimizer.keywordDensity')}</div>
                             <div style={{ fontSize: '14px', color: '#334155', marginTop: '4px' }}>
-                                Found <strong>{result.keyword_count}</strong> times in <strong>{result.total_words}</strong> words.
+                                {t('contentOptimizer.foundTimes', { count: result.keyword_count, total: result.total_words })}
                             </div>
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <div style={{ fontSize: '32px', fontWeight: 'bold', color: getScoreColor(result.density_score) }}>
                                 {result.density_score}%
                             </div>
-                            <div style={{ fontSize: '12px', color: '#64748b' }}>Target: 1-3%</div>
+                            <div style={{ fontSize: '12px', color: '#64748b' }}>{t('contentOptimizer.target')}</div>
                         </div>
                     </div>
 
                     {/* Placements Grid */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-                        <PlacementBadge label="In Title" active={result.placements?.in_title} />
-                        <PlacementBadge label="In H1" active={result.placements?.in_h1} />
-                        <PlacementBadge label="In Description" active={result.placements?.in_description} />
-                        <PlacementBadge label="In URL" active={result.placements?.in_url} />
-                        <PlacementBadge label="First 100 Words" active={result.placements?.at_start} />
+                        <PlacementBadge label={t('contentOptimizer.inTitle')} active={result.placements?.in_title} />
+                        <PlacementBadge label={t('contentOptimizer.inH1')} active={result.placements?.in_h1} />
+                        <PlacementBadge label={t('contentOptimizer.inDescription')} active={result.placements?.in_description} />
+                        <PlacementBadge label={t('contentOptimizer.inUrl')} active={result.placements?.in_url} />
+                        <PlacementBadge label={t('contentOptimizer.first100Words')} active={result.placements?.at_start} />
                     </div>
 
                     {/* Recommendations */}
                     {result.recommendations.length > 0 ? (
                         <div>
-                            <h4 style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '12px', color: '#1e293b' }}>Optimization Tips</h4>
+                            <h4 style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '12px', color: '#1e293b' }}>{t('contentOptimizer.optimizationTips')}</h4>
                             <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'grid', gap: '8px' }}>
                                 {result.recommendations.map((rec, i) => (
                                     <li key={i} style={{ padding: '10px', background: '#fff1f2', border: '1px solid #fecaca', borderRadius: '6px', color: '#991b1b', fontSize: '14px', display: 'flex', gap: '8px' }}>
@@ -138,7 +140,7 @@ export default function ContentOptimizer({ siteId, pageId, url, savedAnalysis })
                     ) : (
                         <div style={{ padding: '12px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '6px', color: '#166534', fontSize: '14px', display: 'flex', gap: '8px', alignItems: 'center' }}>
                             <CheckCircle size={18} />
-                            <span>Great job! No content issues found for this keyword.</span>
+                            <span>{t('contentOptimizer.noIssues')}</span>
                         </div>
                     )}
                 </div>

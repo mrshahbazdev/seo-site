@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { AlertTriangle, ExternalLink, Loader2 } from 'lucide-react';
+import { useTranslation } from '../../../i18n/LanguageContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
 
 export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }) {
+    const { t } = useTranslation();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -29,7 +31,7 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                 if (json.success) {
                     setData(json);
                 } else {
-                    setError(json.message || 'Could not load duplicate peers');
+                    setError(json.message || t('duplicateContent.couldNotLoad'));
                 }
             } catch (e) {
                 if (!cancelled) setError(e.message || 'Request failed');
@@ -60,26 +62,24 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                 <AlertTriangle size={24} color="#e11d48" />
                 <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#9f1239', margin: 0 }}>
-                    Duplicate content
+                    {t('duplicateContent.title')}
                 </h3>
             </div>
 
             <p style={{ fontSize: '14px', color: '#881337', margin: '0 0 16px 0', lineHeight: '1.5' }}>
-                DataForSEO flagged this URL. Below we match <strong>other crawled pages on this site</strong> that
-                share the same <strong>title</strong>, <strong>meta description</strong>, or{' '}
-                <strong>normalized body text</strong> so you can open and compare them.
+                {t('duplicateContent.description')}
             </p>
 
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
-                {page.raw_data?.duplicate_title && <Badge label="Flag: duplicate title" />}
-                {page.raw_data?.duplicate_description && <Badge label="Flag: duplicate description" />}
-                {page.raw_data?.duplicate_content && <Badge label="Flag: duplicate body" />}
+                {page.raw_data?.duplicate_title && <Badge label={t('duplicateContent.flagTitle')} />}
+                {page.raw_data?.duplicate_description && <Badge label={t('duplicateContent.flagDescription')} />}
+                {page.raw_data?.duplicate_content && <Badge label={t('duplicateContent.flagBody')} />}
             </div>
 
             {loading ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#9f1239' }}>
                     <Loader2 size={16} className="dup-spin" />
-                    Finding pages with matching title, description, or body…
+                    {t('duplicateContent.finding')}
                     <style>{`
                         @keyframes dup-spin { to { transform: rotate(360deg); } }
                         .dup-spin { animation: dup-spin 1s linear infinite; }
@@ -97,13 +97,13 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                     flexDirection: 'column',
                     gap: '4px'
                 }}>
-                    <strong>Unable to fetch duplicate details</strong>
+                    <strong>{t('duplicateContent.unableToFetch')}</strong>
                     <p style={{ margin: 0 }}>{error}</p>
                     <button 
                         onClick={() => window.location.reload()}
                         style={{ alignSelf: 'flex-start', background: 'none', border: 'none', padding: 0, color: '#2563eb', cursor: 'pointer', fontWeight: 600, fontSize: '12px', marginTop: '4px' }}
                     >
-                        Try refreshing
+                        {t('duplicateContent.tryRefreshing')}
                     </button>
                 </div>
             ) : (
@@ -111,8 +111,8 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                     {data?.current && (
                         <div style={{ marginBottom: '16px' }}>
                             <div style={{ fontSize: '12px', fontWeight: '700', color: '#881337', marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                                <span>Current page</span>
-                                {totalPeers > 0 && <span style={{ fontWeight: 400, opacity: 0.8 }}>Matched with {totalPeers} other page{totalPeers > 1 ? 's' : ''}</span>}
+                                <span>{t('duplicateContent.currentPage')}</span>
+                                {totalPeers > 0 && <span style={{ fontWeight: 400, opacity: 0.8 }}>{t('duplicateContent.matchedWith', { count: totalPeers })}</span>}
                             </div>
                             <PeerTable
                                 rows={[
@@ -141,38 +141,40 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
                             borderRadius: '8px',
                             border: '1px solid #fecdd3'
                         }}>
-                            <strong>No direct matches found.</strong><br/>
-                            No other crawled pages on this site shared the exact same title, meta description, or identical normalized body text. 
-                            If DataForSEO still flags this page, it may be due to "near-duplicate" content or shared template elements (header/footer) that wasn't captured in the direct comparison.
+                            <strong>{t('duplicateContent.noMatches')}</strong><br/>
+                            {t('duplicateContent.noMatchesDesc')}
                         </p>
                     ) : (
                         <>
                             <DuplicateSection
-                                title="Other pages with Same Title"
+                                title={t('duplicateContent.sameTitle')}
                                 emptyHint="—"
                                 rows={data?.same_title}
                                 strategy="title"
                                 siteId={siteId}
                                 onNavigate={onNavigate}
                                 compactEmpty
+                                t={t}
                             />
                             <DuplicateSection
-                                title="Other pages with Same Meta description"
+                                title={t('duplicateContent.sameDescription')}
                                 emptyHint="—"
                                 rows={data?.same_description}
                                 strategy="description"
                                 siteId={siteId}
                                 onNavigate={onNavigate}
                                 compactEmpty
+                                t={t}
                             />
                             <DuplicateSection
-                                title="Other pages with Identical Body text"
+                                title={t('duplicateContent.sameBody')}
                                 emptyHint="—"
                                 rows={data?.same_body}
                                 strategy="body"
                                 siteId={siteId}
                                 onNavigate={onNavigate}
                                 compactEmpty
+                                t={t}
                             />
                         </>
                     )}
@@ -182,7 +184,7 @@ export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }
     );
 }
 
-function DuplicateSection({ title, emptyHint, rows, siteId, onNavigate, compactEmpty, strategy }) {
+function DuplicateSection({ title, emptyHint, rows, siteId, onNavigate, compactEmpty, strategy, t }) {
     if (!rows || rows.length === 0) {
         if (compactEmpty) return null;
         return (
@@ -199,28 +201,28 @@ function DuplicateSection({ title, emptyHint, rows, siteId, onNavigate, compactE
                 {title}{' '}
                 <span style={{ fontWeight: '600', color: '#be185d' }}>({rows.length})</span>
             </div>
-            <PeerTable rows={rows} siteId={siteId} onNavigate={onNavigate} strategy={strategy} />
+            <PeerTable rows={rows} siteId={siteId} onNavigate={onNavigate} strategy={strategy} t={t} />
         </div>
     );
 }
 
-function getRecommendation(strategy) {
-    if (strategy === 'title') return 'Keep unique title or canonicalize duplicate pages';
-    if (strategy === 'description') return 'Rewrite meta descriptions to avoid duplication';
-    if (strategy === 'body') return 'Merge thin duplicates or add unique body sections';
-    return 'Review and differentiate this page';
+function getRecommendation(strategy, t) {
+    if (strategy === 'title') return t('duplicateContent.keepUnique');
+    if (strategy === 'description') return t('duplicateContent.rewriteDesc');
+    if (strategy === 'body') return t('duplicateContent.mergeContent');
+    return t('duplicateContent.reviewPage');
 }
 
-function PeerTable({ rows, siteId, onNavigate, strategy }) {
+function PeerTable({ rows, siteId, onNavigate, strategy, t }) {
     return (
         <div style={{ overflowX: 'auto', borderRadius: '8px', border: '1px solid #fda4af', background: '#fff' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                 <thead>
                     <tr style={{ background: '#ffe4e6', textAlign: 'left' }}>
                         <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>URL</th>
-                        <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>Title</th>
-                        <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>Meta description</th>
-                        <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>Suggested action</th>
+                        <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>{t('duplicateContent.titleColumn')}</th>
+                        <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>{t('duplicateContent.metaDescColumn')}</th>
+                        <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700' }}>{t('duplicateContent.suggestedAction')}</th>
                         <th style={{ padding: '8px 10px', color: '#881337', fontWeight: '700', width: '100px' }} />
                     </tr>
                 </thead>
@@ -246,7 +248,7 @@ function PeerTable({ rows, siteId, onNavigate, strategy }) {
                                             color: '#be185d',
                                         }}
                                     >
-                                        (this page)
+                                        ({t('duplicateContent.thisPage')})
                                     </span>
                                 )}
                             </td>
@@ -257,7 +259,7 @@ function PeerTable({ rows, siteId, onNavigate, strategy }) {
                                 {row.description_preview || row.description || '—'}
                             </td>
                             <td style={{ padding: '8px 10px', verticalAlign: 'top', color: '#475569', lineHeight: 1.4 }}>
-                                {row.isCurrent ? 'Source page' : getRecommendation(strategy)}
+                                {row.isCurrent ? t('duplicateContent.currentPage') : getRecommendation(strategy, t)}
                             </td>
                             <td style={{ padding: '8px 10px', verticalAlign: 'top', whiteSpace: 'nowrap' }}>
                                 {!row.isCurrent && (
@@ -275,7 +277,7 @@ function PeerTable({ rows, siteId, onNavigate, strategy }) {
                                                 marginRight: '8px',
                                             }}
                                         >
-                                            Open
+                                            {t('phaseTwo.open')}
                                         </button>
                                         <a
                                             href={row.url}

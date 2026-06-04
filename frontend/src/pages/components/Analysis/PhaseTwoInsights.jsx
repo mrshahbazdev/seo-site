@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link2, AlertCircle, TrendingDown, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../../i18n/LanguageContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
 
 export default function PhaseTwoInsights({ siteId, onNavigate }) {
+  const { t } = useTranslation();
   const [keyword, setKeyword] = useState('');
   const [cannibalization, setCannibalization] = useState(null);
   const [linking, setLinking] = useState(null);
@@ -18,7 +20,7 @@ export default function PhaseTwoInsights({ siteId, onNavigate }) {
 
   const runCannibalization = async () => {
     if (!keyword.trim()) {
-      toast.error('Enter a keyword first');
+      toast.error(t('phaseTwo.enterKeywordFirst'));
       return;
     }
     setLoading((s) => ({ ...s, c: true }));
@@ -28,7 +30,7 @@ export default function PhaseTwoInsights({ siteId, onNavigate }) {
       if (!data.success) throw new Error(data.message || 'Failed');
       setCannibalization(data.data);
     } catch (e) {
-      toast.error(e.message || 'Failed to load cannibalization');
+      toast.error(e.message || t('phaseTwo.failedCannibalization'));
     } finally {
       setLoading((s) => ({ ...s, c: false }));
     }
@@ -42,7 +44,7 @@ export default function PhaseTwoInsights({ siteId, onNavigate }) {
       if (!data.success) throw new Error(data.message || 'Failed');
       setLinking(data.data);
     } catch (e) {
-      toast.error(e.message || 'Failed to load linking opportunities');
+      toast.error(e.message || t('phaseTwo.failedLinking'));
     } finally {
       setLoading((s) => ({ ...s, l: false }));
     }
@@ -56,7 +58,7 @@ export default function PhaseTwoInsights({ siteId, onNavigate }) {
       if (!data.success) throw new Error(data.message || 'Failed');
       setDecay(data.data);
     } catch (e) {
-      toast.error(e.message || 'Failed to load decay alerts');
+      toast.error(e.message || t('phaseTwo.failedDecay'));
     } finally {
       setLoading((s) => ({ ...s, d: false }));
     }
@@ -64,9 +66,9 @@ export default function PhaseTwoInsights({ siteId, onNavigate }) {
 
   return (
     <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
-      <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>Phase 2 Insights</h2>
+      <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>{t('phaseTwo.title')}</h2>
       <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '18px' }}>
-        Cannibalization, internal-link opportunities, and content decay alerts.
+        {t('phaseTwo.description')}
       </p>
 
       <div style={{ display: 'grid', gap: '12px', marginBottom: '16px' }}>
@@ -74,20 +76,20 @@ export default function PhaseTwoInsights({ siteId, onNavigate }) {
           <input
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            placeholder="Keyword for cannibalization (e.g. arbeitsschutz beratung)"
+            placeholder={t('phaseTwo.keywordPlaceholder')}
             style={{ flex: '1 1 260px', border: '1px solid #cbd5e1', borderRadius: '8px', padding: '9px 12px', fontSize: '13px' }}
           />
           <button onClick={runCannibalization} style={btn('#2563eb')} disabled={loading.c}>
-            <Search size={14} /> {loading.c ? 'Checking...' : 'Check Cannibalization'}
+            <Search size={14} /> {loading.c ? t('phaseTwo.checking') : t('phaseTwo.checkCannibalization')}
           </button>
         </div>
 
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <button onClick={runInternalLinking} style={btn('#0ea5e9')} disabled={loading.l}>
-            <Link2 size={14} /> {loading.l ? 'Loading...' : 'Find Internal Linking Opportunities'}
+            <Link2 size={14} /> {loading.l ? t('phaseTwo.loading') : t('phaseTwo.findLinkingOpportunities')}
           </button>
           <button onClick={runDecayAlerts} style={btn('#8b5cf6')} disabled={loading.d}>
-            <TrendingDown size={14} /> {loading.d ? 'Loading...' : 'Check Decay Alerts'}
+            <TrendingDown size={14} /> {loading.d ? t('phaseTwo.loading') : t('phaseTwo.checkDecayAlerts')}
           </button>
         </div>
       </div>
@@ -95,13 +97,13 @@ export default function PhaseTwoInsights({ siteId, onNavigate }) {
       {cannibalization && (
         <div style={box()}>
           <div style={{ fontWeight: 700, fontSize: '13px', color: '#334155', marginBottom: '6px' }}>
-            Cannibalization Risk: <span style={{ color: riskColor(cannibalization.risk) }}>{cannibalization.risk}</span>
+            {t('phaseTwo.cannibalizationRisk')} <span style={{ color: riskColor(cannibalization.risk) }}>{cannibalization.risk}</span>
           </div>
           <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '8px' }}>{cannibalization.recommendation}</div>
           {(cannibalization.pages || []).slice(0, 5).map((p) => (
             <div key={p.id} style={row()}>
               <span style={{ fontSize: '12px', color: '#334155', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title || p.url}</span>
-              <button onClick={() => onNavigate(`/sites/${siteId}/onpage/pages/${p.id}`)} style={linkBtn()}>Open</button>
+              <button onClick={() => onNavigate(`/sites/${siteId}/onpage/pages/${p.id}`)} style={linkBtn()}>{t('phaseTwo.open')}</button>
             </div>
           ))}
         </div>
@@ -110,15 +112,15 @@ export default function PhaseTwoInsights({ siteId, onNavigate }) {
       {linking && (
         <div style={box()}>
           <div style={{ fontWeight: 700, fontSize: '13px', color: '#334155', marginBottom: '6px' }}>
-            Internal Link Opportunities ({linking.suggestions?.length || 0})
+            {t('phaseTwo.internalLinkOpportunities')} ({linking.suggestions?.length || 0})
           </div>
           {(linking.suggestions || []).slice(0, 5).map((s, i) => (
             <div key={`${s.target?.id}-${i}`} style={{ borderTop: i ? '1px solid #e2e8f0' : 'none', paddingTop: i ? '8px' : 0, marginTop: i ? '8px' : 0 }}>
               <div style={{ fontSize: '12px', color: '#334155' }}>
-                Target: <strong>{s.target?.title || s.target?.url}</strong>
+                {t('phaseTwo.target')} <strong>{s.target?.title || s.target?.url}</strong>
               </div>
               <div style={{ fontSize: '12px', color: '#64748b' }}>
-                Source: {s.source?.title || s.source?.url} | Anchors: {(s.anchor_suggestions || []).join(', ') || 'n/a'}
+                {t('phaseTwo.source')} {s.source?.title || s.source?.url} | {t('phaseTwo.anchors')} {(s.anchor_suggestions || []).join(', ') || 'n/a'}
               </div>
             </div>
           ))}
@@ -128,11 +130,11 @@ export default function PhaseTwoInsights({ siteId, onNavigate }) {
       {decay && (
         <div style={box()}>
           <div style={{ fontWeight: 700, fontSize: '13px', color: '#334155', marginBottom: '6px' }}>
-            Decay Alerts
+            {t('phaseTwo.decayAlerts')}
           </div>
           {(decay.alerts || []).length === 0 ? (
             <div style={{ fontSize: '12px', color: '#166534', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <AlertCircle size={14} /> No strong decay alert in recent audit history.
+              <AlertCircle size={14} /> {t('phaseTwo.noDecayAlert')}
             </div>
           ) : (
             (decay.alerts || []).map((a, idx) => (
