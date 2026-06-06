@@ -155,16 +155,16 @@ export default function CompetitorsPage() {
                         marginBottom: '16px'
                     }}
                 >
-                    <ArrowLeft size={16} /> Back to Dashboard
+                    <ArrowLeft size={16} /> {t('competitors.backToDashboard')}
                 </button>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
                         <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: '0 0 8px 0' }}>
-                            Competitor Analysis
+                            {t('competitors.competitorAnalysis')}
                         </h1>
                         <p style={{ color: '#64748b', margin: 0 }}>
-                            Track and compare your competitors' SEO performance
+                            {t('competitors.trackAndCompare')}
                         </p>
                     </div>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -186,7 +186,7 @@ export default function CompetitorsPage() {
                                     cursor: 'pointer'
                                 }}
                             >
-                                <BarChart3 size={18} /> Compare All
+                                <BarChart3 size={18} /> {t('competitors.compareAll')}
                             </button>
                         )}
                         <button
@@ -205,7 +205,7 @@ export default function CompetitorsPage() {
                                 cursor: 'pointer'
                             }}
                         >
-                            <Plus size={18} /> Add Competitor
+                            <Plus size={18} /> {t('competitors.addCompetitor')}
                         </button>
                     </div>
                 </div>
@@ -222,10 +222,10 @@ export default function CompetitorsPage() {
                 }}>
                     <Users size={48} color="#cbd5e1" style={{ margin: '0 auto 16px' }} />
                     <h3 style={{ fontSize: '18px', fontWeight: '600', margin: '0 0 8px 0' }}>
-                        No Competitors Added
+                        {t('competitors.noCompetitorsAdded')}
                     </h3>
                     <p style={{ color: '#64748b', marginBottom: '24px' }}>
-                        Add competitor domains to track their SEO performance
+                        {t('competitors.addCompetitorDomains')}
                     </p>
                     <button
                         onClick={() => setShowAddModal(true)}
@@ -240,7 +240,7 @@ export default function CompetitorsPage() {
                             cursor: 'pointer'
                         }}
                     >
-                        Add Your First Competitor
+                        {t('competitors.addFirstCompetitor')}
                     </button>
                 </div>
             ) : (
@@ -279,12 +279,12 @@ export default function CompetitorsPage() {
                         maxWidth: '90%'
                     }}>
                         <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '24px' }}>
-                            Add Competitor
+                            {t('competitors.addCompetitor')}
                         </h2>
 
                         <div style={{ marginBottom: '16px' }}>
                             <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
-                                Domain *
+                                {t('competitors.domainLabel')}
                             </label>
                             <input
                                 type="text"
@@ -303,7 +303,7 @@ export default function CompetitorsPage() {
 
                         <div style={{ marginBottom: '24px' }}>
                             <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
-                                Name (Optional)
+                                {t('competitors.nameOptional')}
                             </label>
                             <input
                                 type="text"
@@ -337,7 +337,7 @@ export default function CompetitorsPage() {
                                     cursor: 'pointer'
                                 }}
                             >
-                                Cancel
+                                {t('competitors.cancel')}
                             </button>
                             <button
                                 onClick={handleAddCompetitor}
@@ -353,7 +353,7 @@ export default function CompetitorsPage() {
                                     cursor: adding ? 'not-allowed' : 'pointer'
                                 }}
                             >
-                                {adding ? 'Adding...' : 'Add Competitor'}
+                                {adding ? t('competitors.adding') : t('competitors.addCompetitor')}
                             </button>
                         </div>
                     </div>
@@ -364,6 +364,7 @@ export default function CompetitorsPage() {
 }
 
 const CompetitorCard = ({ competitor, onAnalyze, onDelete, onView }) => {
+    const { t } = useTranslation();
     const metrics = competitor.metrics_data;
     const hasMetrics = metrics && Object.keys(metrics).length > 0;
 
@@ -390,10 +391,10 @@ const CompetitorCard = ({ competitor, onAnalyze, onDelete, onView }) => {
 
             {hasMetrics ? (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
-                    <MetricBox label="Backlinks" value={metrics.backlinks?.toLocaleString() || 'N/A'} />
-                    <MetricBox label="Ref. Domains" value={metrics.referring_domains?.toLocaleString() || 'N/A'} />
-                    <MetricBox label="Ref. IPs" value={metrics.referring_ips?.toLocaleString() || 'N/A'} />
-                    <MetricBox label="Ref. Subnets" value={metrics.referring_subnets?.toLocaleString() || 'N/A'} />
+                    <MetricBox label={t('competitors.backlinks')} value={metrics.backlinks?.toLocaleString() || 'N/A'} />
+                    <MetricBox label={t('competitors.refDomains')} value={metrics.referring_domains?.toLocaleString() || 'N/A'} />
+                    <MetricBox label={t('competitors.refIPs')} value={metrics.referring_ips?.toLocaleString() || 'N/A'} />
+                    <MetricBox label={t('competitors.refSubnets')} value={metrics.referring_subnets?.toLocaleString() || 'N/A'} />
                 </div>
             ) : (
                 <div style={{
@@ -405,13 +406,13 @@ const CompetitorCard = ({ competitor, onAnalyze, onDelete, onView }) => {
                     color: '#64748b',
                     fontSize: '13px'
                 }}>
-                    No metrics yet. Click "Analyze" to fetch data.
+                    {t('competitors.noMetricsYet')}
                 </div>
             )}
 
             {competitor.last_analyzed && (
                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '16px' }}>
-                    Last analyzed: {new Date(competitor.last_analyzed).toLocaleDateString()}
+                    {t('competitors.lastAnalyzed')} {new Date(competitor.last_analyzed).toLocaleDateString()}
                 </div>
             )}
 
@@ -433,7 +434,7 @@ const CompetitorCard = ({ competitor, onAnalyze, onDelete, onView }) => {
                         gap: '4px'
                     }}
                 >
-                    <RefreshCw size={14} /> Analyze
+                    <RefreshCw size={14} /> {t('competitors.analyze')}
                 </button>
                 <button
                     onClick={(e) => { e.stopPropagation(); onView(); }}
@@ -453,7 +454,7 @@ const CompetitorCard = ({ competitor, onAnalyze, onDelete, onView }) => {
                         gap: '4px'
                     }}
                 >
-                    <Eye size={14} /> View
+                    <Eye size={14} /> {t('competitors.view')}
                 </button>
                 <button
                     onClick={(e) => { e.stopPropagation(); onDelete(); }}

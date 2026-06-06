@@ -277,10 +277,24 @@
     "loadedPages": "Loaded {{count}} pages!",
     "foundKeywords": "Found {{count}} keywords!",
     "spyInputPlaceholder": "competitor.com (e.g., neilpatel.com)",
-    "analysisFailed": "Analysis failed",
     "yourWebsite": "YOUR WEBSITE",
     "vs": "VS",
-    "enterYourDomain": "Please enter your domain"
+    "enterYourDomain": "Please enter your domain",
+    "backToDashboard": "Back to Dashboard",
+    "trackAndCompare": "Track and compare your competitors' SEO performance",
+    "noCompetitorsAdded": "No Competitors Added",
+    "addCompetitorDomains": "Add competitor domains to track their SEO performance",
+    "addFirstCompetitor": "Add Your First Competitor",
+    "domainLabel": "Domain *",
+    "nameOptional": "Name (Optional)",
+    "cancel": "Cancel",
+    "adding": "Adding...",
+    "backlinks": "Backlinks",
+    "refDomains": "Ref. Domains",
+    "refIPs": "Ref. IPs",
+    "refSubnets": "Ref. Subnets",
+    "noMetricsYet": "No metrics yet. Click \"Analyze\" to fetch data.",
+    "lastAnalyzed": "Last analyzed:"
   },
   "keywords": {
     "title": "Keyword Research",
@@ -756,12 +770,9 @@
     "grammarError": "Failed to check grammar",
     "failedGrammar": "Failed to check grammar",
     "noIssues": "No issues found! Great job.",
-    "noIssuesFound": "No issues found! Great job.",
     "readingTime": "Est. Reading Time",
     "rawTextDesc": "This is the raw audible text content extracted from the page body (Tags stripped).",
-    "rawContentDesc": "This is the raw audible text content extracted from the page body (Tags stripped).",
-    "performanceAuditDesc": "Run a Google Lighthouse audit to check Core Web Vitals and Performance scores.",
-    "performanceDesc": "Run a Google Lighthouse audit to check Core Web Vitals and Performance scores."
+    "performanceAuditDesc": "Run a Google Lighthouse audit to check Core Web Vitals and Performance scores."
   },
   "duplicateContent": {
     "title": "Duplicate content",
