@@ -76,7 +76,7 @@ export default function OnPageCrawledPages() {
                                 {activeFilter && (
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '2px 8px', background: '#fee2e2', color: '#991b1b', borderRadius: '4px', fontSize: '12px', fontWeight: '600' }}>
                                         <AlertTriangle size={12} />
-                                        Issue: {activeFilter.replace(/_/g, ' ')}
+                                        {t('onPage.issueFilterLabel')}: {activeFilter.replace(/_/g, ' ')}
                                         <button
                                             onClick={() => navigate(`/sites/${id}/onpage/pages`)}
                                             style={{ border: 'none', background: 'none', marginLeft: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#991b1b' }}
@@ -109,7 +109,7 @@ export default function OnPageCrawledPages() {
                             gap: '8px'
                         }}
                     >
-                        {loading ? 'Refreshing...' : 'Refresh List'}
+                        {loading ? t('onPage.refreshing') : t('onPage.refreshList')}
                     </button>
                     </div>
                 </div>
@@ -118,17 +118,17 @@ export default function OnPageCrawledPages() {
             <div style={{ maxWidth: '1200px', margin: '32px auto', padding: '0 24px' }}>
                 <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
                     {loading && pages.length === 0 ? (
-                        <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Loading pages...</div>
+                        <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>{t('onPage.loadingPages')}</div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                                 <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
                                     <tr>
-                                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: '600' }}>URL</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: '600', width: '80px' }}>Status</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: '600' }}>Title</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: '600' }}>Issues</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'right', color: '#475569', fontWeight: '600' }}>Score</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: '600' }}>{t('onPage.tableUrl')}</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: '600', width: '80px' }}>{t('onPage.tableStatus')}</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: '600' }}>{t('onPage.tableTitle')}</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontWeight: '600' }}>{t('onPage.tableIssues')}</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'right', color: '#475569', fontWeight: '600' }}>{t('onPage.tableScore')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -197,17 +197,17 @@ export default function OnPageCrawledPages() {
                             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                             style={{ padding: '8px 16px', background: currentPage === 1 ? '#f1f5f9' : 'white', border: '1px solid #e2e8f0', borderRadius: '6px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: currentPage === 1 ? '#94a3b8' : '#475569' }}
                         >
-                            Previous
+                            {t('common.prev')}
                         </button>
                         <span style={{ fontSize: '14px', color: '#64748b' }}>
-                            {total > 0 ? `Showing ${(currentPage - 1) * limit + 1}-${Math.min(currentPage * limit, total)} of ${total}` : 'No pages found'}
+                            {total > 0 ? t('onPage.showingPages', { from: (currentPage - 1) * limit + 1, to: Math.min(currentPage * limit, total), total }) : t('onPage.noPagesFound')}
                         </span>
                         <button
                             disabled={currentPage * limit >= total || loading}
                             onClick={() => setCurrentPage(prev => prev + 1)}
                             style={{ padding: '8px 16px', background: currentPage * limit >= total ? '#f1f5f9' : 'white', border: '1px solid #e2e8f0', borderRadius: '6px', cursor: currentPage * limit >= total ? 'not-allowed' : 'pointer', color: currentPage * limit >= total ? '#94a3b8' : '#475569' }}
                         >
-                            Next
+                            {t('common.next')}
                         </button>
                     </div>
                 </div>

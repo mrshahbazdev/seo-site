@@ -171,55 +171,55 @@ export default function OnPagePageDetails() {
                     {/* Resources & Counts */}
                     <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                         <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Layout size={18} /> Resources & Counts
+                            <Layout size={18} /> {t('onPage.resourcesCounts')}
                         </h3>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
                             {/* Links */}
                             <div>
-                                <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', color: '#334155' }}>Links</div>
+                                <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', color: '#334155' }}>{t('onPage.linksLabel')}</div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#64748b' }}>Internal</span>
+                                        <span style={{ color: '#64748b' }}>{t('onPage.internalLinks')}</span>
                                         <span style={{ fontWeight: '500' }}>{page.meta?.internal_links_count || 0}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#64748b' }}>External</span>
+                                        <span style={{ color: '#64748b' }}>{t('onPage.externalLinks')}</span>
                                         <span style={{ fontWeight: '500' }}>{page.meta?.external_links_count || 0}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#64748b' }}>Inbound</span>
+                                        <span style={{ color: '#64748b' }}>{t('onPage.inbound')}</span>
                                         <span style={{ fontWeight: '500' }}>{page.meta?.inbound_links_count || 0}</span>
                                     </div>
                                 </div>
                             </div>
                             {/* Images & Scripts */}
                             <div>
-                                <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', color: '#334155' }}>Assets</div>
+                                <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', color: '#334155' }}>{t('onPage.assets')}</div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#64748b' }}>Images</span>
+                                        <span style={{ color: '#64748b' }}>{t('onPage.imagesLabel')}</span>
                                         <span style={{ fontWeight: '500' }}>{page.meta?.images_count || 0} ({Math.round((page.meta?.images_size || 0) / 1024)} KB)</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#64748b' }}>Scripts</span>
+                                        <span style={{ color: '#64748b' }}>{t('onPage.scripts')}</span>
                                         <span style={{ fontWeight: '500' }}>{page.meta?.scripts_count || 0} ({Math.round((page.meta?.scripts_size || 0) / 1024)} KB)</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#64748b' }}>Stylesheets</span>
+                                        <span style={{ color: '#64748b' }}>{t('onPage.stylesheets')}</span>
                                         <span style={{ fontWeight: '500' }}>{page.meta?.stylesheets_count || 0} ({Math.round((page.meta?.stylesheets_size || 0) / 1024)} KB)</span>
                                     </div>
                                 </div>
                             </div>
                             {/* Complexity */}
                             <div>
-                                <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', color: '#334155' }}>Complexity</div>
+                                <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', color: '#334155' }}>{t('onPage.complexity')}</div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#64748b' }}>DOM Size</span>
+                                        <span style={{ color: '#64748b' }}>{t('onPage.domSize')}</span>
                                         <span style={{ fontWeight: '500' }}>{page.total_dom_size ? (page.total_dom_size / 1024).toFixed(1) + ' KB' : '-'}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#64748b' }}>Text/Code Ratio</span>
+                                        <span style={{ color: '#64748b' }}>{t('onPage.textCodeRatio')}</span>
                                         <span style={{ fontWeight: '500' }}>{((page.meta?.content?.plain_text_rate || 0) * 100).toFixed(2)}%</span>
                                     </div>
                                 </div>
@@ -231,23 +231,23 @@ export default function OnPagePageDetails() {
                     {page.meta?.content && (
                         <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                             <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <FileText size={18} /> Content Readability
+                                <FileText size={18} /> {t('onPage.contentReadability')}
                             </h3>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
                                 <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
-                                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Automated Readability</div>
+                                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.automatedReadability')}</div>
                                     <div style={{ fontWeight: '600' }}>{(page.meta.content.automated_readability_index || 0).toFixed(1)}</div>
                                 </div>
                                 <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
-                                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Flesch Kincaid</div>
+                                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.fleschKincaid')}</div>
                                     <div style={{ fontWeight: '600' }}>{(page.meta.content.flesch_kincaid_readability_index || 0).toFixed(1)}</div>
                                 </div>
                                 <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
-                                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Coleman Liau</div>
+                                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.colemanLiau')}</div>
                                     <div style={{ fontWeight: '600' }}>{(page.meta.content.coleman_liau_readability_index || 0).toFixed(1)}</div>
                                 </div>
                                 <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px' }}>
-                                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>SMOG Index</div>
+                                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.smogIndex')}</div>
                                     <div style={{ fontWeight: '600' }}>{(page.meta.content.smog_readability_index || 0).toFixed(1)}</div>
                                 </div>
                             </div>
@@ -265,7 +265,7 @@ export default function OnPagePageDetails() {
                     {/* Checks / Issues */}
                     <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                         <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <AlertTriangle size={18} /> Issues & Checks
+                            <AlertTriangle size={18} /> {t('onPage.issuesChecks')}
                         </h3>
                         <div style={{ display: 'grid', gap: '12px' }}>
                             {page.checks && Object.entries(page.checks).map(([key, value]) => {
@@ -277,13 +277,13 @@ export default function OnPagePageDetails() {
                                 if (status === 'good') {
                                     statusColor = '#166534';
                                     icon = <CheckCircle size={16} />;
-                                    statusText = 'Pass';
+                                    statusText = t('onPage.pass');
                                 } else if (status === 'bad') {
                                     statusColor = '#dc2626';
                                     icon = <XCircle size={16} />;
-                                    statusText = 'Fail';
+                                    statusText = t('onPage.fail');
                                 } else if (typeof value === 'boolean') {
-                                    statusText = value ? 'Yes' : 'No';
+                                    statusText = value ? t('common.yes') : t('common.no');
                                 }
 
                                 return (
@@ -297,16 +297,7 @@ export default function OnPagePageDetails() {
                                 );
                             })}
                         </div>
-                        <p style={{ fontSize: '12px', color: '#64748b', margin: '16px 0 0 0', lineHeight: 1.5 }}>
-                            Pass/Fail follows{' '}
-                            <a href="https://docs.dataforseo.com/v3/on_page/pages/" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb' }}>
-                                DataForSEO
-                            </a>{' '}
-                            definitions. <strong>no_image_alt</strong> can flag any image without an alt attribute (including
-                            icons or lazy placeholders) even if your main photo has alt text. <strong>has render blocking</strong>{' '}
-                            is common for CSS/JS and is not always wrong. <strong>meta charset consistency</strong> compares
-                            declared encoding to detected bytes — occasional false positives happen.
-                        </p>
+                        <p style={{ fontSize: '12px', color: '#64748b', margin: '16px 0 0 0', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: t('onPage.dataForSeoChecksDesc').replace('<link>', '<a href="https://docs.dataforseo.com/v3/on_page/pages/" target="_blank" rel="noopener noreferrer" style="color:#2563eb">').replace('</link>', '</a>') }} />
                     </div>
                 </div>
 
@@ -334,24 +325,24 @@ export default function OnPagePageDetails() {
                     {/* Meta Info */}
                     <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                         <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Code size={18} /> Meta Tags
+                            <Code size={18} /> {t('onPage.metaTags')}
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div>
-                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Title ({page.meta?.title_length || 0} chars)</div>
+                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.titleChars', { count: page.meta?.title_length || 0 })}</div>
                                 <div style={{ fontSize: '14px', lineHeight: '1.4' }}>{page.meta?.title || '-'}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>Description ({page.meta?.description_length || 0} chars)</div>
+                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.descriptionChars', { count: page.meta?.description_length || 0 })}</div>
                                 <div style={{ fontSize: '14px', lineHeight: '1.4' }}>{page.meta?.description || '-'}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>H1 Tags</div>
+                                <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>{t('onPage.h1Tags')}</div>
                                 {page.meta?.htags?.h1 ? (
                                     <ul style={{ margin: '4px 0 0 16px', padding: 0, fontSize: '14px' }}>
                                         {page.meta.htags.h1.map((h, i) => <li key={i}>{h}</li>)}
                                     </ul>
-                                ) : <div style={{ fontSize: '14px', color: '#94a3b8' }}>None</div>}
+                                ) : <div style={{ fontSize: '14px', color: '#94a3b8' }}>{t('onPage.none')}</div>}
                             </div>
                         </div>
                     </div>
@@ -359,33 +350,33 @@ export default function OnPagePageDetails() {
                     {/* Technical Specs */}
                     <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                         <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Server size={18} /> Technical Specs
+                            <Server size={18} /> {t('onPage.technicalSpecs')}
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Charset</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.charsetLabel')}</span>
                                 <span style={{ fontWeight: '500', fontSize: '14px' }}>{page.meta?.charset || '-'}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Generator</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.generator')}</span>
                                 <span style={{ fontWeight: '500', fontSize: '14px' }}>{page.meta?.generator || '-'}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Encoding</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.encoding')}</span>
                                 <span style={{ fontWeight: '500', fontSize: '14px' }}>{page.meta?.content_encoding || '-'}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Media Type</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.mediaType')}</span>
                                 <span style={{ fontWeight: '500', fontSize: '14px' }}>{page.meta?.media_type || '-'}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Canonical</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.canonicalLabel')}</span>
                                 <span style={{ fontWeight: '500', fontSize: '14px', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={page.meta?.canonical}>
                                     {page.meta?.canonical || '-'}
                                 </span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Favicon</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.faviconLabel')}</span>
                                 {page.meta?.favicon ? (
                                     <img src={page.meta.favicon} alt="Favicon" style={{ width: '16px', height: '16px' }} />
                                 ) : '-'}
@@ -396,31 +387,31 @@ export default function OnPagePageDetails() {
                     {/* Timing */}
                     <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                         <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Clock size={18} /> Performance
+                            <Clock size={18} /> {t('onPage.performanceLabel')}
                         </h3>
                         <div style={{ display: 'grid', gap: '12px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Total Duration</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.totalDuration')}</span>
                                 <span style={{ fontWeight: '500' }}>{page.page_timing?.duration_time || 0} ms</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Time to Interactive</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.timeToInteractive')}</span>
                                 <span style={{ fontWeight: '500' }}>{page.page_timing?.time_to_interactive || 0} ms</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>DOM Complete</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.domComplete')}</span>
                                 <span style={{ fontWeight: '500' }}>{page.page_timing?.dom_complete || 0} ms</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Waiting Time</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.waitingTime')}</span>
                                 <span style={{ fontWeight: '500' }}>{page.page_timing?.waiting_time || 0} ms</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Connection Time</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.connectionTime')}</span>
                                 <span style={{ fontWeight: '500' }}>{page.page_timing?.connection_time || 0} ms</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <span style={{ color: '#64748b', fontSize: '14px' }}>Download Time</span>
+                                <span style={{ color: '#64748b', fontSize: '14px' }}>{t('onPage.downloadTime')}</span>
                                 <span style={{ fontWeight: '500' }}>{page.page_timing?.download_time || 0} ms</span>
                             </div>
                         </div>
@@ -433,7 +424,7 @@ export default function OnPagePageDetails() {
                 <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50 }}>
                     <div style={{ background: 'white', width: '90%', maxWidth: '1000px', height: '90%', borderRadius: '12px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                         <div style={{ padding: '16px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>Raw API Response</h2>
+                            <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>{t('onPage.rawApiResponse')}</h2>
                             <button onClick={() => setShowRawData(false)} style={{ border: 'none', background: 'none', cursor: 'pointer' }}><XCircle size={24} /></button>
                         </div>
                         <div style={{ padding: '24px', overflow: 'auto', background: '#f8fafc', flex: 1 }}>
@@ -449,6 +440,7 @@ export default function OnPagePageDetails() {
 }
 
 const RankedKeywords = ({ siteId, pageId, url }) => {
+    const { t } = useTranslation();
     const [keywords, setKeywords] = useState([]);
     const [meta, setMeta] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -470,11 +462,11 @@ const RankedKeywords = ({ siteId, pageId, url }) => {
                 setMeta(data.meta);
                 setFetched(true);
             } else {
-                toast.error('Failed to fetch ranked keywords');
+                toast.error(t('onPage.failedToFetchKeywords'));
             }
         } catch (error) {
             console.error(error);
-            toast.error('Error fetching keywords');
+            toast.error(t('onPage.errorFetchingKeywords'));
         } finally {
             setLoading(false);
         }
@@ -483,9 +475,9 @@ const RankedKeywords = ({ siteId, pageId, url }) => {
     if (!fetched && !loading) {
         return (
             <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0', marginTop: '24px', textAlign: 'center' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px', color: '#1e293b' }}>Ranked Keywords</h3>
+                <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px', color: '#1e293b' }}>{t('onPage.rankedKeywords')}</h3>
                 <p style={{ color: '#64748b', marginBottom: '24px', fontSize: '14px' }}>
-                    See what keywords this specific page ranks for in Google US.
+                    {t('onPage.rankedKeywordsDesc')}
                 </p>
                 <button
                     onClick={fetchKeywords}
@@ -500,7 +492,7 @@ const RankedKeywords = ({ siteId, pageId, url }) => {
                         display: 'inline-flex', alignItems: 'center', gap: '8px'
                     }}
                 >
-                    <Target size={18} /> Reveal Ranked Keywords
+                    <Target size={18} /> {t('onPage.revealRankedKeywords')}
                 </button>
             </div>
         );
@@ -511,14 +503,14 @@ const RankedKeywords = ({ siteId, pageId, url }) => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <div>
                     <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Target size={18} /> Ranked Keywords
+                        <Target size={18} /> {t('onPage.rankedKeywords')}
                         <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '10px' }}>
-                            {keywords.length} found
+                            {t('onPage.found', { count: keywords.length })}
                         </span>
                     </h3>
                     {meta && (
                         <div style={{ fontSize: '12px', color: '#64748b' }}>
-                            Scope: {meta.location} | Page: <span style={{ fontFamily: 'monospace' }}>{meta.url}</span>
+                            {t('onPage.scope')}: {meta.location} | Page: <span style={{ fontFamily: 'monospace' }}>{meta.url}</span>
                         </div>
                     )}
                 </div>
@@ -527,20 +519,20 @@ const RankedKeywords = ({ siteId, pageId, url }) => {
                     disabled={loading}
                     style={{ border: 'none', background: 'none', color: '#3b82f6', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '600' }}
                 >
-                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
+                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> {t('common.refresh')}
                 </button>
             </div>
 
             {loading ? (
-                <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Searching rankings...</div>
+                <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>{t('onPage.searchingRankings')}</div>
             ) : keywords.length > 0 ? (
                 <div style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                         <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
                             <tr>
-                                <th style={{ padding: '12px', textAlign: 'left', color: '#64748b', fontWeight: '600' }}>Keyword</th>
-                                <th style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: '600' }}>Pos</th>
-                                <th style={{ padding: '12px', textAlign: 'right', color: '#64748b', fontWeight: '600' }}>Vol</th>
+                                <th style={{ padding: '12px', textAlign: 'left', color: '#64748b', fontWeight: '600' }}>{t('onPage.keyword')}</th>
+                                <th style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: '600' }}>{t('onPage.pos')}</th>
+                                <th style={{ padding: '12px', textAlign: 'right', color: '#64748b', fontWeight: '600' }}>{t('onPage.vol')}</th>
                                 <th style={{ padding: '12px', textAlign: 'right', color: '#64748b', fontWeight: '600' }}>CPC</th>
                             </tr>
                         </thead>
@@ -571,10 +563,10 @@ const RankedKeywords = ({ siteId, pageId, url }) => {
             ) : (
                 <div style={{ padding: '32px', textAlign: 'center', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
                     <Search size={24} style={{ marginBottom: '8px', opacity: 0.5 }} />
-                    <div style={{ fontWeight: '600', color: '#475569' }}>No rankings found</div>
+                    <div style={{ fontWeight: '600', color: '#475569' }}>{t('onPage.noRankingsFound')}</div>
                     <div style={{ fontSize: '13px', marginTop: '4px' }}>
-                        This specific page doesn't rank in the top 100 for any keywords in US Google.
-                        <br />Try checking the <a href={`https://www.google.com/search?q=site:${encodeURIComponent(url)}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6' }}>Index Status</a>.
+                        {t('onPage.noRankingsFoundDesc')}
+                        <br />Try checking the <a href={`https://www.google.com/search?q=site:${encodeURIComponent(url)}`} target="_blank" rel="noreferrer" style={{ color: '#3b82f6' }}>{t('onPage.checkIndexStatus')}</a>.
                     </div>
                 </div>
             )}
@@ -583,6 +575,7 @@ const RankedKeywords = ({ siteId, pageId, url }) => {
 };
 
 const LinkJuice = ({ siteId, url }) => {
+    const { t } = useTranslation();
     const [links, setLinks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [fetched, setFetched] = useState(false);
@@ -604,11 +597,11 @@ const LinkJuice = ({ siteId, url }) => {
                 setTotal(data.total_count || data.data.length);
                 setFetched(true);
             } else {
-                toast.error('Failed to fetch internal links');
+                toast.error(t('onPage.failedToFetchLinks'));
             }
         } catch (error) {
             console.error(error);
-            toast.error('Error fetching internal links');
+            toast.error(t('onPage.errorFetchingLinks'));
         } finally {
             setLoading(false);
         }
@@ -617,9 +610,9 @@ const LinkJuice = ({ siteId, url }) => {
     if (!fetched && !loading) {
         return (
             <div style={{ background: 'white', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0', marginTop: '24px', textAlign: 'center' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px', color: '#1e293b' }}>Internal Link Juice</h3>
+                <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '8px', color: '#1e293b' }}>{t('onPage.internalLinkJuice')}</h3>
                 <p style={{ color: '#64748b', marginBottom: '24px', fontSize: '14px' }}>
-                    See which internal pages are linking to this page (Inbound Links).
+                    {t('onPage.internalLinkJuiceDesc')}
                 </p>
                 <button
                     onClick={fetchLinks}
@@ -634,7 +627,7 @@ const LinkJuice = ({ siteId, url }) => {
                         display: 'inline-flex', alignItems: 'center', gap: '8px'
                     }}
                 >
-                    <ExternalLink size={18} /> Check Inbound Links
+                    <ExternalLink size={18} /> {t('onPage.checkInboundLinks')}
                 </button>
             </div>
         );
@@ -645,9 +638,9 @@ const LinkJuice = ({ siteId, url }) => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <div>
                     <h3 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <ExternalLink size={18} /> Internal Inbound Links
+                        <ExternalLink size={18} /> {t('onPage.internalInboundLinks')}
                         <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '10px' }}>
-                            {total} found
+                            {t('onPage.found', { count: total })}
                         </span>
                     </h3>
                 </div>
@@ -656,20 +649,20 @@ const LinkJuice = ({ siteId, url }) => {
                     disabled={loading}
                     style={{ border: 'none', background: 'none', color: '#8b5cf6', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '600' }}
                 >
-                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> Refresh
+                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} /> {t('common.refresh')}
                 </button>
             </div>
 
             {loading ? (
-                <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Finding backlinks...</div>
+                <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>{t('onPage.findingBacklinks')}</div>
             ) : links.length > 0 ? (
                 <div style={{ overflowX: 'auto' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                         <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
                             <tr>
-                                <th style={{ padding: '12px', textAlign: 'left', color: '#64748b', fontWeight: '600' }}>Source Page</th>
-                                <th style={{ padding: '12px', textAlign: 'left', color: '#64748b', fontWeight: '600' }}>Anchor Text</th>
-                                <th style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: '600' }}>Type</th>
+                                <th style={{ padding: '12px', textAlign: 'left', color: '#64748b', fontWeight: '600' }}>{t('onPage.sourcePage')}</th>
+                                <th style={{ padding: '12px', textAlign: 'left', color: '#64748b', fontWeight: '600' }}>{t('onPage.anchorTextLabel')}</th>
+                                <th style={{ padding: '12px', textAlign: 'center', color: '#64748b', fontWeight: '600' }}>{t('onPage.typeLabel')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -681,7 +674,7 @@ const LinkJuice = ({ siteId, url }) => {
                                         </a>
                                     </td>
                                     <td style={{ padding: '12px', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontStyle: l.anchor ? 'normal' : 'italic', color: l.anchor ? '#1e293b' : '#94a3b8' }}>
-                                        {l.anchor || '(No Text)'}
+                                        {l.anchor || t('onPage.noText')}
                                     </td>
                                     <td style={{ padding: '12px', textAlign: 'center' }}>
                                         <span style={{ fontSize: '12px', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px', color: '#64748b' }}>
@@ -696,10 +689,8 @@ const LinkJuice = ({ siteId, url }) => {
             ) : (
                 <div style={{ padding: '32px', textAlign: 'center', color: '#64748b', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1' }}>
                     <ExternalLink size={24} style={{ marginBottom: '8px', opacity: 0.5 }} />
-                    <div style={{ fontWeight: '600', color: '#475569' }}>No internal links found</div>
-                    <div style={{ fontSize: '13px', marginTop: '4px' }}>
-                        This page is an <strong>orphan page</strong>. It has no internal links pointing to it.
-                    </div>
+                    <div style={{ fontWeight: '600', color: '#475569' }}>{t('onPage.noInternalLinks')}</div>
+                    <div style={{ fontSize: '13px', marginTop: '4px' }} dangerouslySetInnerHTML={{ __html: t('onPage.orphanPageDesc') }} />
                 </div>
             )}
         </div>
@@ -708,32 +699,33 @@ const LinkJuice = ({ siteId, url }) => {
 
 // SEO Quality Alerts Component
 const SeoQualityAlerts = ({ page }) => {
+    const { t } = useTranslation();
     const alerts = [];
 
     // Title checks
     const titleLength = page.meta?.title_length || 0;
     if (titleLength === 0) {
-        alerts.push({ type: 'error', icon: 'XCircle', title: 'Missing Title', message: 'This page has no meta title. Add a descriptive title tag.' });
+        alerts.push({ type: 'error', icon: 'XCircle', title: t('onPage.alertMissingTitle'), message: t('onPage.alertMissingTitleDesc') });
     } else if (titleLength < 30) {
-        alerts.push({ type: 'warning', icon: 'AlertTriangle', title: 'Title Too Short', message: `Title is only ${titleLength} characters. Recommended: 30-60 characters for better SEO.` });
+        alerts.push({ type: 'warning', icon: 'AlertTriangle', title: t('onPage.alertTitleTooShort'), message: t('onPage.alertTitleTooShortDesc', { count: titleLength }) });
     } else if (titleLength > 60) {
-        alerts.push({ type: 'warning', icon: 'AlertTriangle', title: 'Title Too Long', message: `Title is ${titleLength} characters. It may be truncated in search results. Recommended: 30-60 characters.` });
+        alerts.push({ type: 'warning', icon: 'AlertTriangle', title: t('onPage.alertTitleTooLong'), message: t('onPage.alertTitleTooLongDesc', { count: titleLength }) });
     }
 
     // Description checks
     const descLength = page.meta?.description_length || 0;
     if (descLength === 0) {
-        alerts.push({ type: 'error', icon: 'XCircle', title: 'Missing Description', message: 'This page has no meta description. Add one to improve click-through rates.' });
+        alerts.push({ type: 'error', icon: 'XCircle', title: t('onPage.alertMissingDesc'), message: t('onPage.alertMissingDescDesc') });
     } else if (descLength < 120) {
-        alerts.push({ type: 'warning', icon: 'AlertTriangle', title: 'Description Too Short', message: `Description is only ${descLength} characters. Recommended: 120-160 characters.` });
+        alerts.push({ type: 'warning', icon: 'AlertTriangle', title: t('onPage.alertDescTooShort'), message: t('onPage.alertDescTooShortDesc', { count: descLength }) });
     } else if (descLength > 160) {
-        alerts.push({ type: 'warning', icon: 'AlertTriangle', title: 'Description Too Long', message: `Description is ${descLength} characters. It may be truncated. Recommended: 120-160 characters.` });
+        alerts.push({ type: 'warning', icon: 'AlertTriangle', title: t('onPage.alertDescTooLong'), message: t('onPage.alertDescTooLongDesc', { count: descLength }) });
     }
 
     // Content checks
     const wordCount = page.meta?.content?.plain_text_word_count || page.content?.plain_text_word_count || 0;
     if (wordCount < 300) {
-        alerts.push({ type: 'error', icon: 'XCircle', title: 'Thin Content', message: `This page has only ${wordCount} words. Search engines prefer pages with at least 300 words of quality content.` });
+        alerts.push({ type: 'error', icon: 'XCircle', title: t('onPage.alertThinContent'), message: t('onPage.alertThinContentDesc', { count: wordCount }) });
     }
 
     if (alerts.length === 0) return null;

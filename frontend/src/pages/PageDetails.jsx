@@ -190,8 +190,8 @@ export default function PageDetails() {
                 {/* Screenshot & Visual Preview */}
                 <div style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0', marginBottom: '24px' }}>
                     <div style={{ background: '#f8fafc', padding: '12px 24px', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', margin: 0 }}>On-Page Preview</h2>
-                        <span style={{ fontSize: '12px', color: '#64748b' }}>Extended Capture</span>
+                        <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', margin: 0 }}>{t('pageDetails.onPagePreview')}</h2>
+                        <span style={{ fontSize: '12px', color: '#64748b' }}>{t('pageDetails.extendedCapture')}</span>
                     </div>
                     <div style={{ position: 'relative', height: '600px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', overflowY: 'auto' }}>
                         <img
@@ -207,51 +207,51 @@ export default function PageDetails() {
                 <IssuesPanel analysis={analysis} />
 
                 {/* 1. URL & Crawl Overview */}
-                <Section title="URL & Crawl Overview" icon={<Globe size={20} />}>
+                <Section title={t('pageDetails.urlCrawlOverview')} icon={<Globe size={20} />}>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-                        <InfoItem label="Status Code" value={analysis.overview.status_code} status="success" />
-                        <InfoItem label="Response Time" value={analysis.performance?.load_time ? `${analysis.performance.load_time}ms` : 'N/A'} status={!analysis.performance?.load_time ? 'neutral' : analysis.performance.load_time < 500 ? 'success' : analysis.performance.load_time < 1000 ? 'warning' : 'error'} />
-                        <InfoItem label="Indexable" value={analysis.overview.indexable ? 'YES' : 'NO'} status={analysis.overview.indexable ? 'success' : 'error'} />
-                        <InfoItem label="Canonical" value={analysis.overview.canonical || 'Missing'} status={analysis.overview.canonical ? 'success' : 'warning'} />
-                        <InfoItem label="Depth" value="1" />
+                        <InfoItem label={t('pageDetails.statusCode')} value={analysis.overview.status_code} status="success" />
+                        <InfoItem label={t('pageDetails.responseTime')} value={analysis.performance?.load_time ? `${analysis.performance.load_time}ms` : 'N/A'} status={!analysis.performance?.load_time ? 'neutral' : analysis.performance.load_time < 500 ? 'success' : analysis.performance.load_time < 1000 ? 'warning' : 'error'} />
+                        <InfoItem label={t('pageDetails.indexable')} value={analysis.overview.indexable ? 'YES' : 'NO'} status={analysis.overview.indexable ? 'success' : 'error'} />
+                        <InfoItem label={t('pageDetails.canonical')} value={analysis.overview.canonical || t('pageDetails.missing')} status={analysis.overview.canonical ? 'success' : 'warning'} />
+                        <InfoItem label={t('pageDetails.depth')} value="1" />
                     </div>
                 </Section>
 
                 {/* 2. Indexing & Robots */}
-                <Section title="Indexing & Robots Analysis" icon={<FileText size={20} />}>
+                <Section title={t('pageDetails.indexingRobots')} icon={<FileText size={20} />}>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-                        <InfoItem label="Meta Robots" value={analysis.meta.robots || 'None'} />
-                        <InfoItem label="Meta Description" value={analysis.meta.description || 'Missing'} status={analysis.meta.description ? 'neutral' : 'warning'} />
-                        <InfoItem label="Lang Attribute" value={analysis.overview.lang || 'Missing'} status={analysis.overview.lang ? 'success' : 'error'} />
-                        <InfoItem label="Charset" value={analysis.overview.charset || 'Missing'} status={analysis.overview.charset ? 'success' : 'error'} />
+                        <InfoItem label={t('pageDetails.metaRobots')} value={analysis.meta.robots || t('pageDetails.noneLabel')} />
+                        <InfoItem label={t('pageDetails.metaDescription')} value={analysis.meta.description || t('pageDetails.missing')} status={analysis.meta.description ? 'neutral' : 'warning'} />
+                        <InfoItem label={t('pageDetails.langAttribute')} value={analysis.overview.lang || t('pageDetails.missing')} status={analysis.overview.lang ? 'success' : 'error'} />
+                        <InfoItem label={t('pageDetails.charsetLabel')} value={analysis.overview.charset || t('pageDetails.missing')} status={analysis.overview.charset ? 'success' : 'error'} />
                     </div>
                 </Section>
 
                 {/* 2b. Social & Mobile */}
-                <Section title="Social & Technical Tags" icon={<Layout size={20} />}>
+                <Section title={t('pageDetails.socialTechTags')} icon={<Layout size={20} />}>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
-                        <InfoItem label="Viewport Tag" value={analysis.meta.viewport ? 'Present' : 'Missing'} status={analysis.meta.viewport ? 'success' : 'error'} />
-                        <InfoItem label="OG Title" value={analysis.meta.og_title ? 'Present' : 'Missing'} status={analysis.meta.og_title ? 'success' : 'warning'} />
-                        <InfoItem label="OG Image" value={analysis.meta.og_image ? 'Present' : 'Missing'} status={analysis.meta.og_image ? 'success' : 'warning'} />
-                        <InfoItem label="Twitter Card" value={analysis.meta.twitter_card ? 'Present' : 'Missing'} status={analysis.meta.twitter_card ? 'success' : 'warning'} />
+                        <InfoItem label={t('pageDetails.viewportTag')} value={analysis.meta.viewport ? t('pageDetails.present') : t('pageDetails.missing')} status={analysis.meta.viewport ? 'success' : 'error'} />
+                        <InfoItem label={t('pageDetails.ogTitle')} value={analysis.meta.og_title ? t('pageDetails.present') : t('pageDetails.missing')} status={analysis.meta.og_title ? 'success' : 'warning'} />
+                        <InfoItem label={t('pageDetails.ogImage')} value={analysis.meta.og_image ? t('pageDetails.present') : t('pageDetails.missing')} status={analysis.meta.og_image ? 'success' : 'warning'} />
+                        <InfoItem label={t('pageDetails.twitterCard')} value={analysis.meta.twitter_card ? t('pageDetails.present') : t('pageDetails.missing')} status={analysis.meta.twitter_card ? 'success' : 'warning'} />
                     </div>
                 </Section>
 
                 {/* 3. HTML Structure */}
-                <Section title="Full HTML Structure" icon={<Layout size={20} />}>
+                <Section title={t('pageDetails.fullHtmlStructure')} icon={<Layout size={20} />}>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px' }}>
-                        <InfoItem label="HTML Size" value={`${Math.round(analysis.structure.html_size / 1024)} KB`} status={analysis.structure.html_size > 100000 ? 'warning' : 'success'} />
-                        <InfoItem label="DOM Elements" value={analysis.structure.dom_elements} status={analysis.structure.dom_elements > 1500 ? 'warning' : 'success'} />
-                        <InfoItem label="External JS" value={analysis.structure.external_js} status={analysis.structure.external_js > 15 ? 'warning' : 'neutral'} />
-                        <InfoItem label="External CSS" value={analysis.structure.external_css} />
-                        <InfoItem label="Inline CSS" value={analysis.structure.inline_css ? 'YES' : 'NO'} status="neutral" />
+                        <InfoItem label={t('pageDetails.htmlSize')} value={`${Math.round(analysis.structure.html_size / 1024)} KB`} status={analysis.structure.html_size > 100000 ? 'warning' : 'success'} />
+                        <InfoItem label={t('pageDetails.domElements')} value={analysis.structure.dom_elements} status={analysis.structure.dom_elements > 1500 ? 'warning' : 'success'} />
+                        <InfoItem label={t('pageDetails.externalJs')} value={analysis.structure.external_js} status={analysis.structure.external_js > 15 ? 'warning' : 'neutral'} />
+                        <InfoItem label={t('pageDetails.externalCss')} value={analysis.structure.external_css} />
+                        <InfoItem label={t('pageDetails.inlineCss')} value={analysis.structure.inline_css ? 'YES' : 'NO'} status="neutral" />
                     </div>
 
                     {/* Resources List */}
                     <div style={{ marginTop: '20px', display: 'grid', gap: '16px', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
                         {/* External JS */}
                         <div>
-                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>External JavaScript ({analysis.structure.external_js})</h3>
+                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>{t('pageDetails.externalJavascript')} ({analysis.structure.external_js})</h3>
                             <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', maxHeight: '200px', overflowY: 'auto', border: '1px solid #e2e8f0' }}>
                                 {analysis.structure.external_js_list && analysis.structure.external_js_list.length > 0 ? (
                                     <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '12px', color: '#64748b' }}>
@@ -261,12 +261,12 @@ export default function PageDetails() {
                                             </li>
                                         ))}
                                     </ul>
-                                ) : <span style={{ fontSize: '12px', color: '#94a3b8' }}>None detected</span>}
+                                ) : <span style={{ fontSize: '12px', color: '#94a3b8' }}>{t('pageDetails.noneDetected')}</span>}
                             </div>
                         </div>
                         {/* Internal JS */}
                         <div>
-                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>Internal JavaScript ({analysis.structure.internal_js_list?.length || 0})</h3>
+                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>{t('pageDetails.internalJavascript')} ({analysis.structure.internal_js_list?.length || 0})</h3>
                             <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', maxHeight: '200px', overflowY: 'auto', border: '1px solid #e2e8f0' }}>
                                 {analysis.structure.internal_js_list && analysis.structure.internal_js_list.length > 0 ? (
                                     <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '12px', color: '#64748b' }}>
@@ -276,12 +276,12 @@ export default function PageDetails() {
                                             </li>
                                         ))}
                                     </ul>
-                                ) : <span style={{ fontSize: '12px', color: '#94a3b8' }}>None detected</span>}
+                                ) : <span style={{ fontSize: '12px', color: '#94a3b8' }}>{t('pageDetails.noneDetected')}</span>}
                             </div>
                         </div>
                         {/* External CSS */}
                         <div>
-                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>External CSS ({analysis.structure.external_css})</h3>
+                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>{t('pageDetails.externalCssLabel')} ({analysis.structure.external_css})</h3>
                             <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', maxHeight: '200px', overflowY: 'auto', border: '1px solid #e2e8f0' }}>
                                 {analysis.structure.external_css_list && analysis.structure.external_css_list.length > 0 ? (
                                     <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '12px', color: '#64748b' }}>
@@ -291,12 +291,12 @@ export default function PageDetails() {
                                             </li>
                                         ))}
                                     </ul>
-                                ) : <span style={{ fontSize: '12px', color: '#94a3b8' }}>None detected</span>}
+                                ) : <span style={{ fontSize: '12px', color: '#94a3b8' }}>{t('pageDetails.noneDetected')}</span>}
                             </div>
                         </div>
                         {/* Internal CSS */}
                         <div>
-                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>Internal CSS ({analysis.structure.internal_css_list?.length || 0})</h3>
+                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#475569', marginBottom: '8px' }}>{t('pageDetails.internalCssLabel')} ({analysis.structure.internal_css_list?.length || 0})</h3>
                             <div style={{ background: '#f8fafc', padding: '12px', borderRadius: '8px', maxHeight: '200px', overflowY: 'auto', border: '1px solid #e2e8f0' }}>
                                 {analysis.structure.internal_css_list && analysis.structure.internal_css_list.length > 0 ? (
                                     <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '12px', color: '#64748b' }}>
@@ -306,7 +306,7 @@ export default function PageDetails() {
                                             </li>
                                         ))}
                                     </ul>
-                                ) : <span style={{ fontSize: '12px', color: '#94a3b8' }}>None detected</span>}
+                                ) : <span style={{ fontSize: '12px', color: '#94a3b8' }}>{t('pageDetails.noneDetected')}</span>}
                             </div>
                         </div>
                     </div>
@@ -316,29 +316,29 @@ export default function PageDetails() {
                 <HeadingsSection analysis={analysis} />
 
                 {/* 5. Content Analysis */}
-                <Section title="Content Analysis" icon={<FileText size={20} />}>
+                <Section title={t('pageDetails.contentAnalysis')} icon={<FileText size={20} />}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', flex: 1 }}>
-                            <InfoItem label="Word Count" value={analysis.content.word_count} status={analysis.content.word_count < 300 ? 'warning' : 'success'} />
-                            <InfoItem label="Paragraphs" value={analysis.content.paragraph_count || 0} />
+                            <InfoItem label={t('pageDetails.wordCountLabel')} value={analysis.content.word_count} status={analysis.content.word_count < 300 ? 'warning' : 'success'} />
+                            <InfoItem label={t('pageDetails.paragraphsLabel')} value={analysis.content.paragraph_count || 0} />
                         </div>
                         <button
                             onClick={() => navigate(`/sites/${siteId}/pages/${pageId}/content`)}
                             style={{ padding: '6px 12px', fontSize: '13px', border: '1px solid #e2e8f0', background: 'white', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
                         >
-                            <FileText size={14} /> View Content
+                            <FileText size={14} /> {t('pageDetails.viewContent')}
                         </button>
                     </div>
 
                     {analysis.content.paragraphs && analysis.content.paragraphs.length > 0 && (
                         <div style={{ marginTop: '20px' }}>
-                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#1e293b', marginBottom: '12px' }}>Paragraph Analysis (Top 20)</h3>
+                            <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#1e293b', marginBottom: '12px' }}>{t('pageDetails.paragraphAnalysis')}</h3>
                             <div style={{ background: '#f8fafc', borderRadius: '8px', padding: '16px', maxHeight: '300px', overflowY: 'auto' }}>
                                 {analysis.content.paragraphs.map((p, i) => (
                                     <div key={i} style={{ marginBottom: '12px', borderBottom: '1px solid #e2e8f0', paddingBottom: '8px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                            <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>Length: {p.length} chars</span>
-                                            {p.length > 300 && <span style={{ fontSize: '11px', color: '#d97706', fontWeight: 'bold' }}>⚠️ Too Long</span>}
+                                            <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#64748b' }}>{t('pageDetails.lengthChars', { count: p.length })}</span>
+                                            {p.length > 300 && <span style={{ fontSize: '11px', color: '#d97706', fontWeight: 'bold' }}>{t('pageDetails.tooLong')}</span>}
                                         </div>
                                         <p style={{ fontSize: '13px', color: '#334155', margin: 0, lineHeight: '1.5' }}>{p.text.substring(0, 150)}{p.text.length > 150 ? '...' : ''}</p>
                                     </div>
@@ -349,18 +349,18 @@ export default function PageDetails() {
                 </Section>
 
                 {/* 6. Images */}
-                <Section title="Images Analysis" icon={<ImageIcon size={20} />}>
+                <Section title={t('pageDetails.imagesAnalysis')} icon={<ImageIcon size={20} />}>
                     <div style={{ marginBottom: '12px', display: 'flex', gap: '16px' }}>
-                        <div style={{ color: '#ef4444', fontWeight: 'bold' }}>{analysis.images.missing_alt_count} Missing ALT</div>
-                        <div style={{ color: '#64748b' }}>{analysis.images.total} Total Images</div>
+                        <div style={{ color: '#ef4444', fontWeight: 'bold' }}>{analysis.images.missing_alt_count} {t('pageDetails.missingAlt')}</div>
+                        <div style={{ color: '#64748b' }}>{analysis.images.total} {t('pageDetails.totalImages')}</div>
                     </div>
                     <div style={{ overflowX: 'auto' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
                             <thead>
                                 <tr style={{ borderBottom: '2px solid #e2e8f0', textAlign: 'left' }}>
-                                    <th style={{ padding: '8px' }}>Image Source</th>
-                                    <th style={{ padding: '8px' }}>ALT Text</th>
-                                    <th style={{ padding: '8px' }}>Status</th>
+                                    <th style={{ padding: '8px' }}>{t('pageDetails.imageSource')}</th>
+                                    <th style={{ padding: '8px' }}>{t('pageDetails.altText')}</th>
+                                    <th style={{ padding: '8px' }}>{t('common.status')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -368,7 +368,7 @@ export default function PageDetails() {
                                     <tr key={i} style={{ borderBottom: '1px solid #e2e8f0' }}>
                                         <td style={{ padding: '8px', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteWhiteSpace: 'nowrap' }} title={img.src}>{img.src}</td>
                                         <td style={{ padding: '8px', color: img.missing_alt ? '#ef4444' : '#10b981' }}>
-                                            {img.missing_alt ? '❌ Missing' : img.alt}
+                                            {img.missing_alt ? t('pageDetails.missingLabel') : img.alt}
                                         </td>
                                         <td style={{ padding: '8px' }}>200</td>
                                     </tr>
@@ -388,6 +388,7 @@ export default function PageDetails() {
 
 
 const HeadingsSection = ({ analysis }) => {
+    const { t } = useTranslation();
     const [filter, setFilter] = useState('all'); // all, h1, h2, h3, h4, h5, h6
 
     const filteredHeadings = analysis.headings.list.filter(h => {
@@ -396,13 +397,13 @@ const HeadingsSection = ({ analysis }) => {
     });
 
     return (
-        <Section title="Heading Structure" icon={<Layout size={20} />}>
+        <Section title={t('pageDetails.headingStructure')} icon={<Layout size={20} />}>
             <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
                 <button
                     onClick={() => setFilter('all')}
                     style={{ padding: '4px 12px', borderRadius: '6px', border: '1px solid #e2e8f0', background: filter === 'all' ? '#2d3748' : 'white', color: filter === 'all' ? 'white' : '#4a5568', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}
                 >
-                    All
+                    {t('common.all')}
                 </button>
                 {['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(tag => (
                     <button
@@ -424,14 +425,14 @@ const HeadingsSection = ({ analysis }) => {
             {analysis.headings.hierarchy_errors && analysis.headings.hierarchy_errors.length > 0 && (
                 <div style={{ marginBottom: '16px', background: '#fffbeb', border: '1px solid #fcd34d', padding: '12px', borderRadius: '8px' }}>
                     <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#b45309', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <AlertTriangle size={14} /> Structure Issues Detected:
+                        <AlertTriangle size={14} /> {t('pageDetails.structureIssuesDetected')}:
                     </div>
                     <ul style={{ margin: 0, paddingLeft: '20px' }}>
                         {analysis.headings.hierarchy_errors.map((err, i) => (
                             <li key={i} style={{ fontSize: '13px', color: '#92400e', marginBottom: '4px' }}>
-                                A <strong>{err.replace('Skipped heading level: ', '')}</strong> transition skips a level.
+                                {t('pageDetails.headingSkip', { transition: err.replace('Skipped heading level: ', '') })}
                                 <span style={{ display: 'block', fontStyle: 'italic', fontSize: '12px', color: '#b45309', marginTop: '2px' }}>
-                                    Recommendation: Use headings sequentially (e.g., H1 → H2 → H3) for better accessibility and SEO.
+                                    {t('pageDetails.headingSkipRecommendation')}
                                 </span>
                             </li>
                         ))}
@@ -441,7 +442,7 @@ const HeadingsSection = ({ analysis }) => {
 
             <div style={{ background: '#f1f5f9', borderRadius: '8px', padding: '16px', maxHeight: '400px', overflowY: 'auto' }}>
                 {filteredHeadings.length === 0 ? (
-                    <div style={{ textAlign: 'center', color: '#64748b', fontSize: '13px', padding: '16px' }}>No headings found for filter {filter.toUpperCase()}</div>
+                    <div style={{ textAlign: 'center', color: '#64748b', fontSize: '13px', padding: '16px' }}>{t('pageDetails.noHeadingsFilter', { filter: filter.toUpperCase() })}</div>
                 ) : (
                     filteredHeadings.map((h, i) => (
                         <div key={i} style={{
@@ -466,7 +467,7 @@ const HeadingsSection = ({ analysis }) => {
                                 minWidth: '28px',
                                 textAlign: 'center'
                             }}>{h.tag}</span>
-                            {h.text || <span style={{ fontStyle: 'italic', color: '#94a3b8' }}>(Empty Heading)</span>}
+                            {h.text || <span style={{ fontStyle: 'italic', color: '#94a3b8' }}>{t('pageDetails.emptyHeading')}</span>}
                         </div>
                     ))
                 )}
@@ -476,6 +477,7 @@ const HeadingsSection = ({ analysis }) => {
 };
 
 const LinksSection = ({ analysis }) => {
+    const { t } = useTranslation();
     const [filter, setFilter] = useState('all'); // all, internal, external
 
     const filteredLinks = analysis.links.list.filter(link => {
@@ -485,25 +487,25 @@ const LinksSection = ({ analysis }) => {
     });
 
     return (
-        <Section title="Links Analysis" icon={<LinkIcon size={20} />}>
+        <Section title={t('pageDetails.linksAnalysis')} icon={<LinkIcon size={20} />}>
             <div style={{ display: 'flex', gap: '24px', marginBottom: '16px' }}>
                 <button
                     onClick={() => setFilter('all')}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: '14px', fontWeight: filter === 'all' ? '700' : '400', color: filter === 'all' ? '#3b82f6' : '#64748b' }}
                 >
-                    All Links
+                    {t('pageDetails.allLinks')}
                 </button>
                 <button
                     onClick={() => setFilter('internal')}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: '14px', fontWeight: filter === 'internal' ? '700' : '400', color: filter === 'internal' ? '#3b82f6' : '#64748b' }}
                 >
-                    <strong>{analysis.links.internal_count}</strong> Internal
+                    <strong>{analysis.links.internal_count}</strong> {t('onPage.internalLinks')}
                 </button>
                 <button
                     onClick={() => setFilter('external')}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: '14px', fontWeight: filter === 'external' ? '700' : '400', color: filter === 'external' ? '#3b82f6' : '#64748b' }}
                 >
-                    <strong>{analysis.links.external_count}</strong> External
+                    <strong>{analysis.links.external_count}</strong> {t('onPage.externalLinks')}
                 </button>
             </div>
             <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
@@ -517,17 +519,18 @@ const LinksSection = ({ analysis }) => {
                             background: link.is_internal ? '#dbeafe' : '#f3f4f6',
                             color: link.is_internal ? '#1e40af' : '#4b5563'
                         }}>
-                            {link.is_internal ? 'Internal' : 'External'}
+                            {link.is_internal ? t('onPage.internalLinks') : t('onPage.externalLinks')}
                         </span>
                     </div>
                 ))}
-                {filteredLinks.length === 0 && <div style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>No links found for this filter.</div>}
+                {filteredLinks.length === 0 && <div style={{ padding: '16px', textAlign: 'center', color: '#64748b' }}>{t('pageDetails.noLinksFound')}</div>}
             </div>
         </Section>
     );
 };
 
 const IssuesPanel = ({ analysis }) => {
+    const { t } = useTranslation();
     const issues = {
         critical: [],
         warning: [],
@@ -535,44 +538,44 @@ const IssuesPanel = ({ analysis }) => {
     };
 
     // Calculate issues
-    if (analysis.overview.canonical === null) issues.critical.push("Missing canonical URL");
-    if (!analysis.overview.title) issues.critical.push("Missing Title tag");
-    else if (analysis.overview.title.length > 60) issues.warning.push(`Title tag too long (${analysis.overview.title.length} chars > 60)`);
+    if (analysis.overview.canonical === null) issues.critical.push(t('pageDetails.missingCanonical'));
+    if (!analysis.overview.title) issues.critical.push(t('pageDetails.missingTitleTag'));
+    else if (analysis.overview.title.length > 60) issues.warning.push(t('pageDetails.titleTooLong', { count: analysis.overview.title.length }));
 
-    if (analysis.headings.count.h1 !== 1) issues.critical.push(analysis.headings.count.h1 === 0 ? "Missing H1 tag" : "Multiple H1 tags");
+    if (analysis.headings.count.h1 !== 1) issues.critical.push(analysis.headings.count.h1 === 0 ? t('pageDetails.missingH1') : t('pageDetails.multipleH1'));
 
     // Warnings
-    if (analysis.images.missing_alt_count > 0) issues.warning.push(`${analysis.images.missing_alt_count} images missing ALT attributes`);
-    if (analysis.content.word_count < 300) issues.warning.push("Thin content (< 300 words)");
-    if (analysis.structure.dom_elements > 1500) issues.warning.push("Excessive DOM size (> 1500 elements)");
+    if (analysis.images.missing_alt_count > 0) issues.warning.push(t('pageDetails.missingAltImages', { count: analysis.images.missing_alt_count }));
+    if (analysis.content.word_count < 300) issues.warning.push(t('pageDetails.thinContent'));
+    if (analysis.structure.dom_elements > 1500) issues.warning.push(t('pageDetails.excessiveDom'));
 
     // Performance checks
-    if (analysis.performance?.load_time > 1000) issues.critical.push(`Very slow response time (${analysis.performance.load_time}ms)`);
-    else if (analysis.performance?.load_time > 500) issues.warning.push(`Slow response time (${analysis.performance.load_time}ms)`);
+    if (analysis.performance?.load_time > 1000) issues.critical.push(t('pageDetails.verySlowResponse', { time: analysis.performance.load_time }));
+    else if (analysis.performance?.load_time > 500) issues.warning.push(t('pageDetails.slowResponse', { time: analysis.performance.load_time }));
 
-    if (!analysis.meta.description) issues.warning.push("Missing Meta Description");
-    else if (analysis.meta.description.length < 50) issues.warning.push("Meta Description too short");
-    else if (analysis.meta.description.length > 160) issues.warning.push(`Meta Description too long (${analysis.meta.description.length} chars > 160)`);
+    if (!analysis.meta.description) issues.warning.push(t('pageDetails.missingMetaDesc'));
+    else if (analysis.meta.description.length < 50) issues.warning.push(t('pageDetails.metaDescTooShort'));
+    else if (analysis.meta.description.length > 160) issues.warning.push(t('pageDetails.metaDescTooLong', { count: analysis.meta.description.length }));
 
-    if (!analysis.meta.viewport) issues.warning.push("Missing Viewport tag (Mobile friendliness)");
-    if (!analysis.overview.lang) issues.warning.push("Missing HTML Lang attribute");
-    if (!analysis.meta.og_title) issues.warning.push("Missing Open Graph tags (Social sharing)");
+    if (!analysis.meta.viewport) issues.warning.push(t('pageDetails.missingViewport'));
+    if (!analysis.overview.lang) issues.warning.push(t('pageDetails.missingLangAttr'));
+    if (!analysis.meta.og_title) issues.warning.push(t('pageDetails.missingOgTags'));
 
     // Passed
-    if (analysis.overview.indexable) issues.passed.push("Page is indexable");
-    if (analysis.headings.count.h1 === 1) issues.passed.push("H1 hierarchy correct");
-    if (analysis.overview.charset) issues.passed.push(`Charset declared (${analysis.overview.charset})`);
-    if (analysis.meta.viewport) issues.passed.push("Mobile Viewport set");
+    if (analysis.overview.indexable) issues.passed.push(t('pageDetails.pageIsIndexable'));
+    if (analysis.headings.count.h1 === 1) issues.passed.push(t('pageDetails.h1Correct'));
+    if (analysis.overview.charset) issues.passed.push(t('pageDetails.charsetDeclared', { charset: analysis.overview.charset }));
+    if (analysis.meta.viewport) issues.passed.push(t('pageDetails.mobileViewportSet'));
 
     return (
         <div style={{ background: 'white', borderRadius: '12px', padding: '24px', border: '1px solid #e2e8f0', marginBottom: '24px' }}>
-            <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', marginBottom: '16px' }}>Issues Summary Panel</h2>
+            <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b', marginBottom: '16px' }}>{t('pageDetails.issuesSummaryPanel')}</h2>
             <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: '200px' }}>
                     <h3 style={{ color: '#ef4444', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <AlertTriangle size={16} /> Critical Errors ({issues.critical.length})
+                        <AlertTriangle size={16} /> {t('pageDetails.criticalErrors')} ({issues.critical.length})
                     </h3>
-                    {issues.critical.length === 0 ? <p style={{ fontSize: '13px', color: '#64748b' }}>None</p> : (
+                    {issues.critical.length === 0 ? <p style={{ fontSize: '13px', color: '#64748b' }}>{t('pageDetails.noneLabel')}</p> : (
                         <ul style={{ paddingLeft: '20px', margin: 0 }}>
                             {issues.critical.map((issue, i) => (
                                 <li key={i} style={{ fontSize: '13px', color: '#ef4444', marginBottom: '4px' }}>{issue}</li>
@@ -582,9 +585,9 @@ const IssuesPanel = ({ analysis }) => {
                 </div>
                 <div style={{ flex: 1, minWidth: '200px' }}>
                     <h3 style={{ color: '#f59e0b', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <AlertTriangle size={16} /> Warnings ({issues.warning.length})
+                        <AlertTriangle size={16} /> {t('pageDetails.warningsLabel')} ({issues.warning.length})
                     </h3>
-                    {issues.warning.length === 0 ? <p style={{ fontSize: '13px', color: '#64748b' }}>None</p> : (
+                    {issues.warning.length === 0 ? <p style={{ fontSize: '13px', color: '#64748b' }}>{t('pageDetails.noneLabel')}</p> : (
                         <ul style={{ paddingLeft: '20px', margin: 0 }}>
                             {issues.warning.map((issue, i) => (
                                 <li key={i} style={{ fontSize: '13px', color: '#b45309', marginBottom: '4px' }}>{issue}</li>
@@ -594,7 +597,7 @@ const IssuesPanel = ({ analysis }) => {
                 </div>
                 <div style={{ flex: 1, minWidth: '200px' }}>
                     <h3 style={{ color: '#10b981', fontSize: '14px', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <CheckCircle size={16} /> Passed Checks ({issues.passed.length})
+                        <CheckCircle size={16} /> {t('pageDetails.passedChecks')} ({issues.passed.length})
                     </h3>
                     <ul style={{ paddingLeft: '20px', margin: 0 }}>
                         {issues.passed.map((item, i) => (

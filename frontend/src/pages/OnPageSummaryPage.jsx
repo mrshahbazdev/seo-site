@@ -329,7 +329,7 @@ export default function OnPageSummaryPage() {
                     </h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px', marginBottom: '24px' }}>
                         <InfoItem label="CMS" value={domain_info?.cms || 'N/A'} icon={<FileText size={16} color="#64748b" />} />
-                        <InfoItem label="Server" value={domain_info?.server} icon={<Server size={16} color="#64748b" />} />
+                        <InfoItem label={t('onPage.server')} value={domain_info?.server} icon={<Server size={16} color="#64748b" />} />
                         <InfoItem label={t('onPage.ipAddress')} value={domain_info?.ip} icon={<Globe size={16} color="#64748b" />} />
                         <InfoItem
                             label={t('onPage.sslCertificate')}
@@ -367,10 +367,10 @@ export default function OnPageSummaryPage() {
                             </div>
 
                             <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px' }}>
-                                <StatBox label="External Links" value={page_metrics?.links_external || 0} />
-                                <StatBox label="Internal Links" value={page_metrics?.links_internal || 0} />
-                                <StatBox label="Non-Indexable" value={page_metrics?.non_indexable || 0} isBad={(page_metrics?.non_indexable || 0) > 0} onClick={() => navigate(`/sites/${id}/onpage/pages?filter=non_indexable`)} />
-                                <StatBox label="Duplicate Content" value={page_metrics?.duplicate_content || 0} isBad={(page_metrics?.duplicate_content || 0) > 0} onClick={() => navigate(`/sites/${id}/onpage/pages?filter=duplicate_content`)} />
+                                <StatBox label={t('onPage.externalLinks')} value={page_metrics?.links_external || 0} />
+                                <StatBox label={t('onPage.internalLinks')} value={page_metrics?.links_internal || 0} />
+                                <StatBox label={t('onPage.nonIndexable')} value={page_metrics?.non_indexable || 0} isBad={(page_metrics?.non_indexable || 0) > 0} onClick={() => navigate(`/sites/${id}/onpage/pages?filter=non_indexable`)} />
+                                <StatBox label={t('onPage.duplicateContentLabel')} value={page_metrics?.duplicate_content || 0} isBad={(page_metrics?.duplicate_content || 0) > 0} onClick={() => navigate(`/sites/${id}/onpage/pages?filter=duplicate_content`)} />
                             </div>
                         </div>
 
@@ -385,25 +385,16 @@ export default function OnPageSummaryPage() {
 
                         {/* Detailed Page Checks Grid */}
                         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
-                            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>Page Metrics & Checks</h2>
-                            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>Breakdown of issues found across crawled pages. Click on an issue to see affected pages.</p>
-                            <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '20px', lineHeight: 1.5 }}>
-                                Counts come from{' '}
-                                <a href="https://docs.dataforseo.com/v3/on_page/summary/" target="_blank" rel="noopener noreferrer" style={{ color: '#2563eb' }}>
-                                    DataForSEO&apos;s crawl
-                                </a>
-                                . <strong>Render-blocking</strong> resources are common (most sites have some).{' '}
-                                <strong>Meta charset consistency</strong> flags when declared encoding doesn&apos;t match detected
-                                content. <strong>Duplicate meta tags</strong> means more than one meta of the same type on the
-                                page. These are signals to verify in your HTML, not guaranteed Google penalties.
-                            </p>
+                            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '8px' }}>{t('onPage.pageMetricsChecks')}</h2>
+                            <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>{t('onPage.pageMetricsDesc')}</p>
+                            <p style={{ fontSize: '12px', color: '#64748b', marginBottom: '20px', lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: t('onPage.dataForSeoDesc').replace('<link>', '<a href="https://docs.dataforseo.com/v3/on_page/summary/" target="_blank" rel="noopener noreferrer" style="color:#2563eb">').replace('</link>', '</a>') }} />
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
                                 {/* Primary Metrics */}
-                                <CheckItem label="Broken Links" count={page_metrics?.broken_links} isError onClick={() => navigate(`/sites/${id}/onpage/pages?filter=broken_links`)} />
-                                <CheckItem label="Broken Resources" count={page_metrics?.broken_resources} isError onClick={() => navigate(`/sites/${id}/onpage/pages?filter=broken_resources`)} />
-                                <CheckItem label="Redirect Loops" count={page_metrics?.redirect_loop} isError onClick={() => navigate(`/sites/${id}/onpage/pages?filter=redirect_loop`)} />
-                                <CheckItem label="Link Relation Conflicts" count={page_metrics?.links_relation_conflict} isError onClick={() => navigate(`/sites/${id}/onpage/pages?filter=links_relation_conflict`)} />
+                                <CheckItem label={t('onPage.brokenLinks')} count={page_metrics?.broken_links} isError onClick={() => navigate(`/sites/${id}/onpage/pages?filter=broken_links`)} />
+                                <CheckItem label={t('onPage.brokenResources')} count={page_metrics?.broken_resources} isError onClick={() => navigate(`/sites/${id}/onpage/pages?filter=broken_resources`)} />
+                                <CheckItem label={t('onPage.redirectLoops')} count={page_metrics?.redirect_loop} isError onClick={() => navigate(`/sites/${id}/onpage/pages?filter=redirect_loop`)} />
+                                <CheckItem label={t('onPage.linkRelationConflicts')} count={page_metrics?.links_relation_conflict} isError onClick={() => navigate(`/sites/${id}/onpage/pages?filter=links_relation_conflict`)} />
 
                                 {/* Dynamic Checks from JSON */}
                                 {page_metrics?.checks && Object.entries(page_metrics.checks).map(([key, count]) => (
@@ -412,9 +403,9 @@ export default function OnPageSummaryPage() {
                                         label={(
                                             <span>
                                                 {key.replace(/_/g, ' ')}
-                                                {CHECK_HINTS[key] ? (
+                                                {CHECK_HINTS_KEYS[key] ? (
                                                     <span
-                                                        title={CHECK_HINTS[key]}
+                                                        title={t(CHECK_HINTS_KEYS[key])}
                                                         style={{
                                                             marginLeft: '6px',
                                                             background: '#e2e8f0',
@@ -446,7 +437,7 @@ export default function OnPageSummaryPage() {
                     {/* Right Column: Crawl Status & Technicals */}
                     <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
-                            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '16px' }}>Top 10 Fixes This Week</h2>
+                            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '16px' }}>{t('onPage.topFixesTitle')}</h2>
                             {topFixes.length > 0 ? (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                     {topFixes.map((fix, index) => (
@@ -471,41 +462,41 @@ export default function OnPageSummaryPage() {
                                                 </span>
                                             </div>
                                             <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-                                                Affected pages: {fix.count}
+                                                {t('onPage.affectedPages', { count: fix.count })}
                                             </div>
                                         </button>
                                     ))}
                                 </div>
                             ) : (
                                 <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>
-                                    No urgent issues found from current crawl metrics.
+                                    {t('onPage.noUrgentIssues')}
                                 </p>
                             )}
                         </div>
 
                         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
-                            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '20px' }}>Crawl Status</h2>
+                            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '20px' }}>{t('onPage.crawlStatus')}</h2>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                <InfoItem label="Status" value={crawl_status?.extended_crawl_status || crawl_status?.crawl_progress || 'Unknown'} valueColor={crawl_status?.crawl_progress === 'finished' ? '#166534' : '#2563eb'} />
+                                <InfoItem label={t('common.status')} value={crawl_status?.extended_crawl_status || crawl_status?.crawl_progress || t('common.unknown')} valueColor={crawl_status?.crawl_progress === 'finished' ? '#166534' : '#2563eb'} />
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                                    <InfoItem label="Pages Crawled" value={crawl_status?.pages_crawled || 0} />
-                                    <InfoItem label="In Queue" value={crawl_status?.pages_in_queue || 0} />
+                                    <InfoItem label={t('onPage.pagesCrawledLabel')} value={crawl_status?.pages_crawled || 0} />
+                                    <InfoItem label={t('onPage.inQueue')} value={crawl_status?.pages_in_queue || 0} />
                                 </div>
-                                <InfoItem label="Max Limit" value={crawl_status?.max_crawl_pages} />
-                                <InfoItem label="Gateway" value={crawl_status?.crawl_gateway_address} />
-                                <InfoItem label="Audit Frequency" value={domain_info?.audit_frequency || 'manual'} />
+                                <InfoItem label={t('onPage.maxLimit')} value={crawl_status?.max_crawl_pages} />
+                                <InfoItem label={t('onPage.gateway')} value={crawl_status?.crawl_gateway_address} />
+                                <InfoItem label={t('onPage.auditFrequencyLabel')} value={domain_info?.audit_frequency || 'manual'} />
                                 <InfoItem
-                                    label="Next Scheduled Run"
-                                    value={domain_info?.next_audit_at ? new Date(domain_info.next_audit_at).toLocaleString() : 'Not scheduled'}
+                                    label={t('onPage.nextScheduledRun')}
+                                    value={domain_info?.next_audit_at ? new Date(domain_info.next_audit_at).toLocaleString() : t('onPage.notScheduled')}
                                 />
 
                                 <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '12px', marginTop: '4px' }}>
                                     <div style={{ fontSize: '12px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <Clock size={12} /> Started: {domain_info?.crawl_start ? new Date(domain_info.crawl_start).toLocaleString() : 'N/A'}
+                                        <Clock size={12} /> {t('onPage.started')}: {domain_info?.crawl_start ? new Date(domain_info.crawl_start).toLocaleString() : 'N/A'}
                                     </div>
                                     {domain_info?.crawl_end && (
                                         <div style={{ fontSize: '12px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-                                            <CheckCircle size={12} /> Ended: {new Date(domain_info.crawl_end).toLocaleString()}
+                                            <CheckCircle size={12} /> {t('onPage.ended')}: {new Date(domain_info.crawl_end).toLocaleString()}
                                         </div>
                                     )}
                                 </div>
@@ -514,12 +505,12 @@ export default function OnPageSummaryPage() {
 
                         {/* Status Codes Breakdown */}
                         <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '24px' }}>
-                            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '20px' }}>Response Codes</h2>
+                            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '20px' }}>{t('onPage.responseCodes')}</h2>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <StatusCodeItem code="404" label="Page Not Found" value={domain_info?.page_not_found_status_code} />
-                                <StatusCodeItem code="403" label="Canonicalization" value={domain_info?.canonicalization_status_code} />
-                                <StatusCodeItem code="301" label="Directory Browsing" value={domain_info?.directory_browsing_status_code} />
-                                <StatusCodeItem code="301" label="WWW Redirect" value={domain_info?.www_redirect_status_code} />
+                                <StatusCodeItem code="404" label={t('onPage.pageNotFoundLabel')} value={domain_info?.page_not_found_status_code} />
+                                <StatusCodeItem code="403" label={t('onPage.canonicalizationLabel')} value={domain_info?.canonicalization_status_code} />
+                                <StatusCodeItem code="301" label={t('onPage.directoryBrowsing')} value={domain_info?.directory_browsing_status_code} />
+                                <StatusCodeItem code="301" label={t('onPage.wwwRedirect')} value={domain_info?.www_redirect_status_code} />
                             </div>
                         </div>
                     </div>
@@ -544,11 +535,11 @@ export default function OnPageSummaryPage() {
     );
 }
 
-const CHECK_HINTS = {
-    no_image_alt: 'Flags pages where at least one image has no alt attribute (icons/placeholders can trigger this).',
-    meta_charset_consistency: 'True means declared charset does not match detected page encoding.',
-    has_render_blocking_resources: 'Usually means CSS/JS blocks first render; common on many sites.',
-    duplicate_meta_tags: 'More than one meta tag of the same type appears on the page.',
+const CHECK_HINTS_KEYS = {
+    no_image_alt: 'onPage.checkHintNoImageAlt',
+    meta_charset_consistency: 'onPage.checkHintMetaCharset',
+    has_render_blocking_resources: 'onPage.checkHintRenderBlocking',
+    duplicate_meta_tags: 'onPage.checkHintDuplicateMeta',
 };
 
 const PRIORITY_WEIGHTS = {
