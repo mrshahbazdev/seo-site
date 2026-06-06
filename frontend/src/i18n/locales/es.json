@@ -277,10 +277,24 @@
     "loadedPages": "¡{{count}} páginas cargadas!",
     "foundKeywords": "¡{{count}} palabras clave encontradas!",
     "spyInputPlaceholder": "competidor.com (ej., neilpatel.com)",
-    "analysisFailed": "Análisis fallido",
     "yourWebsite": "TU SITIO WEB",
     "vs": "VS",
-    "enterYourDomain": "Por favor ingresa tu dominio"
+    "enterYourDomain": "Por favor ingresa tu dominio",
+    "backToDashboard": "Volver al Panel",
+    "trackAndCompare": "Rastrea y compara el rendimiento SEO de tus competidores",
+    "noCompetitorsAdded": "No se han añadido competidores",
+    "addCompetitorDomains": "Añade dominios de competidores para rastrear su rendimiento SEO",
+    "addFirstCompetitor": "Añade tu primer competidor",
+    "domainLabel": "Dominio *",
+    "nameOptional": "Nombre (Opcional)",
+    "cancel": "Cancelar",
+    "adding": "Añadiendo...",
+    "backlinks": "Backlinks",
+    "refDomains": "Dominios ref.",
+    "refIPs": "IPs ref.",
+    "refSubnets": "Subredes ref.",
+    "noMetricsYet": "Sin métricas aún. Haz clic en \"Analizar\" para obtener datos.",
+    "lastAnalyzed": "Último análisis:"
   },
   "keywords": {
     "title": "Investigación de palabras clave",
@@ -756,12 +770,9 @@
     "grammarError": "No se pudo verificar la gramática",
     "failedGrammar": "No se pudo verificar la gramática",
     "noIssues": "¡No se encontraron problemas! Excelente.",
-    "noIssuesFound": "¡No se encontraron problemas! Excelente.",
     "readingTime": "Tiempo Est. de Lectura",
     "rawTextDesc": "Este es el contenido de texto audible extraído del cuerpo de la página (etiquetas eliminadas).",
-    "rawContentDesc": "Este es el contenido de texto audible extraído del cuerpo de la página (etiquetas eliminadas).",
-    "performanceAuditDesc": "Ejecute una auditoría Google Lighthouse para verificar Core Web Vitals y puntuaciones de rendimiento.",
-    "performanceDesc": "Ejecute una auditoría Google Lighthouse para verificar Core Web Vitals y puntuaciones de rendimiento."
+    "performanceAuditDesc": "Ejecute una auditoría Google Lighthouse para verificar Core Web Vitals y puntuaciones de rendimiento."
   },
   "duplicateContent": {
     "title": "Contenido duplicado",
