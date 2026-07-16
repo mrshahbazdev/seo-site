@@ -8,7 +8,7 @@ export default function DeepInspector({ siteId, pageId, url, onAnalysisComplete 
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('structure');
-    const [paidData, setPaidData] = useState(null);
+    const [paidData, _setPaidData] = useState(null);
 
     useEffect(() => {
         if (url) fetchDeepAnalysis();
@@ -18,7 +18,7 @@ export default function DeepInspector({ siteId, pageId, url, onAnalysisComplete 
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/deep${refresh ? '?refresh=true' : ''}`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/deep${refresh ? '?refresh=true' : ''}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -119,7 +119,7 @@ const PerformanceTab = ({ siteId, pageId, initialData }) => {
             setLoading(true);
             const token = localStorage.getItem('token');
             // Default to mobile strategy
-            const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/speed`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/speed${refresh ? '?refresh=true' : ''}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -177,10 +177,10 @@ const PerformanceTab = ({ siteId, pageId, initialData }) => {
         <div>
             {/* Scores Grid */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px', marginBottom: '32px' }}>
-                <MetricCard label="Performance" value={data.scores.performance} max={100} unit="" isScore />
-                <MetricCard label="Accessibility" value={data.scores.accessibility} max={100} unit="" isScore />
-                <MetricCard label="Best Practices" value={data.scores.best_practices} max={100} unit="" isScore />
-                <MetricCard label="SEO" value={data.scores.seo} max={100} unit="" isScore />
+                <MetricCard label="Performance" value={data.scores.performance} unit="" isScore />
+                <MetricCard label="Accessibility" value={data.scores.accessibility} unit="" isScore />
+                <MetricCard label="Best Practices" value={data.scores.best_practices} unit="" isScore />
+                <MetricCard label="SEO" value={data.scores.seo} unit="" isScore />
             </div>
 
             {/* Core Web Vitals */}
@@ -202,7 +202,7 @@ const PerformanceTab = ({ siteId, pageId, initialData }) => {
     );
 };
 
-const MetricCard = ({ label, value, unit, good, bad, reverse, desc, max, isScore }) => {
+const MetricCard = ({ label, value, unit, good, bad, reverse, desc, isScore }) => {
     let color = '#3b82f6';
     const num = parseFloat(value);
 
@@ -245,7 +245,7 @@ const ContentTab = ({ text = '', pageId, siteId }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/grammar`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/grammar`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -290,7 +290,7 @@ const ContentTab = ({ text = '', pageId, siteId }) => {
                             border: 'none',
                             borderRadius: '6px',
                             fontWeight: '600',
-                            cursor: 'loading' ? 'not-allowed' : 'pointer',
+                            cursor: loading ? 'not-allowed' : 'pointer',
                             display: 'flex', alignItems: 'center', gap: '8px',
                             fontSize: '13px'
                         }}
@@ -603,7 +603,7 @@ const CheckStatusButton = ({ url, autoCheck, baseUrl }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('https://seostory.de/api/tools/check-resource', {
+            const res = await fetch('http://localhost:8000/api/tools/check-resource', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -34,7 +34,7 @@ export default function GapAnalysisPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('https://seostory.de/api/tools/gap-analysis', {
+            const res = await fetch('http://localhost:8000/api/tools/gap-analysis', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export default function GapAnalysisPage() {
             } else {
                 toast.error(data.message || t('competitors.analysisFailed'));
             }
-        } catch (error) {
+        } catch {
             toast.error(t('common.networkError'));
         } finally {
             setLoading(false);

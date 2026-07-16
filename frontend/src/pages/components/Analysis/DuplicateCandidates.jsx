@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { AlertTriangle, ExternalLink, Loader2 } from 'lucide-react';
 import { useTranslation } from '../../../i18n/LanguageContext';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function DuplicateCandidates({ siteId, pageId, page, onNavigate }) {
     const { t } = useTranslation();

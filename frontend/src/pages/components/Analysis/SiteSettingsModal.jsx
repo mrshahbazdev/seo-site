@@ -3,7 +3,7 @@ import { Settings, X, Bell, Slack, Clock, Save, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../../../i18n/LanguageContext';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
   const { t } = useTranslation();
@@ -38,7 +38,7 @@ export default function SiteSettingsModal({ site, isOpen, onClose, onSave }) {
       } else {
         toast.error(data.message || t('siteSettings.failedToUpdate'));
       }
-    } catch (err) {
+    } catch {
       toast.error(t('siteSettings.networkError'));
     } finally {
       setLoading(false);

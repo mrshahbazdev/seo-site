@@ -15,7 +15,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch('https://seostory.de/api/login', {
+            const response = await fetch('http://localhost:8000/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export default function Login() {
             } else {
                 setError(data.message || t('auth.loginFailed'));
             }
-        } catch (err) {
+        } catch {
             setError(t('common.connectionError'));
         } finally {
             setLoading(false);

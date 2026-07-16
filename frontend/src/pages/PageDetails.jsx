@@ -9,7 +9,7 @@ export default function PageDetails() {
     const { t } = useTranslation();
     const { siteId, pageId } = useParams();
     const navigate = useNavigate();
-    const [page, setPage] = useState(null);
+    const [, setPage] = useState(null);
     const [analysis, setAnalysis] = useState(null);
     const [loading, setLoading] = useState(true);
     const [analyzing, setAnalyzing] = useState(false);
@@ -21,7 +21,7 @@ export default function PageDetails() {
             if (refresh) setAnalyzing(true);
 
             const token = localStorage.getItem('token');
-            const url = `https://seostory.de/api/sites/${siteId}/pages/${pageId}${refresh ? '?refresh=true' : ''}`;
+            const url = `http://localhost:8000/api/sites/${siteId}/pages/${pageId}${refresh ? '?refresh=true' : ''}`;
 
             console.log('Fetching analysis from:', url);
 
@@ -76,7 +76,7 @@ export default function PageDetails() {
         try {
             setAnalyzingPaid(true);
             const token = localStorage.getItem('token');
-            const url = `https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze/paid`;
+            const url = `http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/paid`;
 
             const res = await fetch(url, {
                 method: 'POST',

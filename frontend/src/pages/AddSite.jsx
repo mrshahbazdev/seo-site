@@ -18,7 +18,7 @@ export default function AddSite() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('https://seostory.de/api/sites', {
+            const response = await fetch('http://localhost:8000/api/sites', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export default function AddSite() {
             } else {
                 setError(data.message || t('addSite.failedToAdd'));
             }
-        } catch (err) {
+        } catch {
             setError(t('common.connectionError'));
         } finally {
             setLoading(false);

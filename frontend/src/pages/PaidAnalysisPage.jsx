@@ -9,7 +9,7 @@ export default function PaidAnalysisPage() {
     const { t } = useTranslation();
     const { siteId, pageId } = useParams();
     const navigate = useNavigate();
-    const [page, setPage] = useState(null);
+    const [, setPage] = useState(null);
     const [analysis, setAnalysis] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -17,7 +17,7 @@ export default function PaidAnalysisPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const url = `https://seostory.de/api/sites/${siteId}/pages/${pageId}`;
+            const url = `http://localhost:8000/api/sites/${siteId}/pages/${pageId}`;
 
             const res = await fetch(url, {
                 headers: {
@@ -188,7 +188,7 @@ export default function PaidAnalysisPage() {
                         <div>
                             <h3 style={{ fontSize: '14px', fontWeight: 'bold', color: '#475569', marginBottom: '16px' }}>Technical Checks</h3>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '12px' }}>
-                                {Object.entries(data.checks || {}).filter(([_, val]) => val === true || val === false).map(([key, val]) => (
+                                {Object.entries(data.checks || {}).filter(([, val]) => val === true || val === false).map(([key, val]) => (
                                     <div key={key} style={{
                                         padding: '10px 12px', borderRadius: '8px', border: '1px solid',
                                         borderColor: val ? '#dcfce7' : '#fee2e2',

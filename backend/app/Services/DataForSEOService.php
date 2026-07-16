@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -13,9 +14,9 @@ class DataForSEOService
 
     public function __construct()
     {
-        $this->apiUrl = config('dataforseo.api_url');
-        $this->login = config('dataforseo.login');
-        $this->password = config('dataforseo.password');
+        $this->apiUrl = config('dataforseo.api_url') ?: Setting::get('dataforseo_api_url', 'https://api.dataforseo.com');
+        $this->login = config('dataforseo.login') ?: Setting::get('dataforseo_login');
+        $this->password = config('dataforseo.password') ?: Setting::get('dataforseo_password');
 
         // Ensure API URL doesn't have trailing slash
         $this->apiUrl = rtrim($this->apiUrl, '/');
@@ -721,5 +722,48 @@ class DataForSEOService
             Log::error("DataForSEO OnPage Links Error: HTTP {$e->getHttpCode()} - {$e->getMessage()}");
             throw $e;
         }
+    }
+
+    /**
+     * Verify DataForSEO credentials by calling the userinfo endpoint.
+     */
+    public function testCredentials(): array
+    {
+        if (! $this->login || ! $this->password) {
+            return ['success' => false, 'message' => 'Missing DataForSEO login or password.'];
+        }
+
+        $url = $this->apiUrl . '/v3/appendix/userinfo';
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+            CURLOPT_HTTPHEADER => [
+                'Authorization: Basic ' . base64_encode($this->login . ':' . $this->password),
+                'Content-Type: application/json',
+            ],
+        ]);
+
+        $response = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        $data = json_decode($response, true);
+
+        if ($httpCode === 200 && isset($data['status_code']) && $data['status_code'] === 20000) {
+            return ['success' => true, 'message' => 'Credentials are valid.'];
+        }
+
+        return [
+            'success' => false,
+            'message' => $data['status_message'] ?? 'Invalid credentials or API error.',
+        ];
     }
 }

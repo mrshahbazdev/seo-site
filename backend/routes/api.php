@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SiteController;
 use App\Http\Controllers\Api\AuditController;
 use App\Http\Controllers\Api\ContentBriefController;
+use App\Http\Middleware\IsAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -129,5 +131,27 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/generate', [ContentBriefController::class, 'generate']);
         Route::get('/', [ContentBriefController::class, 'index']);
         Route::get('/{id}', [ContentBriefController::class, 'show']);
+    });
+
+    // Admin routes
+    Route::middleware(IsAdmin::class)->prefix('admin')->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard']);
+
+        Route::get('/users', [AdminController::class, 'users']);
+        Route::get('/users/{user}', [AdminController::class, 'showUser']);
+        Route::put('/users/{user}', [AdminController::class, 'updateUser']);
+        Route::delete('/users/{user}', [AdminController::class, 'destroyUser']);
+
+        Route::get('/sites', [AdminController::class, 'sites']);
+        Route::get('/sites/{site}', [AdminController::class, 'showSite']);
+        Route::delete('/sites/{site}', [AdminController::class, 'destroySite']);
+
+        Route::get('/audits', [AdminController::class, 'audits']);
+        Route::get('/audits/{audit}', [AdminController::class, 'showAudit']);
+        Route::delete('/audits/{audit}', [AdminController::class, 'destroyAudit']);
+
+        Route::get('/settings', [AdminController::class, 'settings']);
+        Route::put('/settings', [AdminController::class, 'updateSettings']);
+        Route::post('/settings/test-dataforseo', [AdminController::class, 'testDataForSEO']);
     });
 });

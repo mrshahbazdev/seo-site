@@ -8,7 +8,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function KeywordResearchPage() {
     const { t } = useTranslation();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
@@ -33,7 +33,7 @@ export default function KeywordResearchPage() {
         const loadLocations = async () => {
             setLocationsLoading(true);
             try {
-                const res = await fetch('https://seostory.de/api/keywords/locations', {
+                const res = await fetch('http://localhost:8000/api/keywords/locations', {
                     headers: { Accept: 'application/json' },
                 });
                 const data = await res.json();
@@ -59,7 +59,7 @@ export default function KeywordResearchPage() {
         setResults(null);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('https://seostory.de/api/keywords/research', {
+            const res = await fetch('http://localhost:8000/api/keywords/research', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ export default function PageContent() {
     const { t } = useTranslation();
     const { siteId, pageId } = useParams();
     const navigate = useNavigate();
-    const [page, setPage] = useState(null);
+    const [, setPage] = useState(null);
     const [analysis, setAnalysis] = useState(null);
     const [loading, setLoading] = useState(true);
     const [viewMode, setViewMode] = useState('desktop'); // desktop, mobile
@@ -17,7 +17,7 @@ export default function PageContent() {
         const fetchContent = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`https://seostory.de/api/sites/${siteId}/pages/${pageId}/analyze`, {
+                const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'
