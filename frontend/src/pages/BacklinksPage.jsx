@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { ArrowLeft, Link as LinkIcon, AlertTriangle, ExternalLink, RotateCw } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function BacklinksPage() {
     const { t } = useTranslation();
@@ -21,8 +22,8 @@ export default function BacklinksPage() {
             const token = localStorage.getItem('token');
             // If pageId exists, check specific page. If not, check domain (site).
             let url = pageId
-                ? `http://localhost:8000/api/sites/${siteId}/pages/${pageId}/backlinks/analyze`
-                : `http://localhost:8000/api/sites/${siteId}/backlinks/analyze`;
+                ? `${API_BASE}/sites/${siteId}/pages/${pageId}/backlinks/analyze`
+                : `${API_BASE}/sites/${siteId}/backlinks/analyze`;
 
             if (refresh) {
                 url += `?refresh=true`;
@@ -57,7 +58,7 @@ export default function BacklinksPage() {
         try {
             setListLoading(true);
             const token = localStorage.getItem('token');
-            let url = `http://localhost:8000/api/sites/${siteId}/backlinks/list`;
+            let url = `${API_BASE}/sites/${siteId}/backlinks/list`;
 
             // Append limit if we know total backlinks, else default 100
             // const limit = backlinks?.backlinks > 1000 ? 1000 : backlinks?.backlinks || 100;

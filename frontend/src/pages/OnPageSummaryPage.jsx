@@ -9,6 +9,7 @@ import ScoreTrendChart from './components/Analysis/ScoreTrendChart';
 import SiteSettingsModal from './components/Analysis/SiteSettingsModal';
 import PhaseTwoInsights from './components/Analysis/PhaseTwoInsights';
 import PhaseThreeOps from './components/Analysis/PhaseThreeOps';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function OnPageSummaryPage() {
     const { id } = useParams();
@@ -31,8 +32,8 @@ export default function OnPageSummaryPage() {
 
             const token = localStorage.getItem('token');
             const url = refresh
-                ? `http://localhost:8000/api/sites/${id}/onpage/summary?refresh=true`
-                : `http://localhost:8000/api/sites/${id}/onpage/summary`;
+                ? `${API_BASE}/sites/${id}/onpage/summary?refresh=true`
+                : `${API_BASE}/sites/${id}/onpage/summary`;
 
             const res = await fetch(url, {
                 headers: {
@@ -66,7 +67,7 @@ export default function OnPageSummaryPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/onpage/crawl`, {
+            const res = await fetch(`${API_BASE}/sites/${id}/onpage/crawl`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

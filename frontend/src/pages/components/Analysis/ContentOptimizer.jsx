@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Search, CheckCircle, XCircle, AlertTriangle, Target } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../../../i18n/LanguageContext';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function ContentOptimizer({ siteId, pageId, savedAnalysis }) {
     const { t } = useTranslation();
@@ -24,7 +25,7 @@ export default function ContentOptimizer({ siteId, pageId, savedAnalysis }) {
             setAnalyzing(true);
             const token = localStorage.getItem('token');
             // Correct API endpoint as defined in api.php
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/onpage/pages/${pageId}/analyze-content`, {
+            const res = await fetch(`${API_BASE}/sites/${siteId}/onpage/pages/${pageId}/analyze-content`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

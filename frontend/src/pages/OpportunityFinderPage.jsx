@@ -5,6 +5,7 @@ import { Search, Loader2, Sparkles, TrendingUp, Info, Target, ArrowLeft, Clipboa
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function OpportunityFinderPage() {
     const { t } = useTranslation();
@@ -25,7 +26,7 @@ export default function OpportunityFinderPage() {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/opportunities/analyze', {
+            const res = await fetch(`${API_BASE}/opportunities/analyze`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

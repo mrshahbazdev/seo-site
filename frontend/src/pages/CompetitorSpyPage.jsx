@@ -5,6 +5,7 @@ import { Search, Loader2, Globe, TrendingUp, DollarSign, ArrowLeft, Target, User
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function CompetitorSpyPage() {
     const { t } = useTranslation();
@@ -17,7 +18,7 @@ export default function CompetitorSpyPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/competitors-spy/analyze', {
+            const res = await fetch(`${API_BASE}/competitors-spy/analyze`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Search, Sparkles, Users, Target } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function Dashboard() {
     const { t } = useTranslation();
@@ -27,7 +28,7 @@ export default function Dashboard() {
     const fetchDashboardData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8000/api/sites', {
+            const response = await fetch(`${API_BASE}/sites`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'

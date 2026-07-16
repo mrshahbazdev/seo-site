@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { ArrowLeft, CheckCircle, AlertTriangle, XCircle, ChevronDown, ChevronRight, Layout, Image as ImageIcon, Link as LinkIcon, FileText, Globe } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function PageDetails() {
     const { t } = useTranslation();
@@ -21,7 +22,7 @@ export default function PageDetails() {
             if (refresh) setAnalyzing(true);
 
             const token = localStorage.getItem('token');
-            const url = `http://localhost:8000/api/sites/${siteId}/pages/${pageId}${refresh ? '?refresh=true' : ''}`;
+            const url = `${API_BASE}/sites/${siteId}/pages/${pageId}${refresh ? '?refresh=true' : ''}`;
 
             console.log('Fetching analysis from:', url);
 
@@ -76,7 +77,7 @@ export default function PageDetails() {
         try {
             setAnalyzingPaid(true);
             const token = localStorage.getItem('token');
-            const url = `http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/paid`;
+            const url = `${API_BASE}/sites/${siteId}/pages/${pageId}/analyze/paid`;
 
             const res = await fetch(url, {
                 method: 'POST',

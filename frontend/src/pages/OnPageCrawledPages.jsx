@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, AlertTriangle, CheckCircle, XCircle, Search } 
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function OnPageCrawledPages() {
     const { t } = useTranslation();
@@ -27,7 +28,7 @@ export default function OnPageCrawledPages() {
             setLoading(true);
             const token = localStorage.getItem('token');
             const filterQuery = activeFilter ? `&filter=${activeFilter}` : '';
-            const url = `http://localhost:8000/api/sites/${id}/onpage/pages?limit=${limit}&page=${currentPage}${forceRefresh ? '&refresh=true' : ''}${filterQuery}`;
+            const url = `${API_BASE}/sites/${id}/onpage/pages?limit=${limit}&page=${currentPage}${forceRefresh ? '&refresh=true' : ''}${filterQuery}`;
             const res = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`,

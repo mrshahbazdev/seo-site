@@ -4,6 +4,7 @@ import { ArrowLeft, TrendingUp, Award, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function CompetitorComparison() {
     const { t } = useTranslation();
@@ -20,7 +21,7 @@ export default function CompetitorComparison() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors`, {
+            const res = await fetch(`${API_BASE}/sites/${id}/competitors`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
