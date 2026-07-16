@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { LinkIcon, FileText, Activity, AlertTriangle, AlertCircle, CheckCircle, Info, Play, Loader2, ArrowLeft } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function SiteAudit() {
     const { t } = useTranslation();
@@ -47,14 +48,14 @@ export default function SiteAudit() {
             const token = localStorage.getItem('token');
 
             // Fetch site details
-            const siteRes = await fetch(`http://localhost:8000/api/sites/${id}`, {
+            const siteRes = await fetch(`${API_BASE}/sites/${id}`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             const siteData = await siteRes.json();
             setSite(siteData.site);
 
             // Fetch audits
-            const auditsRes = await fetch(`http://localhost:8000/api/sites/${id}/audits`, {
+            const auditsRes = await fetch(`${API_BASE}/sites/${id}/audits`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             const auditsData = await auditsRes.json();
@@ -82,7 +83,7 @@ export default function SiteAudit() {
     const fetchIssues = async (auditId) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/audits/${auditId}/issues`, {
+            const res = await fetch(`${API_BASE}/audits/${auditId}/issues`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             const data = await res.json();
@@ -97,7 +98,7 @@ export default function SiteAudit() {
     const fetchPages = async (page = 1) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/pages?page=${page}`, {
+            const res = await fetch(`${API_BASE}/sites/${id}/pages?page=${page}`, {
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
             });
             const data = await res.json();
@@ -119,7 +120,7 @@ export default function SiteAudit() {
         try {
             const token = localStorage.getItem('token');
             if (selectedType === 'full_crawl') {
-                const res = await fetch(`http://localhost:8000/api/sites/${id}/crawl`, {
+                const res = await fetch(`${API_BASE}/sites/${id}/crawl`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
                 });
@@ -145,7 +146,7 @@ export default function SiteAudit() {
     const updateIssueStatus = async (auditId, issueId, newStatus) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/audits/${auditId}/issues/${issueId}/status`, {
+            const res = await fetch(`${API_BASE}/audits/${auditId}/issues/${issueId}/status`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

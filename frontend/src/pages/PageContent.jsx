@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, FileText, Smartphone, Monitor } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function PageContent() {
     const { t } = useTranslation();
@@ -17,7 +18,7 @@ export default function PageContent() {
         const fetchContent = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze`, {
+                const res = await fetch(`${API_BASE}/sites/${siteId}/pages/${pageId}/analyze`, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Accept': 'application/json'

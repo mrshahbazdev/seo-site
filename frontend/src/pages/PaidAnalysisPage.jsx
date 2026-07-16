@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { ArrowLeft, CheckCircle, AlertTriangle, XCircle, Globe } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function PaidAnalysisPage() {
     const { t } = useTranslation();
@@ -17,7 +18,7 @@ export default function PaidAnalysisPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const url = `http://localhost:8000/api/sites/${siteId}/pages/${pageId}`;
+            const url = `${API_BASE}/sites/${siteId}/pages/${pageId}`;
 
             const res = await fetch(url, {
                 headers: {

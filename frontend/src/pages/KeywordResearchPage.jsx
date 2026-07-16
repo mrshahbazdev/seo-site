@@ -5,6 +5,7 @@ import { Search, Loader2, Database, TrendingUp, ArrowLeft, Download, Filter } fr
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function KeywordResearchPage() {
     const { t } = useTranslation();
@@ -33,7 +34,7 @@ export default function KeywordResearchPage() {
         const loadLocations = async () => {
             setLocationsLoading(true);
             try {
-                const res = await fetch('http://localhost:8000/api/keywords/locations', {
+                const res = await fetch(`${API_BASE}/keywords/locations`, {
                     headers: { Accept: 'application/json' },
                 });
                 const data = await res.json();
@@ -59,7 +60,7 @@ export default function KeywordResearchPage() {
         setResults(null);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/keywords/research', {
+            const res = await fetch(`${API_BASE}/keywords/research`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

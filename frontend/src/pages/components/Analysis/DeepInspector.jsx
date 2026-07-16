@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ChevronRight, Image as ImageIcon, Link as LinkIcon, Layout, Shield, AlertTriangle, CheckCircle, XCircle, FileText, RefreshCw, Globe, Server, Zap, Gauge, SpellCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../../../i18n/LanguageContext';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function DeepInspector({ siteId, pageId, url, onAnalysisComplete }) {
     const { t } = useTranslation();
@@ -18,7 +19,7 @@ export default function DeepInspector({ siteId, pageId, url, onAnalysisComplete 
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/deep${refresh ? '?refresh=true' : ''}`, {
+            const res = await fetch(`${API_BASE}/sites/${siteId}/pages/${pageId}/analyze/deep${refresh ? '?refresh=true' : ''}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -119,7 +120,7 @@ const PerformanceTab = ({ siteId, pageId, initialData }) => {
             setLoading(true);
             const token = localStorage.getItem('token');
             // Default to mobile strategy
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/speed${refresh ? '?refresh=true' : ''}`, {
+            const res = await fetch(`${API_BASE}/sites/${siteId}/pages/${pageId}/analyze/speed${refresh ? '?refresh=true' : ''}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -245,7 +246,7 @@ const ContentTab = ({ text = '', pageId, siteId }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/analyze/grammar`, {
+            const res = await fetch(`${API_BASE}/sites/${siteId}/pages/${pageId}/analyze/grammar`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -603,7 +604,7 @@ const CheckStatusButton = ({ url, autoCheck, baseUrl }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/tools/check-resource', {
+            const res = await fetch(`${API_BASE}/tools/check-resource`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

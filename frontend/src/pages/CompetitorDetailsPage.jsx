@@ -4,6 +4,7 @@ import { ArrowLeft, TrendingUp, Link2, RefreshCw, ExternalLink, BarChart3 } from
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function CompetitorDetailsPage() {
     const { t } = useTranslation();
@@ -23,7 +24,7 @@ export default function CompetitorDetailsPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}`, {
+            const res = await fetch(`${API_BASE}/sites/${id}/competitors/${competitorId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -45,7 +46,7 @@ export default function CompetitorDetailsPage() {
         try {
             setLoadingPages(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}/pages`, {
+            const res = await fetch(`${API_BASE}/sites/${id}/competitors/${competitorId}/pages`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -73,7 +74,7 @@ export default function CompetitorDetailsPage() {
             const token = localStorage.getItem('token');
             toast.loading(t('competitors.analyzingCompetitor'), { id: 'analyze' });
 
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}/analyze`, {
+            const res = await fetch(`${API_BASE}/sites/${id}/competitors/${competitorId}/analyze`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

@@ -3,6 +3,7 @@ import { Layout, ArrowRight, Search, TrendingUp, BarChart2, Target, Shield, Aler
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function GapAnalysisPage() {
     const { t } = useTranslation();
@@ -34,7 +35,7 @@ export default function GapAnalysisPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:8000/api/tools/gap-analysis', {
+            const res = await fetch(`${API_BASE}/tools/gap-analysis`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

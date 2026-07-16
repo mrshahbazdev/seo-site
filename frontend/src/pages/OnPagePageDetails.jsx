@@ -10,6 +10,7 @@ import DuplicateCandidates from './components/Analysis/DuplicateCandidates';
 import SocialPreview from './components/Analysis/SocialPreview';
 import SchemaValidator from './components/Analysis/SchemaValidator';
 import { getDataForSeoCheckStatus } from '../utils/dataforseoChecks';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function OnPagePageDetails() {
     const { id, pageId } = useParams();
@@ -28,7 +29,7 @@ export default function OnPagePageDetails() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${id}/onpage/pages/${pageId}`, {
+            const res = await fetch(`${API_BASE}/sites/${id}/onpage/pages/${pageId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -450,7 +451,7 @@ const RankedKeywords = ({ siteId, pageId, url }) => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/pages/${pageId}/ranked-keywords`, {
+            const res = await fetch(`${API_BASE}/sites/${siteId}/pages/${pageId}/ranked-keywords`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -585,7 +586,7 @@ const LinkJuice = ({ siteId, url }) => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:8000/api/sites/${siteId}/onpage/links?url=${encodeURIComponent(url)}`, {
+            const res = await fetch(`${API_BASE}/sites/${siteId}/onpage/links?url=${encodeURIComponent(url)}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'

@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Activity, Users, Link as LinkIcon, FileText, ArrowLeft, Globe } from 'lucide-react';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function SiteDetailsPage() {
     const { t } = useTranslation();
@@ -16,7 +17,7 @@ export default function SiteDetailsPage() {
         const fetchSite = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch(`http://localhost:8000/api/sites/${id}`, {
+                const res = await fetch(`${API_BASE}/sites/${id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
