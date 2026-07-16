@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Database, CheckCircle, AlertCircle, ChevronDown, ChevronUp, ExternalLink, Code, RefreshCw } from 'lucide-react';
 import { useTranslation } from '../../../i18n/LanguageContext';
 
@@ -55,16 +55,13 @@ export default function SchemaValidator({ page }) {
                 seenSchemas.add(str);
                 uniqueSchemas.push(s);
             }
-        } catch (e) {
+        } catch {
             // If circular structure or error, just push it
             uniqueSchemas.push(s);
         }
     });
 
     schemas = uniqueSchemas;
-
-    // Fallback: Check if checks indicate schema presence but we missed the payload
-    const hasSchemaCheck = page.checks?.is_microdata || page.checks?.is_schema;
 
     const toggleExpand = (index) => {
         setExpandedIndex(expandedIndex === index ? null : index);

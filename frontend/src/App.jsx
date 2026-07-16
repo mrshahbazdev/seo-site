@@ -21,19 +21,26 @@ import GapAnalysisPage from './pages/GapAnalysisPage';
 import SiteDetailsPage from './pages/SiteDetailsPage';
 import SettingsPage from './pages/SettingsPage';
 import LandingPage from './pages/LandingPage';
+import AdminRoute from './components/AdminRoute';
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminSites from './pages/admin/AdminSites';
+import AdminAudits from './pages/admin/AdminAudits';
+import AdminSettings from './pages/admin/AdminSettings';
 import './index.css';
 
 import { Toaster } from 'react-hot-toast';
 
+const isAuthenticated = () => {
+  return !!localStorage.getItem('token');
+};
+
+const PrivateRoute = ({ children }) => {
+  return isAuthenticated() ? children : <Navigate to="/login" replace />;
+};
+
 function App() {
-  const isAuthenticated = () => {
-    return !!localStorage.getItem('token');
-  };
-
-  const PrivateRoute = ({ children }) => {
-    return isAuthenticated() ? children : <Navigate to="/login" />;
-  };
-
   return (
     <BrowserRouter>
       <Toaster position="top-right" />
@@ -200,6 +207,20 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="sites" element={<AdminSites />} />
+          <Route path="audits" element={<AdminAudits />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
         <Route path="/" element={<LandingPage />} />
       </Routes>
     </BrowserRouter>

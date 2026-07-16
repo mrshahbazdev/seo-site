@@ -13,13 +13,13 @@ import {
 import { Loader2, TrendingUp, AlertCircle } from 'lucide-react';
 import { useTranslation } from '../../../i18n/LanguageContext';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function ScoreTrendChart({ siteId }) {
   const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, _setError] = useState(null);
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -52,7 +52,7 @@ export default function ScoreTrendChart({ siteId }) {
         } else {
           setData([]);
         }
-      } catch (err) {
+      } catch {
         // Network error — fail silently, chart will show empty state
         setData([]);
       } finally {

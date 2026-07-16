@@ -8,7 +8,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function CompetitorSpyPage() {
     const { t } = useTranslation();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [keywords, setKeywords] = useState(null);
@@ -17,7 +17,7 @@ export default function CompetitorSpyPage() {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('https://seostory.de/api/competitors-spy/analyze', {
+            const res = await fetch('http://localhost:8000/api/competitors-spy/analyze', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

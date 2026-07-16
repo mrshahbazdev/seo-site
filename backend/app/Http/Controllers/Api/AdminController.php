@@ -1,0 +1,224 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\ApiCost;
+use App\Models\AuditIssue;
+use App\Models\Setting;
+use App\Models\Site;
+use App\Models\SiteAudit;
+use App\Models\User;
+use App\Services\DataForSEOService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+
+class AdminController extends Controller
+{
+    public function dashboard(): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'stats' => [
+                'users' => User::count(),
+                'sites' => Site::count(),
+                'audits' => SiteAudit::count(),
+                'issues' => AuditIssue::count(),
+                'pending_issues' => AuditIssue::where('status', 'pending')->count(),
+                'api_costs' => number_format((float) ApiCost::sum('cost'), 4),
+            ],
+        ]);
+    }
+
+    public function users(Request $request): JsonResponse
+    {
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        return response()->json([
+            'success' => true,
+            'users' => $query->latest()->paginate(25),
+        ]);
+    }
+
+    public function showUser(User $user): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'user' => $user->load('sites'),
+        ]);
+    }
+
+    public function updateUser(Request $request, User $user): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'email' => ['sometimes', 'email', Rule::unique('users')->ignore($user->id)],
+            'password' => 'sometimes|string|min:8',
+            'is_admin' => 'sometimes|boolean',
+        ]);
+
+        if (isset($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User updated.',
+            'user' => $user,
+        ]);
+    }
+
+    public function destroyUser(User $user): JsonResponse
+    {
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted.',
+        ]);
+    }
+
+    public function sites(Request $request): JsonResponse
+    {
+        $query = Site::query()->with('user');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('domain', 'like', "%{$search}%");
+            });
+        }
+
+        return response()->json([
+            'success' => true,
+            'sites' => $query->latest()->paginate(25),
+        ]);
+    }
+
+    public function showSite(Site $site): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'site' => $site->load(['user', 'audits']),
+        ]);
+    }
+
+    public function destroySite(Site $site): JsonResponse
+    {
+        $site->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Site deleted.',
+        ]);
+    }
+
+    public function audits(Request $request): JsonResponse
+    {
+        $query = SiteAudit::query()->with(['site', 'site.user']);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('site', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('domain', 'like', "%{$search}%");
+            });
+        }
+
+        return response()->json([
+            'success' => true,
+            'audits' => $query->latest()->paginate(25),
+        ]);
+    }
+
+    public function showAudit(SiteAudit $audit): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'audit' => $audit->load(['site', 'site.user', 'issues']),
+        ]);
+    }
+
+    public function destroyAudit(SiteAudit $audit): JsonResponse
+    {
+        $audit->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Audit deleted.',
+        ]);
+    }
+
+    public function settings(): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'settings' => [
+                'company_name' => Setting::get('company_name', 'SEO Platform'),
+                'primary_color' => Setting::get('primary_color', '#3b82f6'),
+                'report_footer' => Setting::get('report_footer', 'Generated by SEO Platform'),
+                'logo_url' => Setting::get('logo_path') ? Storage::disk('public')->url(Setting::get('logo_path')) : null,
+                'dataforseo_api_url' => Setting::get('dataforseo_api_url', 'https://api.dataforseo.com'),
+                'dataforseo_login' => Setting::get('dataforseo_login'),
+                'dataforseo_password' => Setting::get('dataforseo_password') ? '********' : '',
+            ],
+        ]);
+    }
+
+    public function updateSettings(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'company_name' => 'sometimes|string|max:100',
+            'primary_color' => 'sometimes|string|max:20',
+            'report_footer' => 'sometimes|string|max:200',
+            'dataforseo_api_url' => 'sometimes|url|max:255',
+            'dataforseo_login' => 'sometimes|string|max:255',
+            'dataforseo_password' => 'sometimes|string|max:255',
+        ]);
+
+        foreach ($validated as $key => $value) {
+            if ($key === 'dataforseo_password' && $value === '********') {
+                continue;
+            }
+
+            Setting::set($key, $value);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Settings saved.',
+        ]);
+    }
+
+    public function testDataForSEO(): JsonResponse
+    {
+        try {
+            $service = new DataForSEOService();
+            $result = $service->testCredentials();
+
+            return response()->json([
+                'success' => $result['success'] ?? false,
+                'message' => $result['message'] ?? 'Unknown response.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+    }
+}

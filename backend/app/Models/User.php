@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
         'google_access_token',
         'google_refresh_token',
         'google_token_expiry',
@@ -48,6 +49,7 @@ class User extends Authenticatable
         return [
             'email_verified_at'   => 'datetime',
             'password'            => 'hashed',
+            'is_admin'            => 'boolean',
             'google_token_expiry' => 'datetime',
         ];
     }

@@ -3,7 +3,7 @@ import { Link2, AlertCircle, TrendingDown, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../../../i18n/LanguageContext';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export default function PhaseTwoInsights({ siteId, onNavigate }) {
   const { t } = useTranslation();

@@ -24,7 +24,7 @@ export default function CompetitorsPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -51,7 +51,7 @@ export default function CompetitorsPage() {
         try {
             setAdding(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export default function CompetitorsPage() {
             } else {
                 toast.error(data.message || t('competitors.failedToAdd'));
             }
-        } catch (error) {
+        } catch {
             toast.error(t('competitors.failedToAdd'));
         } finally {
             setAdding(false);
@@ -86,7 +86,7 @@ export default function CompetitorsPage() {
             const token = localStorage.getItem('token');
             toast.loading(t('competitors.analyzingCompetitor'), { id: 'analyze' });
 
-            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors/${competitorId}/analyze`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}/analyze`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -101,7 +101,7 @@ export default function CompetitorsPage() {
             } else {
                 toast.error(data.message || t('competitors.analysisFailed'), { id: 'analyze' });
             }
-        } catch (error) {
+        } catch {
             toast.error(t('competitors.analysisFailed'), { id: 'analyze' });
         }
     };
@@ -111,7 +111,7 @@ export default function CompetitorsPage() {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors/${competitorId}`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -124,7 +124,7 @@ export default function CompetitorsPage() {
                 toast.success(t('competitors.competitorRemoved'));
                 fetchCompetitors();
             }
-        } catch (error) {
+        } catch {
             toast.error(t('competitors.failedToRemove'));
         }
     };

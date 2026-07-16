@@ -27,7 +27,7 @@ export default function Dashboard() {
     const fetchDashboardData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('https://seostory.de/api/sites', {
+            const response = await fetch('http://localhost:8000/api/sites', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -112,6 +112,24 @@ export default function Dashboard() {
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <LanguageSwitcher />
+                        {user?.is_admin && (
+                            <a
+                                href="/admin"
+                                style={{
+                                    padding: '8px 16px',
+                                    background: '#3b82f6',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '6px',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                    textDecoration: 'none',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Admin
+                            </a>
+                        )}
                         <button
                             onClick={handleLogout}
                             style={{

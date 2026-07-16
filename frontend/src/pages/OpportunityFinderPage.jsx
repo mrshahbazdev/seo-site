@@ -8,7 +8,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 
 export default function OpportunityFinderPage() {
     const { t } = useTranslation();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit } = useForm();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
@@ -25,7 +25,7 @@ export default function OpportunityFinderPage() {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('https://seostory.de/api/opportunities/analyze', {
+            const res = await fetch('http://localhost:8000/api/opportunities/analyze', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,14 +52,6 @@ export default function OpportunityFinderPage() {
         } finally {
             setLoading(false);
         }
-    };
-
-    const copyPrompt = () => {
-        if (!result) return;
-        navigator.clipboard.writeText(result.brief.prompt);
-        setCopied(true);
-        toast.success(t('opportunity.promptCopied'));
-        setTimeout(() => setCopied(false), 2000);
     };
 
     // Helper to determine color based on score (High score = Good opportunity)

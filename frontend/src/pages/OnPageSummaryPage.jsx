@@ -31,8 +31,8 @@ export default function OnPageSummaryPage() {
 
             const token = localStorage.getItem('token');
             const url = refresh
-                ? `https://seostory.de/api/sites/${id}/onpage/summary?refresh=true`
-                : `https://seostory.de/api/sites/${id}/onpage/summary`;
+                ? `http://localhost:8000/api/sites/${id}/onpage/summary?refresh=true`
+                : `http://localhost:8000/api/sites/${id}/onpage/summary`;
 
             const res = await fetch(url, {
                 headers: {
@@ -66,7 +66,7 @@ export default function OnPageSummaryPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`https://seostory.de/api/sites/${id}/onpage/crawl`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${id}/onpage/crawl`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -217,7 +217,7 @@ export default function OnPageSummaryPage() {
                         <div style={{ position: 'relative', display: 'inline-block' }}>
                             <button
                                 onClick={() => {
-                                    const baseUrl = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
+                                    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
                                     const token = localStorage.getItem('token');
                                     fetch(`${baseUrl}/sites/${id}/report/pdf`, {
                                         headers: { 'Authorization': `Bearer ${token}` }
@@ -250,7 +250,7 @@ export default function OnPageSummaryPage() {
                         </div>
                         <button
                                 onClick={() => {
-                                    const baseUrl = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
+                                    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
                                     const token = localStorage.getItem('token');
                                     fetch(`${baseUrl}/sites/${id}/report/csv`, {
                                         headers: { 'Authorization': `Bearer ${token}` }
@@ -646,7 +646,7 @@ const CheckItem = ({ label, count, isError, onClick }) => (
     </div>
 );
 
-const StatusCodeItem = ({ code, label, value }) => (
+const StatusCodeItem = ({ label, value }) => (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
         <span style={{ color: '#64748b' }}>{label}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

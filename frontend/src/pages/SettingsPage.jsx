@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n/LanguageContext';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 
-const API = import.meta.env.VITE_API_URL || 'https://seostory.de/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 const authHeader = () => ({ Authorization: `Bearer ${localStorage.getItem('token')}` });
 
 export default function SettingsPage() {
@@ -37,7 +37,7 @@ export default function SettingsPage() {
                 setSettings(data.settings);
                 if (data.settings.logo_url) setLogoPreview(data.settings.logo_url);
             }
-        } catch (e) {
+        } catch {
             toast.error(t('settings.failedToLoadSettings'));
         } finally {
             setLoading(false);
@@ -49,7 +49,9 @@ export default function SettingsPage() {
             const res = await fetch(`${API}/user`, { headers: authHeader() });
             const data = await res.json();
             setGoogleEmail(data.google_email || null);
-        } catch (_) {}
+        } catch {
+            void 0;
+        }
     };
 
     const handleSave = async (e) => {
@@ -68,7 +70,7 @@ export default function SettingsPage() {
             const data = await res.json();
             if (data.success) toast.success(t('settings.settingsSaved'));
             else toast.error(data.message || t('settings.failedToSave'));
-        } catch (_) {
+        } catch {
             toast.error(t('common.networkError'));
         } finally {
             setSaving(false);
@@ -99,7 +101,7 @@ export default function SettingsPage() {
             } else {
                 toast.error(data.message || t('settings.uploadFailed'));
             }
-        } catch (_) {
+        } catch {
             toast.error(t('settings.uploadFailed'));
         }
     };
@@ -109,7 +111,7 @@ export default function SettingsPage() {
             const res = await fetch(`${API}/google/auth-url`, { headers: authHeader() });
             const data = await res.json();
             if (data.url) window.open(data.url, '_blank', 'width=600,height=700');
-        } catch (_) {
+        } catch {
             toast.error(t('settings.failedToGetAuthUrl'));
         }
     };
@@ -122,7 +124,7 @@ export default function SettingsPage() {
                 setGoogleEmail(null);
                 toast.success(t('settings.googleDisconnected'));
             }
-        } catch (_) {
+        } catch {
             toast.error(t('settings.failedToDisconnect'));
         }
     };

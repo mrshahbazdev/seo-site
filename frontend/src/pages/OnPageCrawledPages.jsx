@@ -27,7 +27,7 @@ export default function OnPageCrawledPages() {
             setLoading(true);
             const token = localStorage.getItem('token');
             const filterQuery = activeFilter ? `&filter=${activeFilter}` : '';
-            const url = `https://seostory.de/api/sites/${id}/onpage/pages?limit=${limit}&page=${currentPage}${forceRefresh ? '&refresh=true' : ''}${filterQuery}`;
+            const url = `http://localhost:8000/api/sites/${id}/onpage/pages?limit=${limit}&page=${currentPage}${forceRefresh ? '&refresh=true' : ''}${filterQuery}`;
             const res = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -168,7 +168,7 @@ export default function OnPageCrawledPages() {
                                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                                                     {page.checks && Object.entries(page.checks)
                                                         .filter(([k, v]) => v === true && ['duplicate_title', 'duplicate_description', 'no_h1_tag', 'is_broken', 'is_4xx_code', 'is_5xx_code'].includes(k))
-                                                        .map(([k, v]) => (
+                                                        .map(([k]) => (
                                                             <span key={k} style={{ fontSize: '11px', padding: '2px 6px', borderRadius: '4px', background: '#fee2e2', color: '#991b1b' }}>
                                                                 {k.replace(/_/g, ' ')}
                                                             </span>

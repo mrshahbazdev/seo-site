@@ -23,7 +23,7 @@ export default function CompetitorDetailsPage() {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors/${competitorId}`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -45,7 +45,7 @@ export default function CompetitorDetailsPage() {
         try {
             setLoadingPages(true);
             const token = localStorage.getItem('token');
-            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors/${competitorId}/pages`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}/pages`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json'
@@ -73,7 +73,7 @@ export default function CompetitorDetailsPage() {
             const token = localStorage.getItem('token');
             toast.loading(t('competitors.analyzingCompetitor'), { id: 'analyze' });
 
-            const res = await fetch(`https://seostory.de/api/sites/${id}/competitors/${competitorId}/analyze`, {
+            const res = await fetch(`http://localhost:8000/api/sites/${id}/competitors/${competitorId}/analyze`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -88,7 +88,7 @@ export default function CompetitorDetailsPage() {
             } else {
                 toast.error(data.message || t('competitors.analysisFailed'), { id: 'analyze' });
             }
-        } catch (error) {
+        } catch {
             toast.error(t('competitors.analysisFailed'), { id: 'analyze' });
         }
     };
