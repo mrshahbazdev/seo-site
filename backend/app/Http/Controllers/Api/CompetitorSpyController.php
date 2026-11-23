@@ -32,10 +32,11 @@ class CompetitorSpyController extends Controller
             $domain = str_replace(['http://', 'https://', 'www.'], '', $request->domain);
             $domain = rtrim($domain, '/');
 
+            // Service fixes location to US (2840) / English and takes a result limit.
+            // (Previously the request's location_code was passed as the limit by mistake.)
             $keywords = $this->dataForSEO->getCompetitorKeywords(
                 $domain,
-                $request->location_code ?? 2840,
-                $request->language_code ?? 'en'
+                100
             );
 
             // Format data for frontend

@@ -23,18 +23,20 @@ Route::prefix('keywords')->group(function () {
     Route::get('/locations', [KeywordResearchController::class, 'locations']);
 });
 
-Route::prefix('opportunities')->group(function () {
-    Route::post('/analyze', [OpportunityController::class, 'analyze']);
-});
-
-Route::post('/competitors-spy/analyze', [App\Http\Controllers\Api\CompetitorSpyController::class, 'spy']);
-
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
+
+    // Paid DataForSEO tools: must stay inside auth — unauthenticated calls
+    // could otherwise trigger paid API usage. Frontend already sends the token.
+    Route::prefix('opportunities')->group(function () {
+        Route::post('/analyze', [OpportunityController::class, 'analyze']);
+    });
+
+    Route::post('/competitors-spy/analyze', [App\Http\Controllers\Api\CompetitorSpyController::class, 'spy']);
 
     // User info
     Route::get('/user', function (Request $request) {

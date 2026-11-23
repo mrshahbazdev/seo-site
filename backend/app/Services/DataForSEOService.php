@@ -455,7 +455,11 @@ class DataForSEOService
      */
     public function getCompetitorKeywords(string $domain, int $limit = 100)
     {
-        $endpoint = '/v3/domain_analytics/google/keywords/live';
+        // DataForSEO Labs Ranked Keywords — the Domain Analytics path
+        // /v3/domain_analytics/google/keywords/live (and organic_keywords/live)
+        // does not exist in v3 (40400). Same payload/response shape as
+        // getPageRankedKeywords below.
+        $endpoint = '/v3/dataforseo_labs/google/ranked_keywords/live';
 
         $data = [
             [
