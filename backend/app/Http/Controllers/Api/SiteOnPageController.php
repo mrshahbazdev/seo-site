@@ -26,24 +26,39 @@ class SiteOnPageController extends Controller
             // Start the crawl
             $result = $this->seoService->startOnPageCrawl($site->url, 10000, $site->id);
 
-            if (isset($result['tasks'][0]['id'])) {
-                $taskId = $result['tasks'][0]['id'];
-                $site->on_page_task_id = $taskId;
-                $site->on_page_summary = null; // Reset summary on new crawl
-                $site->save();
+            $task = $result['tasks'][0] ?? null;
+            $statusCode = $task['status_code'] ?? 0;
+            $statusMessage = $task['status_message'] ?? 'Unknown error';
+
+            // DataForSEO returns a task id even when the request failed
+            // (e.g. 40501 "Invalid Field: 'target'" for a malformed URL).
+            // Only 20100 means the task was actually created. Anything else
+            // must fail loudly instead of saving a bogus id that later
+            // resolves to 40401 "Task Not Found" and loops back to empty.
+            if ($statusCode !== 20100 || empty($task['id'])) {
+                Log::warning('OnPage Crawl Rejected by DataForSEO: ' . $statusMessage, [
+                    'site_id' => $site->id,
+                    'url' => $site->url,
+                    'status_code' => $statusCode,
+                ]);
 
                 return response()->json([
-                    'success' => true,
-                    'message' => 'Crawl started successfully',
-                    'task_id' => $taskId
-                ]);
+                    'success' => false,
+                    'message' => 'Failed to start crawl: ' . $statusMessage,
+                    'data' => $result
+                ], 422);
             }
 
+            $taskId = $task['id'];
+            $site->on_page_task_id = $taskId;
+            $site->on_page_summary = null; // Reset summary on new crawl
+            $site->save();
+
             return response()->json([
-                'success' => false,
-                'message' => 'Failed to start crawl task',
-                'data' => $result
-            ], 500);
+                'success' => true,
+                'message' => 'Crawl started successfully',
+                'task_id' => $taskId
+            ]);
 
         } catch (\Exception $e) {
             Log::error('OnPage Crawl Error: ' . $e->getMessage());
